@@ -1,0 +1,6 @@
+name: ApiLib
+version: '${project.version}'
+main: com.burchard36.ApiLib
+api-version: 1.16
+authors: [ DaltonBurchard ]
+description: Api library for Burchard36's plugins
