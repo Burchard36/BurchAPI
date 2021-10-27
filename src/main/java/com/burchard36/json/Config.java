@@ -76,7 +76,7 @@ public class Config extends ConfigFile {
     }
 
     @Override
-    void write(JsonWriter writer) {
+    protected void write(JsonWriter writer) {
 
     }
 
