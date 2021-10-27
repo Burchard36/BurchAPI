@@ -2,6 +2,7 @@ package com.burchard36.json;
 
 import com.burchard36.Api;
 import com.burchard36.json.enums.FileFormat;
+import com.squareup.moshi.JsonWriter;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -12,6 +13,7 @@ public class Config extends ConfigFile {
     public String configFilePath;
     public JavaPlugin plugin;
     public Api api;
+    final PluginJsonWriter jsonWriter;
     public FileFormat format;
     public PluginDataManager manager;
 
@@ -22,6 +24,7 @@ public class Config extends ConfigFile {
         this.plugin = plugin;
         this.configFilePath = pathToFile;
         this.format = format;
+        this.jsonWriter = new PluginJsonWriter(this.plugin);
         this.parseJavaPlugin();
     }
 
@@ -70,5 +73,24 @@ public class Config extends ConfigFile {
                 break;
             }
         }
+    }
+
+    @Override
+    void write(JsonWriter writer) {
+
+    }
+
+    @Override
+    Config onLoad() {
+        switch (format) {
+            case JSON -> {
+                return this.jsonWriter.getDataFromFile(this);
+            }
+            case MYSQL, MONGODB -> {
+                Bukkit.getLogger().log(Level.WARNING, "This saving method is not implemented yet!");
+                return null;
+            }
+        }
+        return null;
     }
 }

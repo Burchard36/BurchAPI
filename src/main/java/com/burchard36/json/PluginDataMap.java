@@ -11,7 +11,7 @@ public class PluginDataMap {
     }
 
     public void loadConfigFile(final Enum<?> E, final Config config) {
-        this.configMap.putIfAbsent(E, config);
+        this.configMap.putIfAbsent(E, config.onLoad());
     }
 
     /**
