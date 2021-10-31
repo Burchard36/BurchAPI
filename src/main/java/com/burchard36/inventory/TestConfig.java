@@ -2,6 +2,7 @@ package com.burchard36.inventory;
 
 import com.burchard36.json.Config;
 import com.burchard36.json.enums.FileFormat;
+import com.squareup.moshi.JsonWriter;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class TestConfig extends Config {
@@ -14,6 +15,11 @@ public class TestConfig extends Config {
 
     @Override
     public void onSave() {
+
+    }
+
+    @Override
+    public void write(JsonWriter writer) {
 
     }
 

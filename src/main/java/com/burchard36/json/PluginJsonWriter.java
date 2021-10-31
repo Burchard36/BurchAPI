@@ -40,6 +40,8 @@ public class PluginJsonWriter {
         final String configPath = config.configFilePath;
         final File file = new File(this.plugin.getDataFolder(), configPath + ".json");
 
+        if (!file.exists()) this.createFile(config);
+
         try {
             final BufferedSource source = Okio.buffer(Okio.source(file));
             final JsonReader jsonReader = JsonReader.of(source);
