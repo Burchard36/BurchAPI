@@ -15,7 +15,7 @@ public class PluginDataManager {
     }
 
     public void registerPluginMap(final Enum<?> E, PluginDataMap map) {
-
+        this.configMap.putIfAbsent(E, map);
     }
 
     /**
