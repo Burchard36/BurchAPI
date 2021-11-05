@@ -20,7 +20,7 @@ public class PluginJsonWriter {
         this.plugin = plugin;
     }
 
-    public void createFile(final Config config) {
+    public File createFile(final Config config) {
         final String configPath = config.configFilePath;
         final File file = new File(this.plugin.getDataFolder(), configPath + ".json");
         if (!file.exists()) {
@@ -36,13 +36,16 @@ public class PluginJsonWriter {
                 ex.printStackTrace();
             }
         }
+        return new File(this.plugin.getDataFolder(), configPath + ".json");
     }
 
     public Config getDataFromFile(final Config config) {
         final String configPath = config.configFilePath;
-        final File file = new File(this.plugin.getDataFolder(), configPath + ".json");
+        File file = new File(this.plugin.getDataFolder(), configPath + ".json");
 
-        if (!file.exists()) this.createFile(config);
+        if (!file.exists()) {
+            file = this.createFile(config);
+        }
 
         try {
             final BufferedSource source = Okio.buffer(Okio.source(file));
