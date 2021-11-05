@@ -25,7 +25,7 @@ public class PluginJsonWriter {
         final File file = new File(this.plugin.getDataFolder(), configPath + ".json");
         if (!file.exists()) {
             try {
-                if (file.createNewFile()) {
+                if (file.createNewFile() && file.mkdirs()) {
                     final JsonWriter writer = JsonWriter.of(Okio.buffer(Okio.sink(file)));
                     config.write(writer);
                     writer.close();
