@@ -10,8 +10,13 @@ public class PluginDataMap {
 
     }
 
+    /**
+     * Loads the Config file into the map while initializing the plugins loaf() method
+     * @param E Enum to set as Key for Config
+     * @param config Config to set
+     */
     public void loadConfigFile(final Enum<?> E, final Config config) {
-        this.configMap.putIfAbsent(E, config.onLoad());
+        this.configMap.putIfAbsent(E, config.load());
     }
 
     /**

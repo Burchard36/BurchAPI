@@ -2,21 +2,23 @@ package com.burchard36.json;
 
 import com.burchard36.Api;
 import com.burchard36.json.enums.FileFormat;
+import com.burchard36.json.events.JsonLoadEvent;
+import com.burchard36.json.events.JsonSaveEvent;
 import com.squareup.moshi.JsonWriter;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
 import java.util.logging.Level;
 
 public class Config extends ConfigFile {
 
-    public String configFilePath;
-    public JavaPlugin plugin;
-    public Api api;
-    final PluginJsonWriter jsonWriter;
-    public FileFormat format;
-    public PluginDataManager manager;
-
+    public transient String configFilePath;
+    public transient JavaPlugin plugin;
+    public transient Api api;
+    final transient PluginJsonWriter jsonWriter;
+    public transient FileFormat format;
+    public transient PluginDataManager manager;
 
     public Config(final JavaPlugin plugin,
                   final String pathToFile,
@@ -36,7 +38,8 @@ public class Config extends ConfigFile {
         if (this.plugin instanceof Api) {
             this.api = (Api) this.plugin;
             if (this.api.getPluginDataManager() == null) {
-
+                Bukkit.getLogger().info("API :: ERROR :: PluginDataManager was null when parsing JavaPlugin");
+                return;
             }
             this.manager = this.api.getPluginDataManager();
         } else {
@@ -45,52 +48,42 @@ public class Config extends ConfigFile {
     }
 
     @Override
-    protected void onSave() {
-        switch (format) {
-            case JSON: {
+    public void save() {
+        this.jsonWriter.writeDataToFile(this);
+    }
 
-                break;
-            }
+    @Override
+    public Config load() {
+        return this.jsonWriter.getDataFromFile(this);
+    }
 
-            case MYSQL:
-            case MONGODB: {
-                Bukkit.getLogger().log(Level.WARNING, "This saving method is not implemented yet!");
-                break;
-            }
-        }
+    @Override
+    public void onLoad(JsonLoadEvent loadEvent) {
+
+    }
+
+    @Override
+    protected void onSave(final JsonSaveEvent saveEvent) {
+
     }
 
     @Override
     protected void onReload() {
-        switch (format) {
-            case JSON: {
-
-                break;
-            }
-
-            case MYSQL:
-            case MONGODB: {
-                break;
-            }
-        }
-    }
-
-    @Override
-    protected void write(JsonWriter writer) {
 
     }
 
     @Override
-    Config onLoad() {
-        switch (format) {
-            case JSON -> {
-                return this.jsonWriter.getDataFromFile(this);
-            }
-            case MYSQL, MONGODB -> {
-                Bukkit.getLogger().log(Level.WARNING, "This saving method is not implemented yet!");
-                return null;
-            }
-        }
-        return null;
+    protected void onWrite(JsonWriter writer) {
+
+    }
+
+    @Override
+    protected void onRead(Config config) {
+
+    }
+
+    @Override
+    File getFile() {
+        return new File(this.plugin.getDataFolder(), this.configFilePath);
     }
 }
