@@ -4,14 +4,18 @@ import com.burchard36.Api;
 import com.burchard36.json.enums.FileFormat;
 import com.burchard36.json.events.JsonLoadEvent;
 import com.burchard36.json.events.JsonSaveEvent;
+import com.squareup.moshi.FromJson;
+import com.squareup.moshi.JsonReader;
 import com.squareup.moshi.JsonWriter;
+import com.squareup.moshi.ToJson;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.logging.Level;
 
-public class Config extends ConfigFile {
+public class Config {
 
     public transient String configFilePath;
     public transient JavaPlugin plugin;
@@ -47,43 +51,25 @@ public class Config extends ConfigFile {
         }
     }
 
-    @Override
+    /***
+     * Saves data to its own file
+     */
     public void save() {
         this.jsonWriter.writeDataToFile(this);
     }
 
-    @Override
     public Config load() {
         return this.jsonWriter.getDataFromFile(this);
     }
 
-    @Override
-    public void onLoad(JsonLoadEvent loadEvent) {
+    @FromJson
+    public void fromJson(final JsonReader reader) throws IOException {}
 
-    }
 
-    @Override
-    protected void onSave(final JsonSaveEvent saveEvent) {
+    @ToJson
+    public void toJson(JsonWriter writer) throws IOException {}
 
-    }
-
-    @Override
-    protected void onReload() {
-
-    }
-
-    @Override
-    protected void onWrite(JsonWriter writer) {
-
-    }
-
-    @Override
-    protected void onRead(Config config) {
-
-    }
-
-    @Override
-    File getFile() {
+    public final File getFile() {
         return new File(this.plugin.getDataFolder(), this.configFilePath);
     }
 }

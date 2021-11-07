@@ -1,7 +1,5 @@
 package com.burchard36.json;
 
-import com.burchard36.inventory.TestConfig;
-import com.burchard36.json.enums.FileFormat;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;

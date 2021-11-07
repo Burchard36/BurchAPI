@@ -15,8 +15,9 @@ public class PluginDataMap {
      * @param E Enum to set as Key for Config
      * @param config Config to set
      */
-    public void loadConfigFile(final Enum<?> E, final Config config) {
+    public PluginDataMap loadConfigFile(final Enum<?> E, final Config config) {
         this.configMap.putIfAbsent(E, config.load());
+        return this;
     }
 
     /**

@@ -2,9 +2,11 @@ package com.burchard36.inventory;
 
 import com.burchard36.json.Config;
 import com.burchard36.json.enums.FileFormat;
-import com.burchard36.json.events.JsonSaveEvent;
+import com.squareup.moshi.JsonReader;
 import com.squareup.moshi.JsonWriter;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.IOException;
 
 public class TestConfig extends Config {
 
@@ -15,17 +17,12 @@ public class TestConfig extends Config {
     }
 
     @Override
-    public void onSave(JsonSaveEvent saveEvent) {
+    public void toJson(JsonWriter writer) throws IOException {
 
     }
 
     @Override
-    public void onWrite(JsonWriter writer) {
-
-    }
-
-    @Override
-    public void onReload() {
-
+    public void fromJson(JsonReader reader) throws IOException {
+        super.fromJson(reader);
     }
 }
