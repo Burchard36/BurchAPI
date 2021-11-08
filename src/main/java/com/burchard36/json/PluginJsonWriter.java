@@ -2,6 +2,7 @@ package com.burchard36.json;
 
 import com.burchard36.Api;
 import com.burchard36.ApiLib;
+import com.burchard36.json.errors.InvalidClassAdapterException;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonReader;
 import com.squareup.moshi.JsonWriter;
@@ -84,7 +85,7 @@ public class PluginJsonWriter {
             config.fromJson(jsonReader, classFileAdapter);
             jsonReader.close();
             return config;
-        } catch (IOException ex) {
+        } catch (IOException | InvalidClassAdapterException ex) {
             ex.printStackTrace();
             return null;
         }

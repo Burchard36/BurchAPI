@@ -3,6 +3,7 @@ package com.burchard36.json;
 import com.burchard36.Api;
 import com.burchard36.ApiLib;
 import com.burchard36.json.enums.FileFormat;
+import com.burchard36.json.errors.InvalidClassAdapterException;
 import com.burchard36.json.events.JsonLoadEvent;
 import com.burchard36.json.events.JsonSaveEvent;
 import com.squareup.moshi.*;
@@ -60,7 +61,8 @@ public class Config {
     }
 
     @FromJson
-    public void fromJson(final JsonReader reader, JsonAdapter<? extends Config> classFileAdapter) throws IOException {}
+    public void fromJson(final JsonReader reader, JsonAdapter<? extends Config> classFileAdapter) throws IOException,
+            InvalidClassAdapterException {}
 
 
     @ToJson
