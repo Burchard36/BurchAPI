@@ -58,10 +58,6 @@
             <id>papermc-repo</id>
             <url>https://papermc.io/repo/repository/maven-public/</url>
         </repository>
-        <repository>
-            <id>sonatype</id>
-            <url>https://oss.sonatype.org/content/groups/public/</url>
-        </repository>
     </repositories>
 
     <dependencies>
@@ -74,7 +70,7 @@
 
         <dependency>
             <groupId>com.squareup.moshi</groupId>
-            <artifactId>moshi-kotlin-codegen</artifactId>
+            <artifactId>moshi</artifactId>
             <version>1.12.0</version>
             <scope>compile</scope>
         </dependency>
