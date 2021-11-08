@@ -24,8 +24,8 @@ public class PluginDataManager {
      * @param usingKey Enum that hold the Config file in PluginData Map
      * @return instance of a Config file
      */
-    public Config getConfigFileFromMap(final Enum<?> fromMap, final Enum<?> usingKey) {
-        return this.configMap.get(fromMap).getConfig(usingKey);
+    public JsonDataFile getConfigFileFromMap(final Enum<?> fromMap, final Enum<?> usingKey) {
+        return this.configMap.get(fromMap).getDataFile(usingKey);
     }
 
     /**
@@ -51,8 +51,8 @@ public class PluginDataManager {
      * @param usingKey Key to set the Config file to
      * @param config Config file class to load
      */
-    public void loadConfigFileToMap(final Enum<?> toMap, final Enum<?> usingKey, final Config config) {
-        this.configMap.get(toMap).loadConfigFile(usingKey, config.load());
+    public void loadConfigFileToMap(final Enum<?> toMap, final Enum<?> usingKey, final JsonDataFile config) {
+        this.configMap.get(toMap).loadDataFile(usingKey, config.load());
     }
 
     /**

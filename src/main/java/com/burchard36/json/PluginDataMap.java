@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public class PluginDataMap {
 
-    private final HashMap<Enum<?>, Config> configMap = new HashMap<>();
+    private final HashMap<Enum<?>, JsonDataFile> dataMap = new HashMap<>();
 
     public PluginDataMap() {
 
@@ -15,28 +15,28 @@ public class PluginDataMap {
      * @param E Enum to set as Key for Config
      * @param config Config to set
      */
-    public PluginDataMap loadConfigFile(final Enum<?> E, final Config config) {
-        this.configMap.putIfAbsent(E, config.load());
+    public PluginDataMap loadDataFile(final Enum<?> E, final JsonDataFile config) {
+        this.dataMap.putIfAbsent(E, config.load());
         return this;
     }
 
     /**
-     * Gets a
-     * @param E
-     * @return
+     * Gets a JsonDataFile thats cached into HashMap
+     * @param E Enum field to use
+     * @return JsonDataFile from HashMap
      */
-    public Config getConfig(final Enum<?> E) {
-        return this.configMap.get(E);
+    public JsonDataFile getDataFile(final Enum<?> E) {
+        return this.dataMap.get(E);
     }
 
     /**
      * Reloads a Config file
-     * @param E
+     * @param E Enum class field to use
      */
-    public void reloadConfigFile(final Enum<?> E) {
-        final Config config = this.getConfig(E);
+    public void reloadDataFile(final Enum<?> E) {
+        final JsonDataFile config = this.getDataFile(E);
         if (config == null) return;
-
+        config.save();
+        config.load();
     }
-
 }

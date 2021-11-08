@@ -1,6 +1,6 @@
 package com.burchard36.json.events;
 
-import com.burchard36.json.Config;
+import com.burchard36.json.JsonDataFile;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -14,9 +14,9 @@ public class JsonLoadEvent extends Event implements Cancellable {
     private boolean isCanceled;
 
     private final File file;
-    public Config config;
+    public JsonDataFile config;
 
-    public JsonLoadEvent(final File file, final Config config) {
+    public JsonLoadEvent(final File file, final JsonDataFile config) {
         this.isCanceled = false;
         this.file = file;
     }

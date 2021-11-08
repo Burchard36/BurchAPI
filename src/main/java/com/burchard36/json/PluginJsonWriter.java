@@ -31,7 +31,7 @@ public class PluginJsonWriter {
         }
     }
 
-    public File createFile(final Config config) {
+    public File createFile(final JsonDataFile config) {
         final String configPath = config.configFilePath;
         final File file = new File(this.plugin.getDataFolder(), configPath + ".json");
         if (!file.exists()) {
@@ -43,6 +43,7 @@ public class PluginJsonWriter {
 
                 if (file.createNewFile()) {
                     final JsonWriter writer = JsonWriter.of(Okio.buffer(Okio.sink(file)));
+                    writer.setIndent("    ");
                     config.toJson(writer);
                     writer.close();
                 }
@@ -53,7 +54,7 @@ public class PluginJsonWriter {
         return new File(this.plugin.getDataFolder(), configPath + ".json");
     }
 
-    public void writeDataToFile(final Config config) {
+    public void writeDataToFile(final JsonDataFile config) {
         File file = config.getFile();
         if (!file.exists()) {
             file = this.createFile(config);
@@ -70,7 +71,7 @@ public class PluginJsonWriter {
 
     }
 
-    public Config getDataFromFile(final Config config) {
+    public JsonDataFile getDataFromFile(final JsonDataFile config) {
         final String configPath = config.configFilePath;
         File file = new File(this.plugin.getDataFolder(), configPath + ".json");
 
@@ -81,7 +82,7 @@ public class PluginJsonWriter {
         try {
             final BufferedSource source = Okio.buffer(Okio.source(file));
             final JsonReader jsonReader = JsonReader.of(source);
-            final JsonAdapter<? extends Config> classFileAdapter = moshi.adapter(config.getClass());
+            final JsonAdapter<? extends JsonDataFile> classFileAdapter = moshi.adapter(config.getClass());
 
             config.fromJson(jsonReader, classFileAdapter);
             jsonReader.close();

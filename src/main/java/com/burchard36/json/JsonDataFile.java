@@ -4,8 +4,6 @@ import com.burchard36.Api;
 import com.burchard36.ApiLib;
 import com.burchard36.json.enums.FileFormat;
 import com.burchard36.json.errors.InvalidClassAdapterException;
-import com.burchard36.json.events.JsonLoadEvent;
-import com.burchard36.json.events.JsonSaveEvent;
 import com.squareup.moshi.*;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -14,7 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 
-public class Config {
+public class JsonDataFile {
 
     public transient String configFilePath;
     public transient JavaPlugin plugin;
@@ -23,9 +21,9 @@ public class Config {
     public transient FileFormat format;
     public transient PluginDataManager manager;
 
-    public Config(final JavaPlugin plugin,
-                  final String pathToFile,
-                  final FileFormat format) {
+    public JsonDataFile(final JavaPlugin plugin,
+                        final String pathToFile,
+                        final FileFormat format) {
         this.plugin = plugin;
         this.configFilePath = pathToFile;
         this.format = format;
@@ -56,12 +54,12 @@ public class Config {
         this.jsonWriter.writeDataToFile(this);
     }
 
-    public Config load() {
+    public JsonDataFile load() {
         return this.jsonWriter.getDataFromFile(this);
     }
 
     @FromJson
-    public void fromJson(final JsonReader reader, JsonAdapter<? extends Config> classFileAdapter) throws IOException,
+    public void fromJson(final JsonReader reader, JsonAdapter<? extends JsonDataFile> classFileAdapter) throws IOException,
             InvalidClassAdapterException {}
 
 
