@@ -8,14 +8,19 @@ import java.util.HashMap;
 public class PluginDataManager {
 
     private final Moshi moshi;
-    public HashMap<Enum<?>, PluginDataMap> configMap = new HashMap<>();
+    public HashMap<Enum<?>, PluginDataMap> dataMap = new HashMap<>();
 
     public PluginDataManager(final JavaPlugin plugin) {
         this.moshi = new Moshi.Builder().build();
     }
 
-    public void registerPluginMap(final Enum<?> E, PluginDataMap map) {
-        this.configMap.putIfAbsent(E, map);
+    /**
+     * Registers a new Plugin map for a plugin or system to use
+     * @param E Enum key for the PluginDataMap
+     * @param map PluginDataMap instance, typically a new instance
+     */
+    public final void registerPluginMap(final Enum<?> E, PluginDataMap map) {
+        this.dataMap.putIfAbsent(E, map);
     }
 
     /**
@@ -24,8 +29,8 @@ public class PluginDataManager {
      * @param usingKey Enum that hold the Config file in PluginData Map
      * @return instance of a Config file
      */
-    public JsonDataFile getConfigFileFromMap(final Enum<?> fromMap, final Enum<?> usingKey) {
-        return this.configMap.get(fromMap).getDataFile(usingKey);
+    public final JsonDataFile getDataFileFromMap(final Enum<?> fromMap, final Enum<?> usingKey) {
+        return this.dataMap.get(fromMap).getDataFile(usingKey);
     }
 
     /**
@@ -34,25 +39,43 @@ public class PluginDataManager {
      * @return instance of PluginDataMap
      */
     public final PluginDataMap getDataMap(final Enum<?> toGet) {
-        return this.configMap.get(toGet);
+        return this.dataMap.get(toGet);
     }
 
     /**
      * Clears a plugins DataMap, typically used when reloading the class holding the DataMap
-     * @param toClear
+     * @param toClear Enum key of PluginDataMap to clear
      */
     public final void clearDataMap(final Enum<?> toClear) {
-        this.configMap.remove(toClear);
+        this.dataMap.remove(toClear);
     }
 
     /**
-     * Loads a Config file to a PluginDataMaps HashMap
-     * @param toMap Enum key that points to PluginDataMan
-     * @param usingKey Key to set the Config file to
-     * @param config Config file class to load
+     * Loads a Data File  to a PluginDataMaps HashMap
+     * @param toMap Enum key that points to PluginDataMap
+     * @param usingKey Key to set the Data File to
+     * @param dataFile JsonDataFile class to load
      */
-    public void loadConfigFileToMap(final Enum<?> toMap, final Enum<?> usingKey, final JsonDataFile config) {
-        this.configMap.get(toMap).loadDataFile(usingKey, config.load());
+    public final void loadDataFileToMap(final Enum<?> toMap, final Enum<?> usingKey, final JsonDataFile dataFile) {
+        this.dataMap.get(toMap).loadDataFile(usingKey, dataFile.load());
+    }
+
+    /**
+     * Loads a Data File to a PluginDataMaps HashMap
+     * @param toMap String key that points to PluginDataMap
+     * @param usingKey Key to set the Data File to
+     * @param dataFile JsonDataFile class to load
+     */
+    public final void loadDataFileToMap(final Enum<?> toMap, final String usingKey, final JsonDataFile dataFile) {
+        this.dataMap.get(toMap).loadDataFile(usingKey, dataFile.load());
+    }
+
+    /**
+     * Save's all the DataFiles that are running on the plugin :)
+     * TODO: Run this async maybe?
+     */
+    public final void saveAll() {
+        this.dataMap.values().forEach(PluginDataMap::saveAll);
     }
 
     /**
