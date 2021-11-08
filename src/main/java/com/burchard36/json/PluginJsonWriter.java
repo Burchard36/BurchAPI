@@ -62,6 +62,7 @@ public class PluginJsonWriter {
         try {
             final JsonWriter writer = JsonWriter.of(Okio.buffer(Okio.sink(file)));
             config.toJson(writer);
+            writer.setIndent("    ");
             writer.close();
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -80,7 +81,7 @@ public class PluginJsonWriter {
         try {
             final BufferedSource source = Okio.buffer(Okio.source(file));
             final JsonReader jsonReader = JsonReader.of(source);
-            final JsonAdapter<? extends Config> classFileAdapter = moshi.adapter(config.getClass());
+            final JsonAdapter<? extends Config> classFileAdapter = moshi.adapter(config.getClass()).indent("    ");
 
             config.fromJson(jsonReader, classFileAdapter);
             jsonReader.close();
