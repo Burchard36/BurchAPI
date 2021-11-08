@@ -31,8 +31,16 @@ public class PluginDataManager {
      * @param toGet Enum key pointing to the PluginDataMap you want to load
      * @return instance of PluginDataMap
      */
-    public PluginDataMap getDataMap(final Enum<?> toGet) {
+    public final PluginDataMap getDataMap(final Enum<?> toGet) {
         return this.configMap.get(toGet);
+    }
+
+    /**
+     * Clears a plugins DataMap, typically used when reloading the class holding the DataMap
+     * @param toClear
+     */
+    public final void clearDataMap(final Enum<?> toClear) {
+        this.configMap.remove(toClear);
     }
 
     /**
@@ -42,6 +50,6 @@ public class PluginDataManager {
      * @param config Config file class to load
      */
     public void loadConfigFileToMap(final Enum<?> toMap, final Enum<?> usingKey, final Config config) {
-        this.configMap.get(toMap).loadConfigFile(usingKey, config);
+        this.configMap.get(toMap).loadConfigFile(usingKey, config.load());
     }
 }
