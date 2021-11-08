@@ -1,7 +1,11 @@
 package com.burchard36.json;
 
+import com.burchard36.Api;
+import com.burchard36.ApiLib;
+import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonReader;
 import com.squareup.moshi.JsonWriter;
+import com.squareup.moshi.Moshi;
 import okio.BufferedSource;
 import okio.Okio;
 import org.bukkit.Bukkit;
@@ -12,9 +16,18 @@ import java.io.*;
 public class PluginJsonWriter {
 
     private final JavaPlugin plugin;
+    private final Moshi moshi;
 
     public PluginJsonWriter(final JavaPlugin plugin) {
         this.plugin = plugin;
+        final Api apiLib = ApiLib.getLib(plugin);
+        if (apiLib != null) {
+            this.moshi = apiLib.getPluginDataManager().getMoshi();
+        } else {
+            this.moshi = null;
+            Bukkit.getLogger().info("API :: ERROR! :: Error when grabbing moshi variables from Api implementing class," +
+                    " as it does not implement Api!");
+        }
     }
 
     public File createFile(final Config config) {
@@ -66,12 +79,9 @@ public class PluginJsonWriter {
         try {
             final BufferedSource source = Okio.buffer(Okio.source(file));
             final JsonReader jsonReader = JsonReader.of(source);
+            final JsonAdapter<? extends Config> classFileAdapter = moshi.adapter(config.getClass());
 
-            //final Moshi moshi = new Moshi.Builder().build();
-            //final JsonAdapter<? extends Config> classFileAdapter = moshi.adapter(config.getClass());
-
-            //event.config = classFileAdapter.fromJson(jsonReader);
-            config.fromJson(jsonReader);
+            config.fromJson(jsonReader, classFileAdapter);
             jsonReader.close();
             return config;
         } catch (IOException ex) {

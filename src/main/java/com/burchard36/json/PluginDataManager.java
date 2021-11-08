@@ -1,15 +1,17 @@
 package com.burchard36.json;
 
+import com.squareup.moshi.Moshi;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
 
 public class PluginDataManager {
 
+    private final Moshi moshi;
     public HashMap<Enum<?>, PluginDataMap> configMap = new HashMap<>();
 
     public PluginDataManager(final JavaPlugin plugin) {
-
+        this.moshi = new Moshi.Builder().build();
     }
 
     public void registerPluginMap(final Enum<?> E, PluginDataMap map) {
@@ -51,5 +53,13 @@ public class PluginDataManager {
      */
     public void loadConfigFileToMap(final Enum<?> toMap, final Enum<?> usingKey, final Config config) {
         this.configMap.get(toMap).loadConfigFile(usingKey, config.load());
+    }
+
+    /**
+     * Returns the Moshi instance
+     * @return instance of Moshi
+     */
+    public final Moshi getMoshi() {
+        return this.moshi;
     }
 }

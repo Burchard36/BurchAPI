@@ -59,8 +59,15 @@ public final class ApiLib implements Api {
         }
     }
 
-    public PluginDataManager getDataManager() {
-        return this.manager;
+    /**
+     * Checks if a JavaPlugin implements the Api class, and if it does pull the Api
+     * @param plugin
+     * @return Returns Api instance if JavaPlugin implements Api class, returns null if it doesnt
+     */
+    public static Api getLib(final JavaPlugin plugin) {
+        if (plugin instanceof Api) {
+            return (Api) plugin;
+        } else return null;
     }
 
     @Override

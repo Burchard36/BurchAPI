@@ -1,13 +1,11 @@
 package com.burchard36.json;
 
 import com.burchard36.Api;
+import com.burchard36.ApiLib;
 import com.burchard36.json.enums.FileFormat;
 import com.burchard36.json.events.JsonLoadEvent;
 import com.burchard36.json.events.JsonSaveEvent;
-import com.squareup.moshi.FromJson;
-import com.squareup.moshi.JsonReader;
-import com.squareup.moshi.JsonWriter;
-import com.squareup.moshi.ToJson;
+import com.squareup.moshi.*;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -38,9 +36,8 @@ public class Config {
      * Parses the JavaPlugin to make sure it implements Api to get the running PluginDataManager
      */
     private void parseJavaPlugin() {
-
-        if (this.plugin instanceof Api) {
-            this.api = (Api) this.plugin;
+        this.api = ApiLib.getLib(this.plugin);
+        if (this.api != null) {
             if (this.api.getPluginDataManager() == null) {
                 Bukkit.getLogger().info("API :: ERROR :: PluginDataManager was null when parsing JavaPlugin");
                 return;
@@ -63,7 +60,7 @@ public class Config {
     }
 
     @FromJson
-    public void fromJson(final JsonReader reader) throws IOException {}
+    public void fromJson(final JsonReader reader, JsonAdapter<? extends Config> classFileAdapter) throws IOException {}
 
 
     @ToJson
