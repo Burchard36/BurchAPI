@@ -14,54 +14,29 @@ public class ClickableItem {
 
     private Material itemMaterial;
     private int itemAmount;
-    private String itemName;
-    private List<Component> itemLore;
+    private final ItemWrapper wrapper;
 
     public GuiClickableItem guiClickableItem;
 
     public ClickableItem(final Material type, final int amount) {
         this.itemMaterial = type;
         this.itemAmount = amount;
+        this.wrapper = new ItemWrapper(new ItemStack(this.itemMaterial, this.itemAmount));
     }
 
     public ClickableItem(final Material type,
                          final int amount,
                          final String itemName,
-                         final List<Component> itemLore) {
+                         final List<String> itemLore) {
         this.itemMaterial = type;
         this.itemAmount = amount;
-        this.itemName = itemName;
-        this.itemLore = itemLore;
+        this.wrapper = new ItemWrapper(new ItemStack(this.itemMaterial, this.itemAmount))
+                .setDisplayName(itemName)
+                .setItemLore(itemLore);
     }
 
-    /**
-     * Sets the material of this item
-     * @param material BukkitMaterial to set item to
-     * @return instance of this class
-     */
-    public ClickableItem setMaterial(final Material material) {
-        this.itemMaterial = material;
-        return this;
-    }
-
-    /**
-     * Sets the material of this item
-     * @param amount Integer amount of this item to be displayed in GUI
-     * @return instance of this class
-     */
-    public ClickableItem setAmount(final int amount) {
-        this.itemAmount = amount;
-        return this;
-    }
-
-    /**
-     * Sets the display name of this item
-     * @param name Name of this item to set it to (String)
-     * @return instance of this class
-     */
-    public ClickableItem setDisplayName(final String name) {
-        this.itemName = name;
-        return this;
+    public ClickableItem(final ItemWrapper itemWrapper) {
+        this.wrapper = itemWrapper;
     }
 
     public ClickableItem onClick(final GuiClickableItem clickableItemAction) {
@@ -70,12 +45,6 @@ public class ClickableItem {
     }
 
     public ItemStack build() {
-        final ItemStack stack = new ItemStack(this.itemMaterial, this.itemAmount);
-        final ItemMeta meta = stack.getItemMeta();
-
-        if (this.itemName != null) meta.displayName(Component.text(this.itemName));
-        if (this.itemLore != null) meta.lore(this.itemLore);
-        stack.setItemMeta(meta);
-        return stack;
+        return this.wrapper.getItemStack();
     }
 }

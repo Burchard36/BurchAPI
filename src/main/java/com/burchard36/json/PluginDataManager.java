@@ -71,6 +71,14 @@ public class PluginDataManager {
     }
 
     /**
+     * Clears a data map from memory by Enum value
+     * @param E Enum key of PluginDataMap to clear
+     */
+    public final void clearMap(final Enum<?> E) {
+        this.dataMap.remove(E);
+    }
+
+    /**
      * Save's all the DataFiles that are running on the plugin :)
      * TODO: Run this async maybe?
      */

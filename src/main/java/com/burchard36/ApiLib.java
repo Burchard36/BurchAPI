@@ -12,6 +12,7 @@ import java.util.List;
 public final class ApiLib implements Api {
 
     public JavaPlugin plugin;
+    public static JavaPlugin INSTANCE;
     private PluginDataManager manager;
 
     /**
@@ -19,6 +20,7 @@ public final class ApiLib implements Api {
      */
     public ApiLib initializeApi(final JavaPlugin plugin) {
         this.plugin = plugin;
+        INSTANCE = plugin;
         this.manager = new PluginDataManager(plugin);
         return this;
     }
