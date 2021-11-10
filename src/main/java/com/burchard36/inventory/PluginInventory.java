@@ -23,6 +23,7 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
+import java.util.List;
 
 
 public class PluginInventory implements Listener {
@@ -125,8 +126,23 @@ public class PluginInventory implements Listener {
         return this;
     }
 
+    /**
+     * Adds clickable items at a slot, gets overridden by addClickableItem(ClickableItem item)
+     * @param slot Slot to add item to
+     * @param item ClickableItem to add
+     * @return instance of this class
+     */
     public PluginInventory addClickableItemAtSlot(final int slot, final ClickableItem item) {
         this.clickableItems.put(slot, item);
+        return this;
+    }
+
+    public PluginInventory addClickableItems(final List<ClickableItem> items) {
+        int x = 0;
+        for (final ClickableItem item : items) {
+            this.clickableItems.put(x, item);
+            x++;
+        }
         return this;
     }
 
