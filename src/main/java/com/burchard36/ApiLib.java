@@ -3,6 +3,7 @@ package com.burchard36;
 import com.burchard36.command.ApiCommand;
 import com.burchard36.json.PluginDataManager;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandMap;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -75,5 +76,14 @@ public final class ApiLib implements Api {
     @Override
     public PluginDataManager getPluginDataManager() {
         return this.manager;
+    }
+
+    /**
+     * Converts a normal string to a formatted one
+     * @param message String to convert
+     * @return Converted String
+     */
+    public static String convert(final String message) {
+        return ChatColor.translateAlternateColorCodes('&', message);
     }
 }
