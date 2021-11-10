@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.burchard36.ApiLib.convert;
+
 public class ItemWrapper {
 
     private final ItemStack itemStack;
@@ -26,7 +28,7 @@ public class ItemWrapper {
     }
 
     public final ItemWrapper setDisplayName(final String displayName) {
-        this.itemMeta.displayName(Component.text(this.of(displayName)));
+        this.itemMeta.displayName(Component.text(convert(displayName)));
         this.itemStack.setItemMeta(this.itemMeta);
         return this;
     }
@@ -34,7 +36,7 @@ public class ItemWrapper {
     public final ItemWrapper setItemLore(final List<String> itemLore) {
         final List<Component> colored = new ArrayList<>();
         itemLore.forEach((loreItem) -> {
-            colored.add(Component.text(this.of(loreItem)));
+            colored.add(Component.text(convert(loreItem)));
         });
         this.itemMeta.lore(colored);
         this.itemStack.setItemMeta(this.itemMeta);
@@ -85,9 +87,5 @@ public class ItemWrapper {
      */
     public final ItemStack getItemStack() {
         return this.itemStack;
-    }
-
-    private String of(final String toConvert) {
-        return ChatColor.translateAlternateColorCodes('&', toConvert);
     }
 }

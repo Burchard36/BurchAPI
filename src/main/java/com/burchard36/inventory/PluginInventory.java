@@ -25,6 +25,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.burchard36.ApiLib.convert;
+
 
 public class PluginInventory implements Listener {
 
@@ -152,9 +154,9 @@ public class PluginInventory implements Listener {
      */
     public void open(final Player player) {
         if (this.inventory == null && this.inventoryHolder == null) {
-            this.inventory = Bukkit.createInventory(null, this.inventorySlots, Component.text(this.inventoryTitle));
+            this.inventory = Bukkit.createInventory(null, this.inventorySlots, Component.text(convert(this.inventoryTitle)));
         } else if (this.inventory == null)
-            this.inventory = Bukkit.createInventory(this.inventoryHolder, this.inventorySlots, Component.text(this.inventoryTitle));
+            this.inventory = Bukkit.createInventory(this.inventoryHolder, this.inventorySlots, Component.text(convert(this.inventoryTitle)));
 
         this.clickableItems.keySet().forEach((slotNum) -> {
             this.inventory.setItem(slotNum, this.clickableItems.get(slotNum).build());
