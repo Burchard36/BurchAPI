@@ -189,7 +189,10 @@ public class PluginInventory implements Listener {
 
         if (this.clickableItems.get(event.getSlot()) != null) {
             final ClickableItem clickableItem = this.clickableItems.get(event.getSlot());
-            clickableItem.guiClickableItem.onItemClick(new ClickableItemAction(event));
+            final ClickableItemAction clickableItemAction = new ClickableItemAction(event);
+            clickableItem.guiClickableItem.onItemClick(clickableItemAction);
+
+            if (clickableItemAction.isCancelled()) event.setCancelled(true);
         }
     }
 }
