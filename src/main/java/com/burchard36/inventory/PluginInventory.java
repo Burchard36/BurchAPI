@@ -43,7 +43,7 @@ public class PluginInventory implements Listener {
     private HashMap<Integer, ClickableItem> clickableItems = new HashMap<>();
 
     public PluginInventory(final int slots, final String name) {
-        this.inventory = Bukkit.createInventory(() -> inventory, slots, Component.text(name));
+        this.inventory = Bukkit.createInventory(() -> inventory, slots, Component.text(convert(name)));
     }
 
     public PluginInventory() {}
