@@ -185,6 +185,8 @@ public class PluginInventory implements Listener {
     public void onClickEvent(final InventoryClickEvent event) {
         if (event.getInventory() != this.inventory) return;
         if (this.clickAction == null) return;
+        if (event.getClickedInventory() == null) return;
+        if (event.getClickedInventory().getHolder() instanceof Player) return;
         this.clickAction.onClick(new InventoryClickAction(event));
 
         if (this.clickableItems.get(event.getSlot()) != null) {
