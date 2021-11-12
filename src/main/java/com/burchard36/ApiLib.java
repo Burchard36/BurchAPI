@@ -1,6 +1,7 @@
 package com.burchard36;
 
 import com.burchard36.command.ApiCommand;
+import com.burchard36.hologram.HologramManager;
 import com.burchard36.json.PluginDataManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -15,6 +16,7 @@ public final class ApiLib implements Api {
     public JavaPlugin plugin;
     public static JavaPlugin INSTANCE;
     private PluginDataManager manager;
+    private HologramManager hologramManager;
 
     /**
      * Initializes the API to a plugin
@@ -23,6 +25,7 @@ public final class ApiLib implements Api {
         this.plugin = plugin;
         INSTANCE = plugin;
         this.manager = new PluginDataManager(plugin);
+        this.hologramManager = new HologramManager();
         return this;
     }
 
@@ -85,5 +88,13 @@ public final class ApiLib implements Api {
      */
     public static String convert(final String message) {
         return ChatColor.translateAlternateColorCodes('&', message);
+    }
+
+    /**
+     * Returns an instance of the Hologram Manager
+     * @return instance of HologramManager
+     */
+    public HologramManager getHologramManager() {
+        return this.hologramManager;
     }
 }
