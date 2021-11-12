@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
 
 import java.util.List;
 import java.util.logging.Level;
@@ -60,6 +61,16 @@ public class Hologram {
         }
 
         this.armorStand.setCustomName(convert(temp));
+        return this;
+    }
+
+    /**
+     * Attaches this ArmorStand to an entity
+     * @param entity Entity to attach ArmorStand to
+     * @return instanceof this class
+     */
+    public final Hologram attach(final Entity entity) {
+        entity.addPassenger(this.armorStand);
         return this;
     }
 
