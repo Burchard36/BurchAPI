@@ -69,20 +69,14 @@ public class Hologram {
      * @return instance of this class
      */
     public final Hologram createHologram() {
-        final Block locationBlock = this.position.getBlock();
-        this.armorStand = this.getArmorStand(locationBlock);
+        this.position.getNearbyEntities(1, 1, 1).forEach((entity) -> {
+            if (entity instanceof ArmorStand) {
+                ArmorStand stand = (ArmorStand) entity;
+                stand.remove();
+            }
+        });
 
-        if (this.armorStand != null) {
-            this.armorStand.remove();
-        }
-
-        locationBlock.setType(Material.ARMOR_STAND);
-        this.armorStand = this.getArmorStand(locationBlock);
-
-        if (this.armorStand == null) {
-            Bukkit.getLogger().log(Level.SEVERE, "Could not get armor stand instance after creating armor stand!");
-            return this;
-        }
+        this.armorStand = this.position.getWorld().spawn(this.position, ArmorStand.class);
 
         this.armorStand.setVisible(false);
         this.armorStand.setCanPickupItems(false);
