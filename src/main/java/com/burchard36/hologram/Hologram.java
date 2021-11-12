@@ -69,7 +69,7 @@ public class Hologram {
      * @return instance of this class
      */
     public final Hologram createHologram() {
-        this.position.getNearbyEntities(1, 1, 1).forEach((entity) -> {
+        this.position.getNearbyEntities(0, 0, 0).forEach((entity) -> {
             if (entity instanceof ArmorStand) {
                 ArmorStand stand = (ArmorStand) entity;
                 stand.remove();
