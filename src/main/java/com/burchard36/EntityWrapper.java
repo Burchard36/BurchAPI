@@ -1,3 +1,5 @@
+package com.burchard36;
+
 import com.burchard36.ApiLib;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
