@@ -81,6 +81,11 @@ public final class ApiLib implements Api {
         return this.manager;
     }
 
+    @Override
+    public boolean isDebug() {
+        return getLib(this.plugin).isDebug();
+    }
+
     /**
      * Converts a normal string to a formatted one
      * @param message String to convert
