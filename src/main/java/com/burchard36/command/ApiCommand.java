@@ -17,6 +17,7 @@ public class ApiCommand extends BukkitCommand {
 
     public ApiCommand(@NotNull String name, @NotNull String description, @NotNull String usageMessage, @NotNull List<String> aliases) {
         super(name, description, usageMessage, aliases);
+
     }
 
     @Override

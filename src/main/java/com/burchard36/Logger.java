@@ -4,7 +4,7 @@ import static com.burchard36.ApiLib.convert;
 
 public class Logger {
 
-    private static final String prefix = "&6Dragon&eSpigot&6Z ";
+    private static final String prefix = "&b&lCloudLiteMC ";
 
     public static void debug(final String message,
                              final Api api) {
