@@ -1,17 +1,17 @@
 package com.burchard36.json;
 
-import com.squareup.moshi.Moshi;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
 
 public class PluginDataManager {
 
-    private final Moshi moshi;
+    private final ObjectMapper mapper;
     public HashMap<Enum<?>, PluginDataMap> dataMap = new HashMap<>();
 
     public PluginDataManager(final JavaPlugin plugin) {
-        this.moshi = new Moshi.Builder().build();
+        this.mapper = new ObjectMapper();
     }
 
     /**
@@ -90,7 +90,7 @@ public class PluginDataManager {
      * Returns the Moshi instance
      * @return instance of Moshi
      */
-    public final Moshi getMoshi() {
-        return this.moshi;
+    public final ObjectMapper getMapper() {
+        return this.mapper;
     }
 }

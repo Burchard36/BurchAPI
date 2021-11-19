@@ -3,13 +3,10 @@ package com.burchard36.json;
 import com.burchard36.Api;
 import com.burchard36.ApiLib;
 import com.burchard36.json.enums.FileFormat;
-import com.burchard36.json.errors.InvalidClassAdapterException;
-import com.squareup.moshi.*;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.logging.Level;
 
 public class JsonDataFile {
@@ -57,14 +54,6 @@ public class JsonDataFile {
     public JsonDataFile load() {
         return this.jsonWriter.getDataFromFile(this);
     }
-
-    @FromJson
-    public void fromJson(final JsonReader reader, JsonAdapter<? extends JsonDataFile> classFileAdapter) throws IOException,
-            InvalidClassAdapterException {}
-
-
-    @ToJson
-    public void toJson(JsonWriter writer) throws IOException {}
 
     public final File getFile() {
         return new File(this.plugin.getDataFolder(), this.configFilePath);

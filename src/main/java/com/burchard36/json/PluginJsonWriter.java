@@ -2,13 +2,7 @@ package com.burchard36.json;
 
 import com.burchard36.Api;
 import com.burchard36.ApiLib;
-import com.burchard36.json.errors.InvalidClassAdapterException;
-import com.squareup.moshi.JsonAdapter;
-import com.squareup.moshi.JsonReader;
-import com.squareup.moshi.JsonWriter;
-import com.squareup.moshi.Moshi;
-import okio.BufferedSource;
-import okio.Okio;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -17,15 +11,15 @@ import java.io.*;
 public class PluginJsonWriter {
 
     private final JavaPlugin plugin;
-    private final Moshi moshi;
+    private final ObjectMapper mapper;
 
     public PluginJsonWriter(final JavaPlugin plugin) {
         this.plugin = plugin;
         final Api apiLib = ApiLib.getLib(plugin);
         if (apiLib != null) {
-            this.moshi = apiLib.getPluginDataManager().getMoshi();
+            this.mapper = apiLib.getPluginDataManager().getMapper();
         } else {
-            this.moshi = null;
+            this.mapper = null;
             Bukkit.getLogger().info("API :: ERROR! :: Error when grabbing moshi variables from Api implementing class," +
                     " as it does not implement Api!");
         }
@@ -42,10 +36,7 @@ public class PluginJsonWriter {
                 }
 
                 if (file.createNewFile()) {
-                    final JsonWriter writer = JsonWriter.of(Okio.buffer(Okio.sink(file)));
-                    writer.setIndent("    ");
-                    config.toJson(writer);
-                    writer.close();
+                    this.mapper.writeValue(file, config);
                 }
             } catch (IOException ex) {
                 ex.printStackTrace();
@@ -61,10 +52,7 @@ public class PluginJsonWriter {
         }
 
         try {
-            final JsonWriter writer = JsonWriter.of(Okio.buffer(Okio.sink(file)));
-            writer.setIndent("    ");
-            config.toJson(writer);
-            writer.close();
+            this.mapper.writeValue(file, config);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -80,14 +68,8 @@ public class PluginJsonWriter {
         }
 
         try {
-            final BufferedSource source = Okio.buffer(Okio.source(file));
-            final JsonReader jsonReader = JsonReader.of(source);
-            final JsonAdapter<? extends JsonDataFile> classFileAdapter = moshi.adapter(config.getClass());
-
-            config.fromJson(jsonReader, classFileAdapter);
-            jsonReader.close();
-            return config;
-        } catch (IOException | InvalidClassAdapterException ex) {
+            return this.mapper.readValue(file, config.getClass());
+        } catch (IOException ex) {
             ex.printStackTrace();
             return null;
         }
