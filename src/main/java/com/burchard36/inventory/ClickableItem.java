@@ -1,12 +1,8 @@
 package com.burchard36.inventory;
 
 import com.burchard36.inventory.interfaces.GuiClickableItem;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.entity.ItemMergeEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
 

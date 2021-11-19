@@ -34,9 +34,8 @@ public final class ApiLib implements Api {
      * @param command Command extending ApiCommand
      * @return instance of ApiLib
      */
-    public ApiLib registerCommand(final ApiCommand command) {
-        this.register(command);
-        return this;
+    public static void registerCommand(final ApiCommand command) {
+        register(command);
     }
 
     /**
@@ -44,16 +43,15 @@ public final class ApiLib implements Api {
      * @param commands List of classes extending ApiCommand
      * @return instance of this class
      */
-    public ApiLib registerCommands(List<ApiCommand> commands) {
-        commands.forEach(this::register);
-        return this;
+    public static void registerCommands(List<ApiCommand> commands) {
+        commands.forEach(ApiLib::register);
     }
 
     /**
      * Injects ApiCommand into Bukkits CommandMap
      * @param command Class extending BukkitCommand to inject into CommandMap
      */
-    private void register(final ApiCommand command) {
+    private static void register(final ApiCommand command) {
         try {
             final Field commandMapField = Bukkit.getServer().getClass().getDeclaredField("commandMap");
             commandMapField.setAccessible(true);
@@ -67,7 +65,7 @@ public final class ApiLib implements Api {
 
     /**
      * Checks if a JavaPlugin implements the Api class, and if it does pull the Api
-     * @param plugin
+     * @param plugin class extending JavaPlugin and
      * @return Returns Api instance if JavaPlugin implements Api class, returns null if it doesnt
      */
     public static Api getLib(final JavaPlugin plugin) {
