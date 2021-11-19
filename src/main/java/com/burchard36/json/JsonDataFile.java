@@ -14,7 +14,7 @@ public class JsonDataFile {
     public transient String configFilePath;
     public transient JavaPlugin plugin;
     public transient Api api;
-    final transient PluginJsonWriter jsonWriter;
+    public final transient PluginJsonWriter jsonWriter;
     public transient FileFormat format;
     public transient PluginDataManager manager;
 
@@ -42,20 +42,5 @@ public class JsonDataFile {
         } else {
             Bukkit.getLogger().log(Level.SEVERE, "JavaPlugin IS NOT EXTENDING 'Api' class!");
         }
-    }
-
-    /***
-     * Saves data to its own file
-     */
-    public void save() {
-        this.jsonWriter.writeDataToFile(this);
-    }
-
-    public JsonDataFile load() {
-        return this.jsonWriter.getDataFromFile(this);
-    }
-
-    public final File getFile() {
-        return new File(this.plugin.getDataFolder(), this.configFilePath);
     }
 }

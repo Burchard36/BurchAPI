@@ -2,6 +2,7 @@ package com.burchard36.json;
 
 import com.burchard36.Api;
 import com.burchard36.ApiLib;
+import com.burchard36.Logger;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -20,7 +21,7 @@ public class PluginJsonWriter {
             this.mapper = apiLib.getPluginDataManager().getMapper();
         } else {
             this.mapper = null;
-            Bukkit.getLogger().info("API :: ERROR! :: Error when grabbing moshi variables from Api implementing class," +
+            Logger.error("API :: ERROR! :: Error when grabbing moshi variables from Api implementing class," +
                     " as it does not implement Api!");
         }
     }

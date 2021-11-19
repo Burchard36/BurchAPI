@@ -57,7 +57,7 @@ public class PluginDataManager {
      * @param dataFile JsonDataFile class to load
      */
     public final void loadDataFileToMap(final Enum<?> toMap, final Enum<?> usingKey, final JsonDataFile dataFile) {
-        this.dataMap.get(toMap).loadDataFile(usingKey, dataFile.load());
+        this.dataMap.get(toMap).loadDataFile(usingKey, dataFile);
     }
 
     /**
@@ -67,7 +67,7 @@ public class PluginDataManager {
      * @param dataFile JsonDataFile class to load
      */
     public final void loadDataFileToMap(final Enum<?> toMap, final String usingKey, final JsonDataFile dataFile) {
-        this.dataMap.get(toMap).loadDataFile(usingKey, dataFile.load());
+        this.dataMap.get(toMap).loadDataFile(usingKey, dataFile);
     }
 
     /**
