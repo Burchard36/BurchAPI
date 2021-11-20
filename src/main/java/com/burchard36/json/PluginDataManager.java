@@ -1,19 +1,20 @@
 package com.burchard36.json;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
 
 public class PluginDataManager {
 
-    private final ObjectMapper mapper;
+    private final Gson gson;
     private final PluginJsonWriter jsonWriter;
     public HashMap<Enum<?>, PluginDataMap> dataMap = new HashMap<>();
 
     public PluginDataManager(final JavaPlugin plugin) {
-        this.mapper = new ObjectMapper();
-        this.jsonWriter = new PluginJsonWriter(this.mapper);
+        this.gson = new GsonBuilder().create();
+        this.jsonWriter = new PluginJsonWriter(this.gson);
     }
 
     /**
@@ -79,11 +80,11 @@ public class PluginDataManager {
     }
 
     /**
-     * Returns the Jackson instance
-     * @return instance of Jackson
+     * Returns the Gson instance
+     * @return instance of Gson
      */
-    public final ObjectMapper getMapper() {
-        return this.mapper;
+    public final Gson getGson() {
+        return this.gson;
     }
 
     /**
