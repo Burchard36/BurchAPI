@@ -13,7 +13,7 @@ public class PluginDataManager {
 
     public PluginDataManager(final JavaPlugin plugin) {
         this.mapper = new ObjectMapper();
-        this.jsonWriter = new PluginJsonWriter(plugin);
+        this.jsonWriter = new PluginJsonWriter(this.mapper);
     }
 
     /**

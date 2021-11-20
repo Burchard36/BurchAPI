@@ -75,11 +75,6 @@ public final class ApiLib implements Api {
     }
 
     @Override
-    public PluginDataManager getPluginDataManager() {
-        return this.manager;
-    }
-
-    @Override
     public boolean isDebug() {
         return getLib(this.plugin).isDebug();
     }
@@ -99,5 +94,13 @@ public final class ApiLib implements Api {
      */
     public HologramManager getHologramManager() {
         return this.hologramManager;
+    }
+
+    /**
+     * Returns an instance of the PluginDataManager
+     * @return insstance of PluginDataManager
+     */
+    public PluginDataManager getPluginDataManager() {
+        return this.manager;
     }
 }
