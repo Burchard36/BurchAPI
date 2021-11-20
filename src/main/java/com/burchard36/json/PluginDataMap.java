@@ -18,12 +18,12 @@ public class PluginDataMap {
      * @param config Config to set
      */
     public PluginDataMap loadDataFile(final Enum<?> E, final JsonDataFile config) {
-        this.dataMap.putIfAbsent(E, config.load());
+        this.dataMap.putIfAbsent(E, config);
         return this;
     }
 
     public PluginDataMap loadDataFile(final String E, final JsonDataFile dataFile) {
-        this.dataMapByStrings.putIfAbsent(E, dataFile.load());
+        this.dataMapByStrings.putIfAbsent(E, dataFile);
         return this;
     }
 
@@ -65,8 +65,8 @@ public class PluginDataMap {
      * Saves all the objects inside the HashMaps
      */
     public final void saveAll() {
-        this.getDataMap().values().forEach(JsonDataFile::save);
-        this.getDataMapByStrings().values().forEach(JsonDataFile::save);
+        //this.getDataMap().values().forEach(JsonDataFile::save);
+        //this.getDataMapByStrings().values().forEach(JsonDataFile::save);
     }
 
     /**
@@ -76,8 +76,6 @@ public class PluginDataMap {
     public void reloadDataFile(final Enum<?> E) {
         final JsonDataFile dataFile = this.getDataFile(E);
         if (dataFile == null) return;
-        dataFile.save();
-        dataFile.load();
     }
 
     /**
@@ -87,7 +85,5 @@ public class PluginDataMap {
     public void reloadDataFile(final String E) {
         final JsonDataFile dataFile = this.getDataFile(E);
         if (dataFile == null) return;
-        dataFile.save();
-        dataFile.load();
     }
 }

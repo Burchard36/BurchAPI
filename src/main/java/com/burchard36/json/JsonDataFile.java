@@ -43,4 +43,8 @@ public class JsonDataFile {
             Bukkit.getLogger().log(Level.SEVERE, "JavaPlugin IS NOT EXTENDING 'Api' class!");
         }
     }
+
+    public final File getFile() {
+        return new File(this.plugin.getDataFolder(), this.configFilePath);
+    }
 }
