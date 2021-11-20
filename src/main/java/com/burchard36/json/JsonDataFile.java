@@ -7,9 +7,9 @@ import java.io.File;
 
 public class JsonDataFile {
 
-    public JavaPlugin plugin;
-    public FileFormat format;
-    private final File file;
+    public transient JavaPlugin plugin;
+    public transient FileFormat format;
+    private transient final File file;
 
     public JsonDataFile(final JavaPlugin plugin,
                         String pathToFile,
