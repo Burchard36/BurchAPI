@@ -8,10 +8,12 @@ import java.util.HashMap;
 public class PluginDataManager {
 
     private final ObjectMapper mapper;
+    private final PluginJsonWriter jsonWriter;
     public HashMap<Enum<?>, PluginDataMap> dataMap = new HashMap<>();
 
     public PluginDataManager(final JavaPlugin plugin) {
         this.mapper = new ObjectMapper();
+        this.jsonWriter = new PluginJsonWriter(plugin);
     }
 
     /**
@@ -26,10 +28,10 @@ public class PluginDataManager {
     /**
      * Grabs a Config file from a Map
      * @param fromMap Enum that's holding he PluginDataMap
-     * @param usingKey Enum that hold the Config file in PluginData Map
+     * @param usingKey String that hold the Config file in PluginData Map
      * @return instance of a Config file
      */
-    public final JsonDataFile getDataFileFromMap(final Enum<?> fromMap, final Enum<?> usingKey) {
+    public final JsonDataFile getDataFileFromMap(final Enum<?> fromMap, final String usingKey) {
         return this.dataMap.get(fromMap).getDataFile(usingKey);
     }
 
@@ -51,23 +53,13 @@ public class PluginDataManager {
     }
 
     /**
-     * Loads a Data File  to a PluginDataMaps HashMap
-     * @param toMap Enum key that points to PluginDataMap
-     * @param usingKey Key to set the Data File to
-     * @param dataFile JsonDataFile class to load
-     */
-    public final void loadDataFileToMap(final Enum<?> toMap, final Enum<?> usingKey, final JsonDataFile dataFile) {
-        this.dataMap.get(toMap).loadDataFile(usingKey, dataFile);
-    }
-
-    /**
      * Loads a Data File to a PluginDataMaps HashMap
      * @param toMap String key that points to PluginDataMap
      * @param usingKey Key to set the Data File to
      * @param dataFile JsonDataFile class to load
      */
     public final void loadDataFileToMap(final Enum<?> toMap, final String usingKey, final JsonDataFile dataFile) {
-        this.dataMap.get(toMap).loadDataFile(usingKey, dataFile);
+        this.dataMap.get(toMap).loadDataFile(usingKey, this.jsonWriter.getDataFromFile(dataFile));
     }
 
     /**
@@ -87,10 +79,18 @@ public class PluginDataManager {
     }
 
     /**
-     * Returns the Moshi instance
-     * @return instance of Moshi
+     * Returns the Jackson instance
+     * @return instance of Jackson
      */
     public final ObjectMapper getMapper() {
         return this.mapper;
+    }
+
+    /**
+     * Returns the PluginJsonWriter instance for writing data to Json files
+     * @return instance of PluginJsonWriter
+     */
+    public final PluginJsonWriter getJsonWriter() {
+        return this.jsonWriter;
     }
 }

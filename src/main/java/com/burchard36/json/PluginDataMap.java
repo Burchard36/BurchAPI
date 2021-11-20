@@ -4,36 +4,21 @@ import java.util.HashMap;
 
 public class PluginDataMap {
 
-    private final HashMap<Enum<?>, JsonDataFile> dataMap;
     private final HashMap<String, JsonDataFile> dataMapByStrings;
+    private final PluginJsonWriter writer;
 
-    public PluginDataMap() {
-        this.dataMap = new HashMap<>();
+    public PluginDataMap(final PluginJsonWriter writer) {
+        this.writer = writer;
         this.dataMapByStrings = new HashMap<>();
     }
 
     /**
-     * Loads the Config file into the map while initializing the plugins loaf() method
-     * @param E Enum to set as Key for Config
-     * @param config Config to set
+     * Loads the Config file into the map while loading its data from file
+     * @param E String to set as Key for Config
+     * @param dataFile JsonDataFile to set
      */
-    public PluginDataMap loadDataFile(final Enum<?> E, final JsonDataFile config) {
-        this.dataMap.putIfAbsent(E, config);
-        return this;
-    }
-
-    public PluginDataMap loadDataFile(final String E, final JsonDataFile dataFile) {
-        this.dataMapByStrings.putIfAbsent(E, dataFile);
-        return this;
-    }
-
-    /**
-     * Gets a JsonDataFile thats cached into HashMap
-     * @param E Enum field to use
-     * @return JsonDataFile from HashMap
-     */
-    public JsonDataFile getDataFile(final Enum<?> E) {
-        return this.dataMap.get(E);
+    public void loadDataFile(final String E, final JsonDataFile dataFile) {
+        this.dataMapByStrings.putIfAbsent(E, this.writer.getDataFromFile(dataFile));
     }
 
     /**
@@ -43,14 +28,6 @@ public class PluginDataMap {
      */
     public JsonDataFile getDataFile(final String E) {
         return this.dataMapByStrings.get(E);
-    }
-
-    /**
-     * Returns the DataMap that organized by Enum objects
-     * @return HashMap of JsonDataFile's that were loaded by Enums
-     */
-    public final HashMap<Enum<?>, JsonDataFile> getDataMap() {
-        return this.dataMap;
     }
 
     /**
@@ -65,17 +42,7 @@ public class PluginDataMap {
      * Saves all the objects inside the HashMaps
      */
     public final void saveAll() {
-        //this.getDataMap().values().forEach(JsonDataFile::save);
-        //this.getDataMapByStrings().values().forEach(JsonDataFile::save);
-    }
-
-    /**
-     * Reloads a Config file
-     * @param E Enum class field to use
-     */
-    public void reloadDataFile(final Enum<?> E) {
-        final JsonDataFile dataFile = this.getDataFile(E);
-        if (dataFile == null) return;
+        this.getDataMapByStrings().values().forEach(this.writer::writeDataToFile);
     }
 
     /**
@@ -85,5 +52,11 @@ public class PluginDataMap {
     public void reloadDataFile(final String E) {
         final JsonDataFile dataFile = this.getDataFile(E);
         if (dataFile == null) return;
+        this.getDataMapByStrings().replace(E, this.reload(dataFile));
+    }
+
+    private JsonDataFile reload(final JsonDataFile dataFile) {
+        this.writer.writeDataToFile(dataFile);
+        return this.writer.getDataFromFile(dataFile);
     }
 }
