@@ -37,6 +37,11 @@ public class Hologram {
         return this;
     }
 
+    public final Hologram setPosition(final Location location) {
+        this.position = location;
+        return this;
+    }
+
     /**
      * Updates the Holograms Text
      * @param text text to update hologram with
@@ -108,7 +113,7 @@ public class Hologram {
      * @param block Block to check
      * @return true if Block is ArmorStand
      */
-    private boolean isArmorStand(final Block block) {
+    public boolean isArmorStand(final Block block) {
         return block.getType() == Material.ARMOR_STAND;
     }
 
@@ -118,7 +123,7 @@ public class Hologram {
      * @param block Block to get ArmorStand from
      * @return ArmorStand if exists, null if it's not an armor stand
      */
-    private ArmorStand getArmorStand(final Block block) {
+    public ArmorStand getArmorStand(final Block block) {
         if (!(block.getState() instanceof ArmorStand)) return null;
         return (ArmorStand) block.getState();
     }
