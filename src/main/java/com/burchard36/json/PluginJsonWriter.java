@@ -12,23 +12,19 @@ import java.io.*;
 public class PluginJsonWriter {
 
     private final JavaPlugin plugin;
-    private final ObjectMapper mapper;
+    private ObjectMapper mapper = null;
 
     public PluginJsonWriter(final JavaPlugin plugin) {
         this.plugin = plugin;
         final Api apiLib = ApiLib.getLib(plugin);
         if (apiLib != null) {
             this.mapper = apiLib.getPluginDataManager().getMapper();
-        } else {
-            this.mapper = null;
-            Logger.error("API :: ERROR! :: Error when grabbing moshi variables from Api implementing class," +
+        } else Logger.error("API :: ERROR! :: Error when grabbing moshi variables from Api implementing class," +
                     " as it does not implement Api!");
-        }
     }
 
     public File createFile(final JsonDataFile config) {
-        final String configPath = config.configFilePath;
-        final File file = new File(this.plugin.getDataFolder(), configPath + ".json");
+        final File file = config.getFile();
         if (!file.exists()) {
             try {
 
@@ -43,7 +39,7 @@ public class PluginJsonWriter {
                 ex.printStackTrace();
             }
         }
-        return new File(this.plugin.getDataFolder(), configPath + ".json");
+        return config.getFile();
     }
 
     public void writeDataToFile(final JsonDataFile config) {
@@ -61,12 +57,8 @@ public class PluginJsonWriter {
     }
 
     public JsonDataFile getDataFromFile(final JsonDataFile config) {
-        final String configPath = config.configFilePath;
-        File file = new File(this.plugin.getDataFolder(), configPath + ".json");
-
-        if (!file.exists()) {
-            file = this.createFile(config);
-        }
+        File file = config.getFile();
+        if (!file.exists()) file = this.createFile(config);
 
         try {
             return this.mapper.readValue(file, config.getClass());
