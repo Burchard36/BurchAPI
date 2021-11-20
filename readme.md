@@ -1,6 +1,5 @@
 ## Burch API
-
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/a1f16628d64e458f9fd1e91b2c5f2a2a)](https://www.codacy.com/gh/Burchard36/BurchAPI/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Burchard36/BurchAPI&amp;utm_campaign=Badge_Grade)
+![Badge](https://api.codiga.io/project/29792/score/svg)
 
 *A library for Spigot/Paper Plugins!*
 
