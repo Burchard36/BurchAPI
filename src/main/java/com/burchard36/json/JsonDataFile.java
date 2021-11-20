@@ -1,15 +1,19 @@
 package com.burchard36.json;
 
 import com.burchard36.json.enums.FileFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 
 public class JsonDataFile {
 
-    public transient JavaPlugin plugin;
-    public transient FileFormat format;
-    private final transient File file;
+    @JsonIgnore
+    public JavaPlugin plugin;
+    @JsonIgnore
+    public FileFormat format;
+    @JsonIgnore
+    private final File file;
 
     public JsonDataFile(final JavaPlugin plugin,
                         String pathToFile,
@@ -22,6 +26,7 @@ public class JsonDataFile {
         this.file = new File(this.plugin.getDataFolder(), pathToFile);
     }
 
+    @JsonIgnore
     public final File getFile() {
         return this.file;
     }
