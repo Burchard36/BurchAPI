@@ -19,7 +19,12 @@ public record PluginJsonWriter(Gson gson) {
                     }
                 if (file.createNewFile()) {
                     Logger.log("&aAPI :: Successfully created a DataFile!");
-                    this.gson.toJson(dataFile, new FileWriter(file.getPath()));
+                    String jsonString = this.gson.toJson(dataFile);
+                    Logger.log(jsonString);
+                    Writer writer = new FileWriter(file);
+                    writer.append(jsonString);
+                    writer.close();
+                    Logger.log("&aAPI :: Successfully wrote default data for DataFile");
                 }
             } catch (IOException ex) {
                 ex.printStackTrace();
