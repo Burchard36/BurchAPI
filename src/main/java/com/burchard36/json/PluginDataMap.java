@@ -18,7 +18,14 @@ public class PluginDataMap {
      * @param dataFile JsonDataFile to set
      */
     public void loadDataFile(final String E, final JsonDataFile dataFile) {
-        this.dataMapByStrings.putIfAbsent(E, this.writer.getDataFromFile(dataFile));
+
+        JsonDataFile data = this.writer.getDataFromFile(dataFile.getFile(), dataFile.getClass());
+        if (data == null) {
+            this.writer.createFile(dataFile);
+            data = this.writer.getDataFromFile(dataFile.getFile(), dataFile.getClass());
+        }
+
+        this.dataMapByStrings.putIfAbsent(E, data);
     }
 
     /**
@@ -57,6 +64,6 @@ public class PluginDataMap {
 
     private JsonDataFile reload(final JsonDataFile dataFile) {
         this.writer.writeDataToFile(dataFile);
-        return this.writer.getDataFromFile(dataFile);
+        return this.writer.getDataFromFile(dataFile.getFile(), dataFile.getClass());
     }
 }

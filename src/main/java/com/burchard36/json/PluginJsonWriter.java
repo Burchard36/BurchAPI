@@ -9,19 +9,19 @@ import java.nio.file.Paths;
 
 public record PluginJsonWriter(Gson gson) {
 
-    public File createFile(final JsonDataFile config) {
-        final File file = config.getFile();
+    public File createFile(final JsonDataFile dataFile) {
+        final File file = dataFile.getFile();
         if (!file.exists()) {
             try {
                 if (!file.getParentFile().exists())
                     if (file.getParentFile().mkdirs())
                         Logger.log("&aAPI :: Successfully created directories");
-                if (file.createNewFile()) this.gson.toJson(config, new FileWriter(file));
+                if (file.createNewFile()) this.gson.toJson(dataFile, new FileWriter(file));
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
         }
-        return config.getFile();
+        return dataFile.getFile();
     }
 
     public void writeDataToFile(final JsonDataFile config) {
@@ -36,12 +36,10 @@ public record PluginJsonWriter(Gson gson) {
 
     }
 
-    public JsonDataFile getDataFromFile(final JsonDataFile config) {
-        File file = config.getFile();
-        if (!file.exists()) file = this.createFile(config);
-
+    public JsonDataFile getDataFromFile(final File file, Class<? extends JsonDataFile> clazz) {
+        if (!file.exists()) return null;
         try {
-            return this.gson.fromJson(Files.newBufferedReader(Paths.get(file.toURI())), config.getClass());
+            return this.gson.fromJson(Files.newBufferedReader(Paths.get(file.toURI())), clazz);
         } catch (IOException ex) {
             ex.printStackTrace();
             return null;
