@@ -13,7 +13,7 @@ public class PluginDataManager {
     public HashMap<Enum<?>, PluginDataMap> dataMap = new HashMap<>();
 
     public PluginDataManager(final JavaPlugin plugin) {
-        this.gson = new GsonBuilder().create();
+        this.gson = new GsonBuilder().setPrettyPrinting().create();
         this.jsonWriter = new PluginJsonWriter(this.gson);
     }
 
