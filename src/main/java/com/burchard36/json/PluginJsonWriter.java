@@ -14,14 +14,18 @@ public record PluginJsonWriter(Gson gson) {
         if (!file.exists()) {
             try {
                 if (!file.getParentFile().exists())
-                    if (file.getParentFile().mkdirs())
+                    if (file.getParentFile().mkdirs()){
                         Logger.log("&aAPI :: Successfully created directories");
-                if (file.createNewFile()) this.gson.toJson(dataFile, new FileWriter(file));
+                    }
+                if (file.createNewFile()) {
+                    Logger.log("&aAPI :: Successfully created a DataFile!");
+                    this.gson.toJson(dataFile, new FileWriter(file.getPath()));
+                }
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
         }
-        return dataFile.getFile();
+        return file;
     }
 
     public void writeDataToFile(final JsonDataFile config) {
