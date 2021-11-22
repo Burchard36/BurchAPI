@@ -20,7 +20,6 @@ public record PluginJsonWriter(Gson gson) {
                 if (file.createNewFile()) {
                     Logger.log("&aAPI :: Successfully created a DataFile!");
                     String jsonString = this.gson.toJson(dataFile);
-                    Logger.log(jsonString);
                     Writer writer = new FileWriter(file);
                     writer.append(jsonString);
                     writer.close();
