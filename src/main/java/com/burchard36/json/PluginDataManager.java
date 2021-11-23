@@ -37,6 +37,14 @@ public class PluginDataManager {
     }
 
     /**
+     * Creates a new PluginDataMap instance
+     * @return new instance of PluginDataMap
+     */
+    public final PluginDataMap createNewMap() {
+        return new PluginDataMap(this.jsonWriter);
+    }
+
+    /**
      * Gets a PluginDataMap
      * @param toGet Enum key pointing to the PluginDataMap you want to load
      * @return instance of PluginDataMap
