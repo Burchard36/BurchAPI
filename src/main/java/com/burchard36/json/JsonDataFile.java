@@ -1,6 +1,5 @@
 package com.burchard36.json;
 
-import com.burchard36.json.enums.FileFormat;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -8,14 +7,11 @@ import java.io.File;
 public class JsonDataFile {
 
     public transient JavaPlugin plugin;
-    public transient FileFormat format;
     private transient final File file;
 
     public JsonDataFile(final JavaPlugin plugin,
-                        String pathToFile,
-                        final FileFormat format) {
+                        String pathToFile) {
         this.plugin = plugin;
-        this.format = format;
 
         if (!pathToFile.startsWith("/")) pathToFile = "/" + pathToFile;
 
