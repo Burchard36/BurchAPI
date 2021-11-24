@@ -147,6 +147,13 @@ public class PluginInventory implements Listener {
         return this;
     }
 
+    public PluginInventory fillWith(final List<ClickableItem> items) {
+        for (int x = 0; x <= (this.inventory.getSize() - 1); x++) {
+            this.addClickableItemAtSlot(x, items.get(x));
+        }
+        return this;
+    }
+
     /**
      * Opens a inventory to a Player
      * @param player Player to open inventory to
