@@ -147,9 +147,14 @@ public class PluginInventory implements Listener {
         return this;
     }
 
-    public PluginInventory fillWith(final List<ClickableItem> items) {
+    /**
+     * Fills an inventory with a specific ClickableItem
+     * @param item ClickableItem to click
+     * @return instance of this class
+     */
+    public PluginInventory fillWith(ClickableItem item) {
         for (int x = 0; x <= (this.inventory.getSize() - 1); x++) {
-            this.addClickableItemAtSlot(x, items.get(x));
+            this.addClickableItemAtSlot(x, item);
         }
         return this;
     }
