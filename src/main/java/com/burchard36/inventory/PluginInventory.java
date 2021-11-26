@@ -152,7 +152,7 @@ public class PluginInventory implements Listener {
      * @param item ClickableItem to click
      * @return instance of this class
      */
-    public PluginInventory fillWith(ClickableItem item) {
+    public PluginInventory fillWith(final ClickableItem item) {
         for (int x = 0; x <= (this.inventory.getSize() - 1); x++) {
             this.addClickableItemAtSlot(x, item);
         }
