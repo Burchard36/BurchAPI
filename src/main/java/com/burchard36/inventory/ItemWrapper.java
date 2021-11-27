@@ -71,6 +71,7 @@ public class ItemWrapper {
         final PersistentDataContainer dataContainer = this.itemMeta.getPersistentDataContainer();
         final NamespacedKey nameKey = new NamespacedKey(ApiLib.INSTANCE, key);
         dataContainer.set(nameKey, new PersistentBooleanType(), value);
+        return this;
     }
 
     public final String getStringDataValue(final String key) {
