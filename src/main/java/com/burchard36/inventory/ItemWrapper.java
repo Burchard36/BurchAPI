@@ -2,6 +2,7 @@ package com.burchard36.inventory;
 
 import com.burchard36.ApiLib;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
@@ -18,13 +19,13 @@ import static com.burchard36.ApiLib.convert;
 public class ItemWrapper {
 
     private final ItemStack itemStack;
-    private final ItemMeta itemMeta;
+    private ItemMeta itemMeta;
     private String displayName = "";
     private List<String> lore = new ArrayList<>();
 
     public ItemWrapper(final ItemStack stack) {
         this.itemStack = stack;
-        this.itemMeta = this.itemStack.getItemMeta();
+        if (stack.getType() != Material.AIR) this.itemMeta = this.itemStack.getItemMeta();
         this.displayName = this.itemStack.getI18NDisplayName();
     }
 
@@ -37,6 +38,7 @@ public class ItemWrapper {
     }
 
     public final ItemWrapper setDisplayName(final String displayName) {
+        if (this.itemMeta == null) return this;
         this.displayName = displayName;
         this.itemMeta.displayName(Component.text(convert(displayName)));
         this.itemStack.setItemMeta(this.itemMeta);
@@ -44,6 +46,7 @@ public class ItemWrapper {
     }
 
     public final ItemWrapper setItemLore(final List<String> itemLore) {
+        if (this.itemMeta == null) return this;
         this.lore = itemLore;
         final List<Component> colored = new ArrayList<>();
         itemLore.forEach((loreItem) -> {
@@ -65,6 +68,7 @@ public class ItemWrapper {
     }
 
     public final ItemWrapper addDataString(final String key, final String value) {
+        if (this.itemMeta == null) return this;
         final PersistentDataContainer dataContainer = this.itemMeta.getPersistentDataContainer();
         final NamespacedKey nameKey = new NamespacedKey(ApiLib.INSTANCE, key);
         dataContainer.set(nameKey, PersistentDataType.STRING, value);
@@ -73,6 +77,7 @@ public class ItemWrapper {
     }
 
     public final ItemWrapper addDataInteger(final String key, final int value) {
+        if (this.itemMeta == null) return this;
         final PersistentDataContainer dataContainer = this.itemMeta.getPersistentDataContainer();
         final NamespacedKey nameKey = new NamespacedKey(ApiLib.INSTANCE, key);
         dataContainer.set(nameKey, PersistentDataType.INTEGER, value);
@@ -81,12 +86,14 @@ public class ItemWrapper {
     }
 
     public final String getStringDataValue(final String key) {
+        if (this.itemMeta == null) return null;
         final PersistentDataContainer dataContainer = this.itemMeta.getPersistentDataContainer();
         final NamespacedKey nameKey = new NamespacedKey(ApiLib.INSTANCE, key);
         return dataContainer.get(nameKey, PersistentDataType.STRING);
     }
 
     public final Integer getIntegerDataValue(final String key) {
+        if (this.itemMeta == null) return null;
         final PersistentDataContainer dataContainer = this.itemMeta.getPersistentDataContainer();
         final NamespacedKey nameKey = new NamespacedKey(ApiLib.INSTANCE, key);
         return dataContainer.get(nameKey, PersistentDataType.INTEGER);
