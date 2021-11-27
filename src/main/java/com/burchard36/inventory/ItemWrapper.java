@@ -19,19 +19,31 @@ public class ItemWrapper {
 
     private final ItemStack itemStack;
     private final ItemMeta itemMeta;
+    private String displayName = "";
+    private List<String> lore = new ArrayList<>();
 
     public ItemWrapper(final ItemStack stack) {
         this.itemStack = stack;
         this.itemMeta = this.itemStack.getItemMeta();
     }
 
+    public final String getDisplayName() {
+        return this.displayName;
+    }
+
+    public final List<String> getLore() {
+        return this.lore;
+    }
+
     public final ItemWrapper setDisplayName(final String displayName) {
+        this.displayName = displayName;
         this.itemMeta.displayName(Component.text(convert(displayName)));
         this.itemStack.setItemMeta(this.itemMeta);
         return this;
     }
 
     public final ItemWrapper setItemLore(final List<String> itemLore) {
+        this.lore = itemLore;
         final List<Component> colored = new ArrayList<>();
         itemLore.forEach((loreItem) -> {
             colored.add(Component.text(convert(loreItem)));
@@ -67,13 +79,6 @@ public class ItemWrapper {
         return this;
     }
 
-    public final ItemWrapper addDataBoolean(final String key, final boolean value) {
-        final PersistentDataContainer dataContainer = this.itemMeta.getPersistentDataContainer();
-        final NamespacedKey nameKey = new NamespacedKey(ApiLib.INSTANCE, key);
-        dataContainer.set(nameKey, new PersistentBooleanType(), value);
-        return this;
-    }
-
     public final String getStringDataValue(final String key) {
         final PersistentDataContainer dataContainer = this.itemMeta.getPersistentDataContainer();
         final NamespacedKey nameKey = new NamespacedKey(ApiLib.INSTANCE, key);
@@ -84,12 +89,6 @@ public class ItemWrapper {
         final PersistentDataContainer dataContainer = this.itemMeta.getPersistentDataContainer();
         final NamespacedKey nameKey = new NamespacedKey(ApiLib.INSTANCE, key);
         return dataContainer.get(nameKey, PersistentDataType.INTEGER);
-    }
-
-    public final Boolean getBooleanDataValue(final String key) {
-        final PersistentDataContainer dataContainer = this.itemMeta.getPersistentDataContainer();
-        final NamespacedKey nameKey = new NamespacedKey(ApiLib.INSTANCE, key);
-        return dataContainer.get(nameKey, new PersistentBooleanType());
     }
 
     /**
