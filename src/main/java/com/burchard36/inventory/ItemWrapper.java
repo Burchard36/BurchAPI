@@ -20,19 +20,26 @@ public class ItemWrapper {
 
     private final ItemStack itemStack;
     private ItemMeta itemMeta;
-    private String displayName = "";
-    private List<String> lore = new ArrayList<>();
+    private String displayName = null;
+    private List<String> lore = null;
 
     public ItemWrapper(final ItemStack stack) {
         this.itemStack = stack;
         if (stack.getType() != Material.AIR) this.itemMeta = this.itemStack.getItemMeta();
-        this.displayName = this.itemStack.getI18NDisplayName();
     }
 
+    /**
+     * Might be null
+     * @return String of display name, or null
+     */
     public final String getDisplayName() {
         return this.displayName;
     }
 
+    /**
+     * Might be null
+     * @return List of Strings for the lore, or null
+     */
     public final List<String> getLore() {
         return this.lore;
     }
