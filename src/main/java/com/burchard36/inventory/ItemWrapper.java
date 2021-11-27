@@ -25,6 +25,7 @@ public class ItemWrapper {
     public ItemWrapper(final ItemStack stack) {
         this.itemStack = stack;
         this.itemMeta = this.itemStack.getItemMeta();
+        this.displayName = this.itemStack.getI18NDisplayName();
     }
 
     public final String getDisplayName() {
