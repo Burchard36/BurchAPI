@@ -26,6 +26,7 @@ public final class ApiLib implements Api {
         INSTANCE = plugin;
         this.manager = new PluginDataManager(plugin);
         this.hologramManager = new HologramManager();
+        Logger.init(getLib(this.plugin));
         return this;
     }
 
@@ -77,6 +78,11 @@ public final class ApiLib implements Api {
     @Override
     public boolean isDebug() {
         return getLib(this.plugin).isDebug();
+    }
+
+    @Override
+    public String loggerPrefix() {
+        return getLib(this.plugin).loggerPrefix();
     }
 
     /**

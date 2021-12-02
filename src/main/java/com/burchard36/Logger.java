@@ -6,7 +6,11 @@ import static com.burchard36.ApiLib.convert;
 
 public class Logger {
 
-    private static final String prefix = "&b&lCloudLiteMC ";
+    private static String prefix = "&b&lBurchAPI ";
+
+    public static void init(final Api api) {
+        prefix = api.loggerPrefix();
+    }
 
     public static void debug(final String message,
                              final Api api) {
