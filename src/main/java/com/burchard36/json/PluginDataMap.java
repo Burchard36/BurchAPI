@@ -1,5 +1,6 @@
 package com.burchard36.json;
 
+import java.util.Collection;
 import java.util.HashMap;
 
 public class PluginDataMap {
@@ -50,6 +51,14 @@ public class PluginDataMap {
      */
     public final void saveAll() {
         this.getDataMapByStrings().values().forEach(this.writer::writeDataToFile);
+    }
+
+    /**
+     * gets all the data files in this HashMap
+     * @return Collection of JsonDataFiles stores in this PluginDataMap
+     */
+    public final Collection<JsonDataFile> getDatFiles() {
+        return this.dataMapByStrings.values();
     }
 
     /**
