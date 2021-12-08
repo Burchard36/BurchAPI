@@ -64,6 +64,13 @@ public class ItemWrapper {
         return this;
     }
 
+    public final ItemWrapper setModelData(final int data) {
+        if (this.itemMeta == null) return this;
+        this.itemMeta.setCustomModelData(data);
+        this.itemStack.setItemMeta(this.itemMeta);
+        return this;
+    }
+
     public final ItemWrapper addEnchantment(final Enchantment enchantment, final int level) {
         this.itemStack.addEnchantment(enchantment, level);
         return this;
