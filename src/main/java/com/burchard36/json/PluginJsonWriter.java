@@ -2,6 +2,7 @@ package com.burchard36.json;
 
 import com.burchard36.Logger;
 import com.google.gson.Gson;
+import com.google.gson.stream.JsonWriter;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -37,7 +38,10 @@ public record PluginJsonWriter(Gson gson) {
         if (!file.exists()) file = this.createFile(config);
 
         try {
-            this.gson.toJson(config, new FileWriter(file));
+            final Writer writer = new FileWriter(file);
+            this.gson.toJson(config, writer);
+            writer.flush();
+            writer.close();
         } catch (IOException ex) {
             ex.printStackTrace();
         }
