@@ -1,5 +1,7 @@
 package com.burchard36.json;
 
+import com.burchard36.Logger;
+
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -24,8 +26,12 @@ public class PluginDataMap {
         if (data == null) {
             this.writer.createFile(dataFile);
             data = this.writer.getDataFromFile(dataFile.getFile(), dataFile.getClass());
+            if (data == null) {
+                Logger.error("YO DUDE!! This file doesnt exists! This is an API Level error, you seriously fucked up or you need to contact the developer because maybe i fucked up. Sorry!");
+                return;
+            }
         }
-
+        data.file = dataFile.getFile(); // We need to set the file again because Gson doesnt call the constructor to get the File
         this.dataMapByStrings.putIfAbsent(E, data);
     }
 
