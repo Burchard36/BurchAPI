@@ -16,6 +16,18 @@ public class PluginDataMap {
     }
 
     /**
+     * Deletes a JsoNDataFile and clears it from the PluginDataMap
+     * @param E key to use to delete file
+     */
+    public void deleteDataFile(final String E) {
+        final JsonDataFile file = this.getDataFile(E);
+
+        if (file.getFile().delete()) {
+            this.dataMapByStrings.remove(E);
+        } else Logger.error("Error when deleting files! Please look into this (Did you reload a plugin?? This is an API level error!!!!!!)");
+    }
+
+    /**
      * Loads the Config file into the map while loading its data from file
      * @param E String to set as Key for Config
      * @param dataFile JsonDataFile to set
