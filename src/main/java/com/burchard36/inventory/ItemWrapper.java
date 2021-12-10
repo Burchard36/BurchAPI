@@ -85,6 +85,7 @@ public class ItemWrapper {
         if (this.itemMeta == null) return this;
         final PersistentDataContainer dataContainer = this.itemMeta.getPersistentDataContainer();
         final NamespacedKey nameKey = new NamespacedKey(ApiLib.INSTANCE, key);
+        if (this.hasDataString(key)) return this;
         dataContainer.set(nameKey, PersistentDataType.STRING, value);
         this.itemStack.setItemMeta(this.itemMeta);
         return this;
@@ -94,6 +95,7 @@ public class ItemWrapper {
         if (this.itemMeta == null) return this;
         final PersistentDataContainer dataContainer = this.itemMeta.getPersistentDataContainer();
         final NamespacedKey nameKey = new NamespacedKey(ApiLib.INSTANCE, key);
+        if (this.hasDataInteger(key)) return this;
         dataContainer.set(nameKey, PersistentDataType.INTEGER, value);
         this.itemStack.setItemMeta(this.itemMeta);
         return this;
@@ -111,6 +113,16 @@ public class ItemWrapper {
         final PersistentDataContainer dataContainer = this.itemMeta.getPersistentDataContainer();
         final NamespacedKey nameKey = new NamespacedKey(ApiLib.INSTANCE, key);
         return dataContainer.get(nameKey, PersistentDataType.INTEGER);
+    }
+
+    public final boolean hasDataString(final String key) {
+        final NamespacedKey nameKey = new NamespacedKey(ApiLib.INSTANCE, key);
+        return this.itemMeta.getPersistentDataContainer().has(nameKey, PersistentDataType.STRING);
+    }
+
+    public final boolean hasDataInteger(final String key) {
+        final NamespacedKey nameKey = new NamespacedKey(ApiLib.INSTANCE, key);
+        return this.itemMeta.getPersistentDataContainer().has(nameKey, PersistentDataType.INTEGER);
     }
 
     /**
