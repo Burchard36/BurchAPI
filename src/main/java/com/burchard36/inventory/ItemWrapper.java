@@ -2,6 +2,7 @@ package com.burchard36.inventory;
 
 import com.burchard36.ApiLib;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
@@ -22,6 +23,7 @@ public class ItemWrapper {
     private ItemMeta itemMeta;
     private String displayName = null;
     private List<String> lore = null;
+    private final LegacyComponentSerializer serializer = LegacyComponentSerializer.builder().build();
 
     public ItemWrapper(final ItemStack stack) {
         this.itemStack = stack;
@@ -47,7 +49,7 @@ public class ItemWrapper {
     public final ItemWrapper setDisplayName(final String displayName) {
         if (this.itemMeta == null) return this;
         this.displayName = displayName;
-        this.itemMeta.displayName(Component.text(convert(displayName)));
+        this.itemMeta.displayName(serializer.deserialize(convert(this.displayName)));
         this.itemStack.setItemMeta(this.itemMeta);
         return this;
     }
@@ -57,9 +59,10 @@ public class ItemWrapper {
         this.lore = itemLore;
         final List<Component> colored = new ArrayList<>();
         itemLore.forEach((loreItem) -> {
-            colored.add(Component.text(convert(loreItem)));
+            colored.add(serializer.deserialize(convert(loreItem)));
         });
         this.itemMeta.lore(colored);
+
         this.itemStack.setItemMeta(this.itemMeta);
         return this;
     }
