@@ -26,6 +26,7 @@ public class ItemWrapper {
     private final LegacyComponentSerializer serializer = LegacyComponentSerializer.builder().build();
 
     public ItemWrapper(final ItemStack stack) {
+        if (stack == null) throw new IllegalArgumentException("ItemStack in ItemWrapper cannot be null!");
         this.itemStack = stack;
         if (stack.getType() != Material.AIR) this.itemMeta = this.itemStack.getItemMeta();
     }
