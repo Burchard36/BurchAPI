@@ -31,7 +31,17 @@ public class ItemWrapper {
     public ItemWrapper(final ItemStack stack) {
         if (stack == null) throw new IllegalArgumentException("ItemStack in ItemWrapper cannot be null!");
         this.itemStack = stack;
-        if (stack.getType() != Material.AIR) this.itemMeta = this.itemStack.getItemMeta();
+        if (this.itemStack.getType() != Material.AIR) this.itemMeta = this.itemStack.getItemMeta();
+    }
+
+    public ItemWrapper(final Material material) {
+        this.itemStack = new ItemStack(material, 1);
+        if (this.itemStack.getType() != Material.AIR) this.itemMeta = this.itemStack.getItemMeta();
+    }
+
+    public ItemWrapper(final Material material, final int amount) {
+        this.itemStack = new ItemStack(material, amount);
+        if (this.itemStack.getType() != Material.AIR) this.itemMeta = this.itemStack.getItemMeta();
     }
 
     /**
