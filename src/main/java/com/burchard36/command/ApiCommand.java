@@ -4,6 +4,8 @@ import com.burchard36.command.actions.ConsoleSendCommand;
 import com.burchard36.command.actions.PlayerSendCommand;
 import com.burchard36.command.interfaces.OnConsoleSender;
 import com.burchard36.command.interfaces.OnPlayerSender;
+import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
@@ -13,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.List;
 
-public class ApiCommand extends BukkitCommand {
+public class ApiCommand extends Command {
 
     public OnPlayerSender onPlayerSender = null;
     public OnConsoleSender onConsoleSender = null;
@@ -48,4 +50,6 @@ public class ApiCommand extends BukkitCommand {
         this.onConsoleSender = sender;
         return this;
     }
+
+
 }

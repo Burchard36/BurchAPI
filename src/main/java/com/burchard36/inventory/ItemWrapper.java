@@ -3,17 +3,20 @@ package com.burchard36.inventory;
 import com.burchard36.ApiLib;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import static com.burchard36.ApiLib.convert;
 
@@ -82,6 +85,15 @@ public class ItemWrapper {
 
     public final ItemWrapper addEnchantments(final HashMap<Enchantment, Integer> enchantments) {
         this.itemStack.addEnchantments(enchantments);
+        return this;
+    }
+
+    public final ItemWrapper setSkullTo(final UUID playerUuid) {
+        if (this.itemStack.getType() != Material.PLAYER_HEAD) return this;
+
+        final SkullMeta meta = (SkullMeta) this.itemMeta;
+        meta.setOwningPlayer(Bukkit.getOfflinePlayer(playerUuid));
+        this.itemStack.setItemMeta(meta);
         return this;
     }
 
