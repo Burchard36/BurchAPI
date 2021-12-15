@@ -38,8 +38,6 @@ public class ClickableItem extends ItemWrapper {
         return this;
     }
 
-    public
-
     public ItemStack build() {
         return this.wrapper.getItemStack();
     }
