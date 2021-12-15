@@ -6,15 +6,16 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-public class ClickableItem {
+public class ClickableItem extends ItemWrapper {
 
-    private Material itemMaterial;
-    private int itemAmount;
+    private final Material itemMaterial;
+    private final int itemAmount;
     private final ItemWrapper wrapper;
 
     public GuiClickableItem guiClickableItem;
 
     public ClickableItem(final Material type, final int amount) {
+        super(type, amount);
         this.itemMaterial = type;
         this.itemAmount = amount;
         this.wrapper = new ItemWrapper(new ItemStack(this.itemMaterial, this.itemAmount));
@@ -24,15 +25,12 @@ public class ClickableItem {
                          final int amount,
                          final String itemName,
                          final List<String> itemLore) {
+        super(type, amount);
         this.itemMaterial = type;
         this.itemAmount = amount;
         this.wrapper = new ItemWrapper(new ItemStack(this.itemMaterial, this.itemAmount))
                 .setDisplayName(itemName)
                 .setItemLore(itemLore);
-    }
-
-    public ClickableItem(final ItemWrapper itemWrapper) {
-        this.wrapper = itemWrapper;
     }
 
     public ClickableItem onClick(final GuiClickableItem clickableItemAction) {
