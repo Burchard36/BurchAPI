@@ -9,6 +9,7 @@ import org.bukkit.command.CommandMap;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 
 public final class ApiLib implements Api {
@@ -93,6 +94,15 @@ public final class ApiLib implements Api {
     public static String convert(final String message) {
         return ChatColor.translateAlternateColorCodes('&', message);
     }
+
+    public static List<String> convert(final String... message) {
+        final List<String> list = new ArrayList<>();
+        for (int i = 0; i <= message.length; i++) {
+            list.add(convert(message[i]));
+        }
+        return list;
+    }
+
 
     /**
      * Returns an instance of the Hologram Manager

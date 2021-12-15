@@ -25,7 +25,7 @@ public class ItemWrapper {
     private final ItemStack itemStack;
     private ItemMeta itemMeta;
     private String displayName = null;
-    private List<String> lore = null;
+    private List<String> lore = new ArrayList<>();
     private final LegacyComponentSerializer serializer = LegacyComponentSerializer.builder().build();
 
     public ItemWrapper(final ItemStack stack) {
@@ -65,6 +65,14 @@ public class ItemWrapper {
         this.displayName = displayName;
         this.itemMeta.displayName(serializer.deserialize(convert(this.displayName)));
         this.itemStack.setItemMeta(this.itemMeta);
+        return this;
+    }
+
+    public final ItemWrapper addItemLore(final String... lore) {
+        for (int i = 0; i <= lore.length; i++) {
+            this.lore.add(convert(lore[i]));
+        }
+        this.setItemLore(this.lore);
         return this;
     }
 
