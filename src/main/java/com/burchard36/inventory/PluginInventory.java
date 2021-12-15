@@ -1,5 +1,6 @@
 package com.burchard36.inventory;
 
+import com.burchard36.Logger;
 import com.burchard36.inventory.actions.ClickableItemAction;
 import com.burchard36.inventory.actions.InventoryClickAction;
 import com.burchard36.inventory.actions.InventoryCloseAction;
@@ -150,13 +151,26 @@ public class PluginInventory implements Listener {
     /**
      * Fills an inventory with a specific ClickableItem
      * @param item ClickableItem to click
+     * @param overwrite if true, it will overwrite an existing item there if it exists
      * @return instance of this class
      */
-    public PluginInventory fillWith(final ClickableItem item) {
+    public PluginInventory fillWith(final ClickableItem item, final boolean overwrite) {
         for (int x = 0; x <= (this.inventory.getSize() - 1); x++) {
+            if (!overwrite) if (this.inventory.getItem(x) != null) continue;
             this.addClickableItemAtSlot(x, item);
         }
         return this;
+    }
+
+    public PluginInventory fillWith(final List<ClickableItem> items, final boolean overwrite) {
+        for (int x = 0; x <= (this.inventory.getSize() - 1); x++) {
+            if (!overwrite) if (this.inventory.getItem(x) != null) continue;
+            try {
+                this.addClickableItemAtSlot(x, items.get(x));
+            } catch (final IndexOutOfBoundsException ex) {
+                Logger.warn("IndexOutOfBounds exception encountered! This is an API level error please contact a developer");
+            }
+        }
     }
 
     /**
