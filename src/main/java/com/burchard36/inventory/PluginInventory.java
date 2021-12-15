@@ -171,6 +171,7 @@ public class PluginInventory implements Listener {
                 Logger.warn("IndexOutOfBounds exception encountered! This is an API level error please contact a developer");
             }
         }
+        return this;
     }
 
     /**
