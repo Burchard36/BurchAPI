@@ -1,17 +1,22 @@
 package com.burchard36.json;
 
 import com.burchard36.Logger;
+import com.burchard36.json.exceptions.JsonFileNotFoundException;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.Collection;
 import java.util.HashMap;
 
 public class PluginDataMap {
 
-    private final HashMap<String, JsonDataFile> dataMapByStrings;
+    private final Gson gson;
     private final PluginJsonWriter writer;
+    private final HashMap<String, JsonDataFile> dataMapByStrings;
 
     public PluginDataMap(final PluginJsonWriter writer) {
-        this.writer = writer;
+        this.gson = new GsonBuilder().setPrettyPrinting().create();
+        this.writer = new PluginJsonWriter(this.gson);
         this.dataMapByStrings = new HashMap<>();
     }
 
@@ -65,6 +70,20 @@ public class PluginDataMap {
     }
 
     /**
+     * Saves a specific JsonDataFile
+     * @param dataFile String value of data file to save
+     */
+    public final void saveDataFile(final String dataFile) {
+        final JsonDataFile jsonDataFile = this.getDataFile(dataFile);
+        if (jsonDataFile == null) {
+            new JsonFileNotFoundException("Tried to find data file by key for saving, but could not find it! Data key: " + dataFile).printStackTrace();
+            return;
+        }
+
+        this.writer.writeDataToFile(jsonDataFile);
+    }
+
+    /**
      * Saves all the objects inside the HashMaps
      */
     public final void saveAll() {
@@ -75,7 +94,7 @@ public class PluginDataMap {
      * gets all the data files in this HashMap
      * @return Collection of JsonDataFiles stores in this PluginDataMap
      */
-    public final Collection<JsonDataFile> getDatFiles() {
+    public final Collection<JsonDataFile> getDataFiles() {
         return this.dataMapByStrings.values();
     }
 
@@ -85,10 +104,18 @@ public class PluginDataMap {
      */
     public void reloadDataFile(final String E) {
         final JsonDataFile dataFile = this.getDataFile(E);
-        if (dataFile == null) return;
+        if (dataFile == null) {
+            new JsonFileNotFoundException("Could not find file when reload JsonDataFile! Please ensure this exists! JsonDataFile key: " + E).printStackTrace();
+            return;
+        }
         this.getDataMapByStrings().replace(E, this.reload(dataFile));
     }
 
+    /**
+     * Reloads a specific JsonDataFile by object
+     * @param dataFile JsonDataFile to reload
+     * @return JsonDataFile instance that is reloaded from file.
+     */
     private JsonDataFile reload(final JsonDataFile dataFile) {
         this.writer.writeDataToFile(dataFile);
         return this.writer.getDataFromFile(dataFile.getFile(), dataFile.getClass());

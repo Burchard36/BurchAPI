@@ -2,7 +2,6 @@ package com.burchard36;
 
 import com.burchard36.command.ApiCommand;
 import com.burchard36.hologram.HologramManager;
-import com.burchard36.json.PluginDataManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandMap;
@@ -16,7 +15,6 @@ public final class ApiLib implements Api {
 
     public JavaPlugin plugin;
     public static JavaPlugin INSTANCE;
-    private PluginDataManager manager;
     private HologramManager hologramManager;
 
     /**
@@ -25,7 +23,6 @@ public final class ApiLib implements Api {
     public ApiLib initializeApi(final JavaPlugin plugin) {
         this.plugin = plugin;
         INSTANCE = plugin;
-        this.manager = new PluginDataManager(plugin);
         this.hologramManager = new HologramManager();
         Logger.init(getLib(this.plugin));
         return this;
@@ -34,7 +31,6 @@ public final class ApiLib implements Api {
     /**
      * Registers a single command
      * @param command Command extending ApiCommand
-     * @return instance of ApiLib
      */
     public static void registerCommand(final ApiCommand command) {
         register(command);
@@ -43,7 +39,6 @@ public final class ApiLib implements Api {
     /**
      * Registers a whole list of commands at once
      * @param commands List of classes extending ApiCommand
-     * @return instance of this class
      */
     public static void registerCommands(List<ApiCommand> commands) {
         commands.forEach(ApiLib::register);
@@ -112,11 +107,4 @@ public final class ApiLib implements Api {
         return this.hologramManager;
     }
 
-    /**
-     * Returns an instance of the PluginDataManager
-     * @return insstance of PluginDataManager
-     */
-    public PluginDataManager getPluginDataManager() {
-        return this.manager;
-    }
 }

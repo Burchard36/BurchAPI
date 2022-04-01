@@ -222,6 +222,7 @@ public class PluginInventory implements Listener {
                 event.setCancelled(true);
                 return;
             }
+
             clickableItem.guiClickableItem.onItemClick(clickableItemAction);
 
             if (clickableItemAction.isCancelled()) event.setCancelled(true);
