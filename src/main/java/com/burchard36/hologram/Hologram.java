@@ -8,7 +8,7 @@ import org.bukkit.entity.Entity;
 
 import java.util.List;
 
-import static com.burchard36.ApiLib.convert;
+import static com.burchard36.BurchAPI.convert;
 
 public class Hologram {
 

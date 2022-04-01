@@ -11,7 +11,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class ApiLib implements Api {
+public final class BurchAPI implements Api {
 
     public JavaPlugin plugin;
     public static JavaPlugin INSTANCE;
@@ -20,7 +20,7 @@ public final class ApiLib implements Api {
     /**
      * Initializes the API to a plugin
      */
-    public ApiLib initializeApi(final JavaPlugin plugin) {
+    public BurchAPI initializeApi(final JavaPlugin plugin) {
         this.plugin = plugin;
         INSTANCE = plugin;
         this.hologramManager = new HologramManager();
@@ -41,7 +41,7 @@ public final class ApiLib implements Api {
      * @param commands List of classes extending ApiCommand
      */
     public static void registerCommands(List<ApiCommand> commands) {
-        commands.forEach(ApiLib::register);
+        commands.forEach(BurchAPI::register);
     }
 
     /**

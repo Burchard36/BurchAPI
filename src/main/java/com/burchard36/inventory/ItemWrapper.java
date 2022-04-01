@@ -1,6 +1,6 @@
 package com.burchard36.inventory;
 
-import com.burchard36.ApiLib;
+import com.burchard36.BurchAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-import static com.burchard36.ApiLib.convert;
+import static com.burchard36.BurchAPI.convert;
 
 public class ItemWrapper {
 
@@ -118,7 +118,7 @@ public class ItemWrapper {
     public final ItemWrapper addDataString(final String key, final String value) {
         if (this.itemMeta == null) return this;
         final PersistentDataContainer dataContainer = this.itemMeta.getPersistentDataContainer();
-        final NamespacedKey nameKey = new NamespacedKey(ApiLib.INSTANCE, key);
+        final NamespacedKey nameKey = new NamespacedKey(BurchAPI.INSTANCE, key);
         if (this.hasDataString(key)) return this;
         dataContainer.set(nameKey, PersistentDataType.STRING, value);
         this.itemStack.setItemMeta(this.itemMeta);
@@ -128,7 +128,7 @@ public class ItemWrapper {
     public final ItemWrapper addDataInteger(final String key, final int value) {
         if (this.itemMeta == null) return this;
         final PersistentDataContainer dataContainer = this.itemMeta.getPersistentDataContainer();
-        final NamespacedKey nameKey = new NamespacedKey(ApiLib.INSTANCE, key);
+        final NamespacedKey nameKey = new NamespacedKey(BurchAPI.INSTANCE, key);
         if (this.hasDataInteger(key)) return this;
         dataContainer.set(nameKey, PersistentDataType.INTEGER, value);
         this.itemStack.setItemMeta(this.itemMeta);
@@ -138,24 +138,24 @@ public class ItemWrapper {
     public final String getStringDataValue(final String key) {
         if (this.itemMeta == null) return null;
         final PersistentDataContainer dataContainer = this.itemMeta.getPersistentDataContainer();
-        final NamespacedKey nameKey = new NamespacedKey(ApiLib.INSTANCE, key);
+        final NamespacedKey nameKey = new NamespacedKey(BurchAPI.INSTANCE, key);
         return dataContainer.get(nameKey, PersistentDataType.STRING);
     }
 
     public final Integer getIntegerDataValue(final String key) {
         if (this.itemMeta == null) return null;
         final PersistentDataContainer dataContainer = this.itemMeta.getPersistentDataContainer();
-        final NamespacedKey nameKey = new NamespacedKey(ApiLib.INSTANCE, key);
+        final NamespacedKey nameKey = new NamespacedKey(BurchAPI.INSTANCE, key);
         return dataContainer.get(nameKey, PersistentDataType.INTEGER);
     }
 
     public final boolean hasDataString(final String key) {
-        final NamespacedKey nameKey = new NamespacedKey(ApiLib.INSTANCE, key);
+        final NamespacedKey nameKey = new NamespacedKey(BurchAPI.INSTANCE, key);
         return this.itemMeta.getPersistentDataContainer().has(nameKey, PersistentDataType.STRING);
     }
 
     public final boolean hasDataInteger(final String key) {
-        final NamespacedKey nameKey = new NamespacedKey(ApiLib.INSTANCE, key);
+        final NamespacedKey nameKey = new NamespacedKey(BurchAPI.INSTANCE, key);
         return this.itemMeta.getPersistentDataContainer().has(nameKey, PersistentDataType.INTEGER);
     }
 

@@ -1,21 +1,18 @@
 package com.burchard36.json;
 
-import org.bukkit.plugin.java.JavaPlugin;
-
 import java.io.File;
+import java.net.URI;
 
 public class JsonDataFile {
 
-    public transient JavaPlugin plugin;
     public transient File file;
 
-    public JsonDataFile(final JavaPlugin plugin,
-                        String pathToFile) {
-        this.plugin = plugin;
+    public JsonDataFile(final File file) {
+        this.file = file;
+    }
 
-        if (!pathToFile.startsWith("/")) pathToFile = "/" + pathToFile;
-
-        this.file = new File(this.plugin.getDataFolder(), pathToFile);
+    public JsonDataFile(final URI fileUri) {
+        this.file = new File(fileUri);
     }
 
     public final File getFile() {

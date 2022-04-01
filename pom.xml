@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.burchard36</groupId>
-    <artifactId>ApiLib</artifactId>
+    <artifactId>BurchAPI</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
 
-    <name>ApiLib</name>
+    <name>BurchAPI</name>
 
     <description>Api library for Burchard36's plugins</description>
     <properties>

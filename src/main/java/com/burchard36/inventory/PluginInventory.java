@@ -25,7 +25,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.burchard36.ApiLib.convert;
+import static com.burchard36.BurchAPI.convert;
 
 
 public class PluginInventory implements Listener {

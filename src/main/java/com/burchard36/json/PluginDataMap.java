@@ -14,7 +14,7 @@ public class PluginDataMap {
     private final PluginJsonWriter writer;
     private final HashMap<String, JsonDataFile> dataMapByStrings;
 
-    public PluginDataMap(final PluginJsonWriter writer) {
+    public PluginDataMap() {
         this.gson = new GsonBuilder().setPrettyPrinting().create();
         this.writer = new PluginJsonWriter(this.gson);
         this.dataMapByStrings = new HashMap<>();

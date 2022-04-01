@@ -2,7 +2,7 @@ package com.burchard36;
 
 import org.bukkit.Bukkit;
 
-import static com.burchard36.ApiLib.convert;
+import static com.burchard36.BurchAPI.convert;
 
 public class Logger {
 
