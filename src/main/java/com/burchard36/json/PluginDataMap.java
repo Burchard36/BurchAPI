@@ -70,6 +70,14 @@ public class PluginDataMap {
     }
 
     /**
+     * Creates a data file using a specific JsonDataFile
+     * @param fileToCreate JsonDataFile to create against
+     */
+    public final void createDataFile(final JsonDataFile fileToCreate) {
+        this.writer.writeDataToFile(fileToCreate);
+    }
+
+    /**
      * Saves a specific JsonDataFile
      * @param dataFile String value of data file to save
      */

@@ -4,6 +4,7 @@ import com.burchard36.command.ApiCommand;
 import com.burchard36.hologram.HologramManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -48,7 +49,7 @@ public final class BurchAPI implements Api {
      * Injects ApiCommand into Bukkits CommandMap
      * @param command Class extending BukkitCommand to inject into CommandMap
      */
-    private static void register(final ApiCommand command) {
+    private static void register(final Command command) {
         try {
             final Field commandMapField = Bukkit.getServer().getClass().getDeclaredField("commandMap");
             commandMapField.setAccessible(true);

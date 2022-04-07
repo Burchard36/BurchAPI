@@ -30,11 +30,11 @@ public class ApiCommand extends Command {
         final List<String> newArgs = Arrays.asList(args);
 
         if (sender instanceof final Player player) {
-            if (this.onPlayerSender == null) return false;
+            //if (this.onPlayerSender == null) return false;
             this.onPlayerSender.onPlayerSender(new PlayerSendCommand(player, newArgs));
         } else {
             final ConsoleCommandSender consoleSender = (ConsoleCommandSender) sender;
-            if (this.onConsoleSender == null) return false;
+            //if (this.onConsoleSender == null) return false;
             this.onConsoleSender.onConsoleSender(new ConsoleSendCommand(consoleSender, newArgs));
         }
 
@@ -50,6 +50,4 @@ public class ApiCommand extends Command {
         this.onConsoleSender = sender;
         return this;
     }
-
-
 }
