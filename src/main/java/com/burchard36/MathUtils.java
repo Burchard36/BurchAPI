@@ -58,4 +58,26 @@ public class MathUtils {
         }
         return res;
     }
+
+    public static boolean isOdd(int n) {
+        return (n&1)==0;
+    }
+
+    public static long calcExponent(int a,int b) {
+        // initialize ans with 1
+        long ans = 1;
+        while(b>0) {
+            // check if last bit 1
+            if((b&1)==1){
+                ans = (ans * a);
+            }
+
+            // update value of a by a*a
+            a = multiply(a, a);
+
+            // right shift b by 1
+            b = b>>1;
+        }
+        return ans;
+    }
 }
