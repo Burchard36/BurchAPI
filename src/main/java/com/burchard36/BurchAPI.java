@@ -1,16 +1,25 @@
 package com.burchard36;
 
 import com.burchard36.command.ApiCommand;
+import com.burchard36.command.annotation.RegisterCommand;
+import com.burchard36.command.exceptions.CommandConstructorNotFoundException;
+import com.burchard36.command.exceptions.CommandInterfaceNotFoundException;
+import com.burchard36.command.exceptions.InvalidCommandAnnotationException;
 import com.burchard36.hologram.HologramManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.reflections.Reflections;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 public final class BurchAPI implements Api {
 
@@ -26,6 +35,56 @@ public final class BurchAPI implements Api {
         INSTANCE = plugin;
         this.hologramManager = new HologramManager();
         Logger.init(getLib(this.plugin));
+
+        Reflections reflections = new Reflections(plugin.getClass().getPackage());
+
+        Set<Class<? extends ApiCommand>> classes = reflections.getSubTypesOf(ApiCommand.class);
+        for (final Class<?> clazz : classes) {
+
+            Constructor<?>[] constructors = clazz.getDeclaredConstructors();
+            Constructor<?> constructor = null;
+            Object toProvide = null;
+            try {
+                for (Constructor<?> aConstructor : constructors) {
+                    if (aConstructor.getParameterTypes().length == 0 && constructor == null)
+                        constructor = clazz.getDeclaredConstructor();
+
+                    if (aConstructor.getParameterTypes().length == 1 && aConstructor.getParameterTypes()[0] == JavaPlugin.class) {
+                        toProvide = plugin;
+                        constructor = clazz.getDeclaredConstructor(JavaPlugin.class);
+                    }
+                }
+            } catch (NoSuchMethodException ex) {
+                ex.printStackTrace();
+            }
+
+            if (constructor == null) throw new CommandConstructorNotFoundException("No default, or constructor with JavaPlugin found for class" +
+                    clazz.getName() + " please review your API usage to make sure you class has a valid constructor!");
+
+            ApiCommand command;
+            try {
+                try {
+                    command = (ApiCommand) constructor.newInstance();
+                } catch (NullPointerException ignored) {
+                    command = (ApiCommand) constructor.newInstance(toProvide);
+                }
+            } catch (IllegalAccessException | InstantiationException | InvocationTargetException ex) {
+                ex.printStackTrace();
+                continue;
+            }
+
+            final RegisterCommand commandAnnotation = command.getClass().getAnnotation(RegisterCommand.class);
+            if (commandAnnotation == null) throw new CommandInterfaceNotFoundException("The command class: " + clazz.getName() + " does not have @RegisterCommand as a Annotation!");
+
+            if (commandAnnotation.name().equalsIgnoreCase(""))
+                throw new InvalidCommandAnnotationException("The command class: " + clazz.getName() + " @RegisterCommand interface does not have a name parameter!");
+
+            command.setCommandName(commandAnnotation.name())
+                .setCommandDescription(commandAnnotation.description())
+                    .setCommandAliases(commandAnnotation.aliases())
+                    .setCommandUsage(commandAnnotation.usageMessage());
+            registerCommand(command);
+        }
         return this;
     }
 

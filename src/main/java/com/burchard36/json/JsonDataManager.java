@@ -7,14 +7,16 @@ import com.google.gson.GsonBuilder;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.UUID;
 
-public class PluginDataMap {
+/* End users should extend this class */
+public abstract class JsonDataManager {
 
     private final Gson gson;
     private final PluginJsonWriter writer;
     private final HashMap<String, JsonDataFile> dataMapByStrings;
 
-    public PluginDataMap() {
+    public JsonDataManager() {
         this.gson = new GsonBuilder().setPrettyPrinting().create();
         this.writer = new PluginJsonWriter(this.gson);
         this.dataMapByStrings = new HashMap<>();
@@ -30,6 +32,15 @@ public class PluginDataMap {
         if (file.getFile().delete()) {
             this.dataMapByStrings.remove(E);
         } else Logger.error("Error when deleting files! Please look into this (Did you reload a plugin?? This is an API level error!!!!!!)");
+    }
+
+    /**
+     * Loads the Config file to the map while loading it data from file
+     * @param E UUID to set as Key for config
+     * @param dataFile JsonDataFile to set
+     */
+    public void loadDataFile(final UUID E, final JsonDataFile dataFile) {
+        this.loadDataFile(E.toString(), dataFile);
     }
 
     /**
@@ -53,12 +64,21 @@ public class PluginDataMap {
     }
 
     /**
-     * Gets data from the map by a string hats cached
+     * Gets data from the map by a string that's cached
      * @param E String key to find the data by
      * @return JsonDataFile instance
      */
     public JsonDataFile getDataFile(final String E) {
         return this.dataMapByStrings.get(E);
+    }
+
+    /**
+     * Gets data from the map by a UUID that's been cached
+     * @param E UUID Keys to find the data by
+     * @return JsonDataFile instance
+     */
+    public JsonDataFile getDataFile(final UUID E) {
+        return this.getDataFile(E.toString());
     }
 
     /**
@@ -75,6 +95,14 @@ public class PluginDataMap {
      */
     public final void createDataFile(final JsonDataFile fileToCreate) {
         this.writer.writeDataToFile(fileToCreate);
+    }
+
+    /**
+     * Saves a specific JsonDataFile
+     * @param toSave UUID of the file to save
+     */
+    public final void saveDataFile(final UUID toSave) {
+        this.saveDataFile(toSave.toString());
     }
 
     /**
@@ -117,6 +145,14 @@ public class PluginDataMap {
             return;
         }
         this.getDataMapByStrings().replace(E, this.reload(dataFile));
+    }
+
+    /**
+     * Reloads a config file
+     * @param E UUID object to use
+     */
+    public void reloadDataFile(final UUID E) {
+        this.reloadDataFile(E.toString());
     }
 
     /**
