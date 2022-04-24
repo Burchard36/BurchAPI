@@ -3,7 +3,6 @@ package com.burchard36;
 import com.burchard36.command.ApiCommand;
 import com.burchard36.command.annotation.*;
 import com.burchard36.command.exceptions.CommandConstructorNotFoundException;
-import com.burchard36.command.exceptions.CommandInterfaceNotFoundException;
 import com.burchard36.command.exceptions.InvalidCommandAnnotationException;
 import com.burchard36.hologram.HologramManager;
 import org.bukkit.Bukkit;
