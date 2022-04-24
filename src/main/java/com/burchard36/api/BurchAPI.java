@@ -5,7 +5,6 @@ import com.burchard36.api.command.annotation.*;
 import com.burchard36.api.command.exceptions.CommandConstructorNotFoundException;
 import com.burchard36.api.command.exceptions.InvalidCommandAnnotationException;
 import com.burchard36.api.hologram.HologramManager;
-import com.burchard36.command.annotation.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
