@@ -17,15 +17,16 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-public final class BurchAPI implements Api {
+public abstract class BurchAPI implements Api {
 
     public JavaPlugin plugin;
     public static JavaPlugin INSTANCE;
     private HologramManager hologramManager;
+
+    public BurchAPI() {}
 
     /**
      * Initializes the API to a plugin
@@ -162,6 +163,7 @@ public final class BurchAPI implements Api {
     /**
      * Returns an instance of the Hologram Manager
      * @return instance of HologramManager
+     * @deprecated This is broken, do not use it
      */
     public HologramManager getHologramManager() {
         return this.hologramManager;
