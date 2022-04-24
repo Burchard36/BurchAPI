@@ -37,7 +37,7 @@ public final class BurchAPI implements Api {
         this.hologramManager = new HologramManager();
         Logger.init(getLib(this.plugin));
 
-        Reflections reflections = new Reflections(plugin.getClass().getPackage());
+        Reflections reflections = new Reflections(plugin.getClass().getPackage().getName());
 
         Set<Class<? extends ApiCommand>> classes = reflections.getSubTypesOf(ApiCommand.class);
         for (final Class<?> clazz : classes) {
