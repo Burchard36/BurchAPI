@@ -113,7 +113,7 @@ public class PluginInventory {
      * @param item ClickableItem to add
      * @return instance of this class
      */
-    public PluginInventory addClickableItemAtSlot(final int slot, final ClickableItem item) {
+    public PluginInventory setClickableItemAtSlot(final int slot, final ClickableItem item) {
         this.clickableItems.put(slot, item);
         return this;
     }
@@ -136,7 +136,7 @@ public class PluginInventory {
     public PluginInventory fillWith(final ClickableItem item, final boolean overwrite) {
         for (int x = 0; x <= (this.inventory.getSize() - 1); x++) {
             if (!overwrite) if (this.inventory.getItem(x) != null) continue;
-            this.addClickableItemAtSlot(x, item);
+            this.setClickableItemAtSlot(x, item);
         }
         return this;
     }
@@ -145,7 +145,7 @@ public class PluginInventory {
         for (int x = 0; x <= (this.inventory.getSize() - 1); x++) {
             if (!overwrite) if (this.inventory.getItem(x) != null) continue;
             try {
-                this.addClickableItemAtSlot(x, items.get(x));
+                this.setClickableItemAtSlot(x, items.get(x));
             } catch (final IndexOutOfBoundsException ex) {
                 Logger.warn("IndexOutOfBounds exception encountered! This is an API level error please contact a developer");
             }
