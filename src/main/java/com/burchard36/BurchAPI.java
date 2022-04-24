@@ -1,7 +1,7 @@
 package com.burchard36;
 
 import com.burchard36.command.ApiCommand;
-import com.burchard36.command.annotation.RegisterCommand;
+import com.burchard36.command.annotation.*;
 import com.burchard36.command.exceptions.CommandConstructorNotFoundException;
 import com.burchard36.command.exceptions.CommandInterfaceNotFoundException;
 import com.burchard36.command.exceptions.InvalidCommandAnnotationException;
@@ -17,6 +17,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -26,7 +27,8 @@ public final class BurchAPI implements Api {
     public static JavaPlugin INSTANCE;
     private HologramManager hologramManager;
 
-    public BurchAPI() {}
+    public BurchAPI() {
+    }
 
     /**
      * Initializes the API to a plugin
@@ -75,15 +77,42 @@ public final class BurchAPI implements Api {
             }
 
             final RegisterCommand commandAnnotation = command.getClass().getAnnotation(RegisterCommand.class);
-            if (commandAnnotation == null) throw new CommandInterfaceNotFoundException("The command class: " + clazz.getName() + " does not have @RegisterCommand as a Annotation!");
+            final CommandName commandName = command.getClass().getAnnotation(CommandName.class);
+            final CommandDescription commandDescription = command.getClass().getAnnotation(CommandDescription.class);
+            final CommandUsage commandUsage = command.getClass().getAnnotation(CommandUsage.class);
+            final CommandAliases commandAliases = command.getClass().getAnnotation(CommandAliases.class);
 
-            if (commandAnnotation.name().equalsIgnoreCase(""))
-                throw new InvalidCommandAnnotationException("The command class: " + clazz.getName() + " @RegisterCommand interface does not have a name parameter!");
+            if (commandAnnotation != null) {
 
-            command.setCommandName(commandAnnotation.name())
-                .setCommandDescription(commandAnnotation.description())
-                    .setCommandAliases(commandAnnotation.aliases())
-                    .setCommandUsage(commandAnnotation.usageMessage());
+                if (!commandAnnotation.name().equalsIgnoreCase(""))
+                    command.setCommandName(commandAnnotation.name());
+
+                if (commandAnnotation.name().equalsIgnoreCase("") && commandName != null
+                        && !commandName.name().equalsIgnoreCase("")) {
+                    command.setCommandName(commandName.name());
+                } else throw new InvalidCommandAnnotationException("The class: " + command.getClass().getName() + " did not have a valid command name set!");
+
+                if (!commandAnnotation.description().equalsIgnoreCase(""))
+                    command.setDescription(commandAnnotation.description());
+
+                if (commandAnnotation.description().equalsIgnoreCase("") && commandDescription != null
+                        && !commandDescription.description().equalsIgnoreCase(""))
+                    command.setDescription(commandDescription.description());
+
+                if (!commandAnnotation.usageMessage().equalsIgnoreCase(""))
+                    command.setUsage(commandAnnotation.usageMessage());
+
+                if (commandAnnotation.usageMessage().equalsIgnoreCase("") && commandUsage != null
+                        && !commandUsage.usageMessage().equalsIgnoreCase(""))
+                    command.setUsage(commandUsage.usageMessage());
+
+                if (commandAnnotation.aliases().length != 0)
+                    command.setAliases(Arrays.asList(commandAnnotation.aliases()));
+
+                if (commandAnnotation.aliases().length <= 0 && commandAliases != null
+                        && commandAliases.aliases().length > 0)
+                    command.setAliases(Arrays.asList(commandAliases.aliases()));
+            }
             registerCommand(command);
         }
         return this;
