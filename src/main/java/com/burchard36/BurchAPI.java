@@ -50,9 +50,9 @@ public final class BurchAPI implements Api {
                     if (aConstructor.getParameterTypes().length == 0 && constructor == null)
                         constructor = clazz.getDeclaredConstructor();
 
-                    if (aConstructor.getParameterTypes().length == 1 && aConstructor.getParameterTypes()[0] == JavaPlugin.class) {
+                    if (aConstructor.getParameterTypes().length == 1 && aConstructor.getParameterTypes()[0] == plugin.getClass()) {
                         toProvide = plugin;
-                        constructor = clazz.getDeclaredConstructor(JavaPlugin.class);
+                        constructor = clazz.getDeclaredConstructor(plugin.getClass());
                     }
                 }
             } catch (NoSuchMethodException ex) {
@@ -65,9 +65,9 @@ public final class BurchAPI implements Api {
             ApiCommand command;
             try {
                 try {
-                    command = (ApiCommand) constructor.newInstance();
-                } catch (NullPointerException ignored) {
                     command = (ApiCommand) constructor.newInstance(toProvide);
+                } catch (NullPointerException ignored) {
+                    command = (ApiCommand) constructor.newInstance();
                 }
             } catch (IllegalAccessException | InstantiationException | InvocationTargetException ex) {
                 ex.printStackTrace();
