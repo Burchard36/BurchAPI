@@ -1,5 +1,7 @@
 package com.burchard36.api;
 
+import com.burchard36.api.inventory.GlobalInventoryListener;
+
 public interface Api {
 
     /**
@@ -14,4 +16,9 @@ public interface Api {
      * @return Prefix before the logger
      */
     String loggerPrefix();
+
+    GlobalInventoryListener getGlobalInventoryListener();
+
+    void onPluginEnable();
+    void onPluginDisable();
 }

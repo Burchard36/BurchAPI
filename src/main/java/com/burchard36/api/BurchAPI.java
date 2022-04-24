@@ -4,7 +4,7 @@ import com.burchard36.api.command.ApiCommand;
 import com.burchard36.api.command.annotation.*;
 import com.burchard36.api.command.exceptions.CommandConstructorNotFoundException;
 import com.burchard36.api.command.exceptions.InvalidCommandAnnotationException;
-import com.burchard36.api.hologram.HologramManager;
+import com.burchard36.api.inventory.GlobalInventoryListener;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -20,25 +20,18 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-public final class BurchAPI implements Api {
+public abstract class BurchAPI extends JavaPlugin implements Api {
 
-    public JavaPlugin plugin;
     public static JavaPlugin INSTANCE;
-    private HologramManager hologramManager;
+    private GlobalInventoryListener inventoryListener;
 
-    public BurchAPI() {
-    }
+    @Override
+    public void onEnable() {
+        INSTANCE = this;
+        this.inventoryListener = new GlobalInventoryListener(this);
+        Logger.init(getLib(this));
 
-    /**
-     * Initializes the API to a plugin
-     */
-    public BurchAPI initializeApi(final JavaPlugin plugin) {
-        this.plugin = plugin;
-        INSTANCE = plugin;
-        this.hologramManager = new HologramManager();
-        Logger.init(getLib(this.plugin));
-
-        Reflections reflections = new Reflections(plugin.getClass().getPackage().getName());
+        Reflections reflections = new Reflections(this.getClass().getPackage().getName());
 
         Set<Class<? extends ApiCommand>> classes = reflections.getSubTypesOf(ApiCommand.class);
         for (final Class<?> clazz : classes) {
@@ -51,17 +44,18 @@ public final class BurchAPI implements Api {
                     if (aConstructor.getParameterTypes().length == 0 && constructor == null)
                         constructor = clazz.getDeclaredConstructor();
 
-                    if (aConstructor.getParameterTypes().length == 1 && aConstructor.getParameterTypes()[0] == plugin.getClass()) {
-                        toProvide = plugin;
-                        constructor = clazz.getDeclaredConstructor(plugin.getClass());
+                    if (aConstructor.getParameterTypes().length == 1 && aConstructor.getParameterTypes()[0] == this.getClass()) {
+                        toProvide = this;
+                        constructor = clazz.getDeclaredConstructor(this.getClass());
                     }
                 }
             } catch (NoSuchMethodException ex) {
                 ex.printStackTrace();
             }
 
-            if (constructor == null) throw new CommandConstructorNotFoundException("No default, or constructor with JavaPlugin found for class" +
-                    clazz.getName() + " please review your API usage to make sure you class has a valid constructor!");
+            if (constructor == null)
+                throw new CommandConstructorNotFoundException("No default, or constructor with JavaPlugin found for class" +
+                        clazz.getName() + " please review your API usage to make sure you class has a valid constructor!");
 
             ApiCommand command;
             try {
@@ -86,34 +80,50 @@ public final class BurchAPI implements Api {
                 if (!commandAnnotation.name().equalsIgnoreCase(""))
                     command.setCommandName(commandAnnotation.name());
 
-                if (commandAnnotation.name().equalsIgnoreCase("") && commandName != null
-                        && !commandName.name().equalsIgnoreCase("")) {
-                    command.setCommandName(commandName.name());
-                } else throw new InvalidCommandAnnotationException("The class: " + command.getClass().getName() + " did not have a valid command name set!");
-
                 if (!commandAnnotation.description().equalsIgnoreCase(""))
                     command.setDescription(commandAnnotation.description());
-
-                if (commandAnnotation.description().equalsIgnoreCase("") && commandDescription != null
-                        && !commandDescription.description().equalsIgnoreCase(""))
-                    command.setDescription(commandDescription.description());
 
                 if (!commandAnnotation.usageMessage().equalsIgnoreCase(""))
                     command.setUsage(commandAnnotation.usageMessage());
 
-                if (commandAnnotation.usageMessage().equalsIgnoreCase("") && commandUsage != null
-                        && !commandUsage.usageMessage().equalsIgnoreCase(""))
-                    command.setUsage(commandUsage.usageMessage());
-
                 if (commandAnnotation.aliases().length != 0)
                     command.setAliases(Arrays.asList(commandAnnotation.aliases()));
-
-                if (commandAnnotation.aliases().length <= 0 && commandAliases != null
-                        && commandAliases.aliases().length > 0)
-                    command.setAliases(Arrays.asList(commandAliases.aliases()));
+            } else {
+                if (commandName != null && !commandName.name().equalsIgnoreCase("")) {
+                    command.setCommandName(commandName.name());
+                } else
+                    throw new InvalidCommandAnnotationException("The class: " + command.getClass().getName() + " did not have a valid command name set!");
             }
+
+
+            if (commandDescription != null && !commandDescription.description().equalsIgnoreCase(""))
+                command.setDescription(commandDescription.description());
+
+
+            if (commandUsage != null && !commandUsage.usageMessage().equalsIgnoreCase(""))
+                command.setUsage(commandUsage.usageMessage());
+
+            if (commandAliases != null && commandAliases.aliases().length > 0)
+                command.setAliases(Arrays.asList(commandAliases.aliases()));
+
+
             registerCommand(command);
+            Logger.log("Registered command class: " + command.getClass().getName());
         }
+
+        this.onPluginEnable();
+    }
+
+    @Override
+    public void onDisable() {
+        this.onPluginDisable();
+    }
+
+    /**
+     * Initializes the API to a plugin
+     */
+    public BurchAPI initializeApi(final JavaPlugin plugin) {
+
         return this;
     }
 
@@ -160,14 +170,17 @@ public final class BurchAPI implements Api {
         } else return null;
     }
 
-    @Override
     public boolean isDebug() {
-        return getLib(this.plugin).isDebug();
+        return false;
+    }
+
+    public String loggerPrefix() {
+        return "BurchAPI";
     }
 
     @Override
-    public String loggerPrefix() {
-        return getLib(this.plugin).loggerPrefix();
+    public GlobalInventoryListener getGlobalInventoryListener() {
+        return this.inventoryListener;
     }
 
     /**
@@ -179,22 +192,17 @@ public final class BurchAPI implements Api {
         return ChatColor.translateAlternateColorCodes('&', message);
     }
 
+    /**
+     * Converts a varargs string to colored List of strings
+     * @param message String to convert to colored
+     * @return List of colored String (using '&' color codes)
+     */
     public static List<String> convert(final String... message) {
         final List<String> list = new ArrayList<>();
         for (int i = 0; i <= message.length; i++) {
             list.add(convert(message[i]));
         }
         return list;
-    }
-
-
-    /**
-     * Returns an instance of the Hologram Manager
-     * @return instance of HologramManager
-     * @deprecated This is broken, do not use it
-     */
-    public HologramManager getHologramManager() {
-        return this.hologramManager;
     }
 
 }

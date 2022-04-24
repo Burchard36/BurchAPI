@@ -1,8 +1,6 @@
 package com.burchard36.api.inventory;
 
 import com.burchard36.api.BurchAPI;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -26,7 +24,6 @@ public class ItemWrapper {
     private ItemMeta itemMeta;
     private String displayName = null;
     private List<String> lore = new ArrayList<>();
-    private final LegacyComponentSerializer serializer = LegacyComponentSerializer.builder().build();
 
     public ItemWrapper(final ItemStack stack) {
         if (stack == null) throw new IllegalArgumentException("ItemStack in ItemWrapper cannot be null!");
@@ -63,7 +60,7 @@ public class ItemWrapper {
     public final ItemWrapper setDisplayName(final String displayName) {
         if (this.itemMeta == null) return this;
         this.displayName = displayName;
-        this.itemMeta.displayName(serializer.deserialize(convert(this.displayName)));
+        this.itemMeta.setDisplayName(convert(this.displayName));
         this.itemStack.setItemMeta(this.itemMeta);
         return this;
     }
@@ -79,12 +76,11 @@ public class ItemWrapper {
     public final ItemWrapper setItemLore(final List<String> itemLore) {
         if (this.itemMeta == null) return this;
         this.lore = itemLore;
-        final List<Component> colored = new ArrayList<>();
+        final List<String> colored = new ArrayList<>();
         itemLore.forEach((loreItem) -> {
-            colored.add(serializer.deserialize(convert(loreItem)));
+            colored.add(convert(loreItem));
         });
-        this.itemMeta.lore(colored);
-
+        this.itemMeta.setLore(colored);
         this.itemStack.setItemMeta(this.itemMeta);
         return this;
     }

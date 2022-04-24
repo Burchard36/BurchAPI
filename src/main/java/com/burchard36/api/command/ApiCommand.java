@@ -11,9 +11,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -32,18 +31,8 @@ public class ApiCommand extends Command implements TabCompleter {
     }
 
     @Override
-    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
-        if (sender instanceof final Player player) {
-            if (this.onPlayerSender == null) return null; // Only allow player completer's
-            if (this.onTabComplete == null) return null; // only allow non-null tab completer's
-            return this.onTabComplete.onTabComplete(new PlayerTabComplete(player, new ArrayList<>(), Arrays.asList(args)));
-        }
-
-        return null;
-    }
-
-    @Override
-    public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
+    public boolean execute(@Nonnull CommandSender sender, @Nonnull String commandLabel,
+                           @Nonnull String[] args) {
         final List<String> newArgs = Arrays.asList(args);
 
         if (sender instanceof final Player player) {
@@ -93,5 +82,17 @@ public class ApiCommand extends Command implements TabCompleter {
     public ApiCommand setCommandAliases(String... aliases) {
         this.setAliases(Arrays.asList(aliases));
         return this;
+    }
+
+    @Override
+    public List<String> onTabComplete(@Nonnull CommandSender sender, @Nonnull Command command,
+                                      @Nonnull String label, @Nonnull String[] args) {
+        if (sender instanceof final Player player) {
+            if (this.onPlayerSender == null) return null; // Only allow player completer's
+            if (this.onTabComplete == null) return null; // only allow non-null tab completer's
+            return this.onTabComplete.onTabComplete(new PlayerTabComplete(player, new ArrayList<>(), Arrays.asList(args)));
+        }
+
+        return null;
     }
 }

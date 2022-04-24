@@ -1,60 +1,58 @@
 package com.burchard36.api.inventory;
 
+import com.burchard36.api.BurchAPI;
 import com.burchard36.api.Logger;
-import com.burchard36.api.inventory.actions.ClickableItemAction;
-import com.burchard36.api.inventory.actions.InventoryClickAction;
-import com.burchard36.api.inventory.actions.InventoryCloseAction;
-import com.burchard36.api.inventory.actions.InventoryOpenAction;
 import com.burchard36.api.inventory.interfaces.GuiClickAction;
 import com.burchard36.api.inventory.interfaces.GuiCloseAction;
 import com.burchard36.api.inventory.interfaces.GuiOpenAction;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.HandlerList;
-import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.plugin.java.JavaPlugin;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import static com.burchard36.api.BurchAPI.convert;
 
 
-public class PluginInventory implements Listener {
+public class PluginInventory {
 
-    private String inventoryTitle;
-    private InventoryType inventoryType;
     private int inventorySlots;
-    private InventoryHolder inventoryHolder;
+    private String inventoryName;
+    public final InventoryHolder inventoryHolder;
     private Inventory inventory;
 
-    private GuiCloseAction closeAction;
-    private GuiOpenAction openAction;
-    private GuiClickAction clickAction;
+    public GuiCloseAction closeAction;
+    public GuiOpenAction openAction;
+    public GuiClickAction clickAction;
 
-    private HashMap<Integer, ClickableItem> clickableItems = new HashMap<>();
+    public HashMap<Integer, ClickableItem> clickableItems = new HashMap<>();
 
+    /**
+     * Created a PluginInventory class
+     * @param slots amount of slots for the inventory to have, multiples of 9, no higher than 54
+     * @param name name for inventory to have, supports '&' color codes
+     */
     public PluginInventory(final int slots, final String name) {
-        this.inventory = Bukkit.createInventory(() -> inventory, slots, Component.text(convert(name)));
+        this.inventorySlots = slots;
+        this.inventoryName = convert(name);
+        UUID inventoryUuid = UUID.randomUUID();
+        this.inventoryHolder = new PluginHolder(inventoryUuid, null);
+        this.inventory = Bukkit.createInventory(this.inventoryHolder, slots, convert(name));
     }
-
-    public PluginInventory() {}
 
     /**
      * Sets the inventory display name
-     * @param displayName Display name to this inventory to
+     * @param displayName Display name to re-name the inventory, supports '&' color codes
      * @return instance of this class
      */
     public PluginInventory setDisplayName(final String displayName) {
-        this.inventoryTitle = displayName;
+        this.inventoryName = convert(displayName);
+        this.inventory = Bukkit.createInventory(this.inventoryHolder, this.inventorySlots, this.inventoryName);
         return this;
     }
 
@@ -65,6 +63,7 @@ public class PluginInventory implements Listener {
      */
     public PluginInventory setInventorySize(final int size) {
         this.inventorySlots = size;
+        this.inventory = Bukkit.createInventory(this.inventoryHolder, this.inventorySlots, this.inventoryName);
         return this;
     }
 
@@ -74,27 +73,7 @@ public class PluginInventory implements Listener {
      * @return instance of this class
      */
     public PluginInventory setInventoryType(final InventoryType type) {
-        this.inventoryType = type;
-        return this;
-    }
-
-    /**
-     * Sets the holder for this inventory
-     * @param holder InventoryHolder for this Inventory
-     * @return instance of this class
-     */
-    public PluginInventory setInventoryHolder(final InventoryHolder holder) {
-        this.inventoryHolder = holder;
-        return this;
-    }
-
-    /**
-     * Registers events to this class
-     * @param plugin JavaPlugin to register events too
-     * @return instance of this Class
-     */
-    public PluginInventory register(final JavaPlugin plugin) {
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
+        this.inventory = Bukkit.createInventory(this.inventoryHolder, type, this.inventoryName);
         return this;
     }
 
@@ -175,57 +154,40 @@ public class PluginInventory implements Listener {
     }
 
     /**
-     * Opens a inventory to a Player
+     * Opens an inventory to a Player
      * @param player Player to open inventory to
+     * @param api BurchAPI instance, should be your class implementing BurchAPI
      */
-    public void open(final Player player) {
-        if (this.inventory == null && this.inventoryHolder == null) {
-            this.inventory = Bukkit.createInventory(null, this.inventorySlots, Component.text(convert(this.inventoryTitle)));
-        } else if (this.inventory == null)
-            this.inventory = Bukkit.createInventory(this.inventoryHolder, this.inventorySlots, Component.text(convert(this.inventoryTitle)));
-
+    public void open(final Player player,
+                     final BurchAPI api) {
         this.clickableItems.keySet().forEach((slotNum) -> {
             this.inventory.setItem(slotNum, this.clickableItems.get(slotNum).build());
         });
 
+        api.getGlobalInventoryListener().queuePluginInventory(this);
         player.openInventory(this.inventory);
     }
 
-    @EventHandler
-    public void onCloseEvent(final InventoryCloseEvent event) {
-        if (event.getInventory() != this.inventory) return;
-        if (this.closeAction == null) return;
-        this.closeAction.onClose(new InventoryCloseAction(event));
+    public static class PluginHolder implements InventoryHolder {
 
-        HandlerList.unregisterAll(this); // Unregister events when this inventory gets closed
-    }
+        public final UUID uuid;
+        private Inventory inventory;
 
-    @EventHandler
-    public void onOpenEvent(final InventoryOpenEvent event) {
-        if (event.getInventory() != this.inventory) return;
-        if (this.openAction == null) return;
-        this.openAction.onOpen(new InventoryOpenAction(event));
-    }
+        public PluginHolder(final UUID uuid,
+                            Inventory inventory) {
+            this.uuid = uuid;
+            this.inventory = inventory;
+        }
 
-    @EventHandler
-    public void onClickEvent(final InventoryClickEvent event) {
-        if (event.getInventory() != this.inventory) return;
-        if (this.clickAction == null) return;
-        if (event.getClickedInventory() == null) return;
-        if (event.getClickedInventory().getHolder() instanceof Player) return;
-        this.clickAction.onClick(new InventoryClickAction(event));
+        public PluginHolder setInventory(Inventory inventory) {
+            this.inventory = inventory;
+            return this;
+        }
 
-        if (this.clickableItems.get(event.getSlot()) != null) {
-            final ClickableItem clickableItem = this.clickableItems.get(event.getSlot());
-            final ClickableItemAction clickableItemAction = new ClickableItemAction(event);
-            if (clickableItem.guiClickableItem == null) {
-                event.setCancelled(true);
-                return;
-            }
-
-            clickableItem.guiClickableItem.onItemClick(clickableItemAction);
-
-            if (clickableItemAction.isCancelled()) event.setCancelled(true);
+        @Override
+        @Nonnull
+        public Inventory getInventory() {
+            return this.inventory;
         }
     }
 }
