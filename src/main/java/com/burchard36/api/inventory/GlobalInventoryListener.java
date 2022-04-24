@@ -19,21 +19,21 @@ import java.util.List;
 
 public class GlobalInventoryListener implements Listener {
 
-    private final List<PluginInventory> inventoriesQuedued;
+    private final List<PluginInventory> inventoriesQueued;
 
     public GlobalInventoryListener(JavaPlugin pluginInstance) {
-        this.inventoriesQuedued = new ArrayList<>();
+        this.inventoriesQueued = new ArrayList<>();
         pluginInstance.getServer().getPluginManager().registerEvents(this, pluginInstance);
     }
 
     public void queuePluginInventory(PluginInventory inventory) {
-        this.inventoriesQuedued.add(inventory);
+        this.inventoriesQueued.add(inventory);
     }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onOpen(InventoryCloseEvent event) {
         final List<PluginInventory> toRemove = new ArrayList<>();
-        for (final PluginInventory inventory : this.inventoriesQuedued) {
+        for (final PluginInventory inventory : this.inventoriesQueued) {
             if (!this.isInventoriesTurn(event.getInventory(), inventory)) continue;
 
             if (inventory.closeAction != null) {
@@ -42,12 +42,12 @@ public class GlobalInventoryListener implements Listener {
             }
         }
 
-        this.inventoriesQuedued.removeAll(toRemove); // When inventories close, we need to not listen to them anymore
+        this.inventoriesQueued.removeAll(toRemove); // When inventories close, we need to not listen to them anymore
     }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onOpen(InventoryOpenEvent event) {
-        for (final PluginInventory inventory : this.inventoriesQuedued) {
+        for (final PluginInventory inventory : this.inventoriesQueued) {
             if (!this.isInventoriesTurn(event.getInventory(), inventory)) continue;
 
             if (inventory.openAction != null) {
@@ -58,7 +58,7 @@ public class GlobalInventoryListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onClick(InventoryClickEvent event) {
-        for (final PluginInventory inventory : this.inventoriesQuedued) {
+        for (final PluginInventory inventory : this.inventoriesQueued) {
             if (!this.isInventoriesTurn(event.getInventory(), inventory)) continue;
 
             if (inventory.clickAction != null) {

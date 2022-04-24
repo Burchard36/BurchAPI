@@ -156,15 +156,13 @@ public class PluginInventory {
     /**
      * Opens an inventory to a Player
      * @param player Player to open inventory to
-     * @param api BurchAPI instance, should be your class implementing BurchAPI
      */
-    public void open(final Player player,
-                     final BurchAPI api) {
+    public void open(final Player player) {
         this.clickableItems.keySet().forEach((slotNum) -> {
             this.inventory.setItem(slotNum, this.clickableItems.get(slotNum).build());
         });
 
-        api.getGlobalInventoryListener().queuePluginInventory(this);
+        BurchAPI.INSTANCE.getGlobalInventoryListener().queuePluginInventory(this);
         player.openInventory(this.inventory);
     }
 

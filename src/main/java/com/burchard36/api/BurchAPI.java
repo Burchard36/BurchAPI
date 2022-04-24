@@ -20,9 +20,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Users of this API are expcted to extend this class, rather than JavaPlugin, BurchAPI will provide methods for JavaPlugin
+ */
 public abstract class BurchAPI extends JavaPlugin implements Api {
 
-    public static JavaPlugin INSTANCE;
+    public static BurchAPI INSTANCE;
     private GlobalInventoryListener inventoryListener;
 
     @Override
