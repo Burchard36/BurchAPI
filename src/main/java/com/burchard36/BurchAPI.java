@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public abstract class BurchAPI implements Api {
+public final class BurchAPI implements Api {
 
     public JavaPlugin plugin;
     public static JavaPlugin INSTANCE;
