@@ -26,7 +26,9 @@ public class CommandInjector {
         Reflections reflections = new Reflections(BurchAPI.INSTANCE.getClass().getPackage().getName());
 
         Set<Class<? extends ApiCommand>> classes = reflections.getSubTypesOf(ApiCommand.class);
-        for (final Class<?> clazz : classes) {
+        for (final Class<? extends ApiCommand> clazz : classes) {
+
+            if (BurchAPI.INSTANCE.getApiSettings().getCommandAutoRegisterBlacklist().contains(clazz)) continue;
 
             Constructor<?>[] constructors = clazz.getDeclaredConstructors();
             Constructor<?> constructor = null;

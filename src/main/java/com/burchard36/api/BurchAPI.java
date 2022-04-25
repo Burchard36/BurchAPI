@@ -1,27 +1,15 @@
 package com.burchard36.api;
 
-import com.burchard36.api.command.ApiCommand;
 import com.burchard36.api.command.CommandInjector;
-import com.burchard36.api.command.annotation.*;
-import com.burchard36.api.command.exceptions.CommandConstructorNotFoundException;
-import com.burchard36.api.command.exceptions.InvalidCommandAnnotationException;
 import com.burchard36.api.inventory.GlobalInventoryListener;
 import com.burchard36.api.json.PluginJsonWriter;
 import com.google.gson.GsonBuilder;
-import org.bukkit.Bukkit;
+import lombok.Getter;
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandMap;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.reflections.Reflections;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Users of this API are expcted to extend this class, rather than JavaPlugin, BurchAPI will provide methods for JavaPlugin
@@ -32,11 +20,17 @@ public abstract class BurchAPI extends JavaPlugin implements Api {
     private GlobalInventoryListener inventoryListener;
     private PluginJsonWriter jsonWriter;
 
+    @Getter
+    private final ApiSettings apiSettings = new ApiSettings();
+
     @Override
     public void onEnable() {
         INSTANCE = this;
+        this.onPreApiEnable();
         this.jsonWriter = new PluginJsonWriter(new GsonBuilder().setPrettyPrinting().create());
-        this.inventoryListener = new GlobalInventoryListener(this);
+
+        if (this.getApiSettings().isUseInventoryModule())
+            this.inventoryListener = new GlobalInventoryListener(this);
 
         /** Run the Annotation checks and register commands */
         CommandInjector.injectCommands();
@@ -47,6 +41,14 @@ public abstract class BurchAPI extends JavaPlugin implements Api {
     @Override
     public void onDisable() {
         this.onPluginDisable();
+    }
+
+    /**
+     * Plugins can override this and change certain aspects of the API functionality before
+     * api initialization
+     */
+    public void onPreApiEnable() {
+
     }
 
     /**
