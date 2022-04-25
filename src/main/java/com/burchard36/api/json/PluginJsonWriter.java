@@ -1,15 +1,16 @@
 package com.burchard36.api.json;
 
-import com.burchard36.api.Logger;
+import com.burchard36.api.utils.Logger;
 import com.google.gson.Gson;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.concurrent.CompletableFuture;
 
 public record PluginJsonWriter(Gson gson) {
 
-    public File createFile(final JsonDataFile dataFile) {
+    public CompletableFuture<File> createFile(final JsonDataFile dataFile) {
         final File file = dataFile.getFile();
         if (!file.exists()) {
             try {
@@ -27,24 +28,38 @@ public record PluginJsonWriter(Gson gson) {
                 }
             } catch (IOException ex) {
                 ex.printStackTrace();
+                return CompletableFuture.completedFuture(file);
             }
         }
-        return file;
+        return CompletableFuture.completedFuture(file);
     }
 
-    public void writeDataToFile(final JsonDataFile config) {
+    /**
+     * Writes data to a file asynchronously
+     * @param config class extending JsonDataFile to save
+     * @return true when successfully, false if error (If this method gets a File that does not exist, this method will always return true)
+     */
+    public CompletableFuture<Boolean> writeDataToFile(final JsonDataFile config) {
         File file = config.getFile();
-        if (!file.exists()) file = this.createFile(config);
-
-        try {
-            final Writer writer = new FileWriter(file);
-            this.gson.toJson(config, writer);
-            writer.flush();
-            writer.close();
-        } catch (IOException ex) {
-            ex.printStackTrace();
+        if (!file.exists()) {
+            this.createFile(config).thenAcceptAsync((createdFile) -> {
+                Logger.debug("Created file async");
+            });
+            return CompletableFuture.completedFuture(true);
+        } else {
+            try {
+                final Writer writer = new FileWriter(file);
+                this.gson.toJson(config, writer);
+                writer.flush();
+                writer.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                return CompletableFuture.completedFuture(false);
+            }
         }
 
+        Logger.debug("Successfully saved a data file");
+        return CompletableFuture.completedFuture(true);
     }
 
     public JsonDataFile getDataFromFile(final File file, Class<? extends JsonDataFile> clazz) {

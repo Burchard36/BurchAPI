@@ -1,4 +1,4 @@
-package com.burchard36.api.inventory;
+package com.burchard36.api.utils;
 
 import com.burchard36.api.BurchAPI;
 import org.bukkit.Bukkit;

@@ -1,6 +1,7 @@
 package com.burchard36.api.inventory;
 
 import com.burchard36.api.inventory.interfaces.GuiClickableItem;
+import com.burchard36.api.utils.ItemWrapper;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 

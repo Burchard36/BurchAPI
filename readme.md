@@ -7,7 +7,7 @@
 
 Features:
 
-1. A FunctionalInterface Command API that automatically registers commands via an Annotation
+1. A FunctionalIntferface Command API that automatically registers commands via an Annotation
    Never worry about forgetting to register your command again!
 
 2. A clean FunctioanlInterface Inventory API, that allows for much easier handling of Inventories!

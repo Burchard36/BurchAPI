@@ -1,7 +1,7 @@
 package com.burchard36.api.inventory;
 
 import com.burchard36.api.BurchAPI;
-import com.burchard36.api.Logger;
+import com.burchard36.api.utils.Logger;
 import com.burchard36.api.inventory.interfaces.GuiClickAction;
 import com.burchard36.api.inventory.interfaces.GuiCloseAction;
 import com.burchard36.api.inventory.interfaces.GuiOpenAction;

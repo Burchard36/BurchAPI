@@ -1,4 +1,4 @@
-package com.burchard36.api;
+package com.burchard36.api.utils;
 
 /**
  * THIS CLASS WAS PROVIDED BY ANOTHER DEVELOPER NOT ME!

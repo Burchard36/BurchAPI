@@ -15,6 +15,7 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class GlobalInventoryListener implements Listener {
@@ -33,6 +34,13 @@ public class GlobalInventoryListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onOpen(InventoryCloseEvent event) {
         final List<PluginInventory> toRemove = new ArrayList<>();
+
+        for (Iterator<PluginInventory> it = toRemove.iterator(); it.hasNext();) {
+            PluginInventory inv = it.next();
+
+
+        }
+
         for (final PluginInventory inventory : this.inventoriesQueued) {
             if (!this.isInventoriesTurn(event.getInventory(), inventory)) continue;
 

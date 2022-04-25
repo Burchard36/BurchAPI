@@ -1,6 +1,6 @@
 package com.burchard36.api.json;
 
-import com.burchard36.api.Logger;
+import com.burchard36.api.utils.Logger;
 import com.burchard36.api.json.exceptions.JsonFileNotFoundException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
