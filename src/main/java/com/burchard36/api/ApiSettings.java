@@ -9,13 +9,13 @@ import java.util.List;
 /**
  * The settings for the API to use.
  *
- * No not initialize this, {@link BurchAPI} does this already if your main class extends it.
+ * do not initialize this, {@link BurchAPI} does this already if your main class extends it.
  *
  * @author Dalton Burchard
  * @since 2.1.5
  */
 @Getter
-class ApiSettings {
+public class ApiSettings {
 
     private boolean useCommandModule;
     private boolean useInventoryModule;

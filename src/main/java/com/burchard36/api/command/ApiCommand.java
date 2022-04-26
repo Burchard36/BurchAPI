@@ -91,7 +91,7 @@ public class ApiCommand extends Command implements TabCompleter {
     /**
      * Sets the command name when executing
      *
-     * eg /<newNameVariable>
+     * eg /{@param newName}
      *
      * @param newName A {@link String} without spaces
      * @return instance of this {@link ApiCommand}
