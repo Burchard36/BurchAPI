@@ -7,6 +7,9 @@ package com.burchard36.api.utils;
  * with raw bits
  *
  * Users GitHub who provided these methods: https://github.com/frostalf
+ *
+ * @author frostalf
+ * @since 2.1.5
  */
 public class MathUtils {
 
@@ -15,6 +18,7 @@ public class MathUtils {
      * @param n1 A {@link Integer}
      * @param n2 A {@link Integer}
      * @return The result {@link Integer} of {@param n1} * {@param n2}
+     * @since 2.1.5
      */
     public static int multiply(int n1, int n2) {
         int a = n1, b = n2, result=0;
@@ -35,6 +39,7 @@ public class MathUtils {
      * @param n1 A {@link Integer}
      * @param n2 A {@link Integer}
      * @return The result {@link Integer} of {@param n1} + {@param n2}
+     * @since 2.1.5
      */
     public static int add(int n1, int n2) {
         //noinspection UnnecessaryLocalVariable
@@ -56,6 +61,7 @@ public class MathUtils {
      * Bit-flips a square root of an {@link Short}
      * @param num A {@link Short} to calculate square root of
      * @return The square root of {@param num}
+     * @since 2.1.5
      */
     public static short squareRoot(short num) {
         short res = 0;
@@ -81,6 +87,7 @@ public class MathUtils {
      * Efficiently calculates if a provided {@link Integer} is odd
      * @param n A {@link Integer} to check if odd
      * @return A {@link Boolean}, true if number is odd, false if not
+     * @since 2.1.5
      */
     public static boolean isOdd(int n) {
         return (n&1)==0;
@@ -91,6 +98,7 @@ public class MathUtils {
      * @param a A {@link Integer}, this is the base number
      * @param b A {@link Integer}, this is the exponent
      * @return A {@link Long}, this is the result of this statement
+     * @since 2.1.5
      */
     public static long calcExponent(int a,int b) {
         // initialize ans with 1

@@ -22,6 +22,12 @@ import java.util.Set;
  */
 public class CommandInjector {
 
+    /**
+     * Injects all commands into the BukkitCommand map
+     *
+     * Also search's for classes extending {@link ApiCommand} and auto-registers them if they have
+     * {@link CommandName} or {@link RegisterCommand} Annotation(s)
+     */
     public static void injectCommands() {
         Reflections reflections = new Reflections(BurchAPI.INSTANCE.getClass().getPackage().getName());
 

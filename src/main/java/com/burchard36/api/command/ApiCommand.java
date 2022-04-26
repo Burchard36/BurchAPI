@@ -17,6 +17,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * The class you want to use when registering commands.
+ *
+ * You are meant to extend this class
+ *
+ * @author Dalton Burchard
+ * @since 2.1.5
+ */
 public class ApiCommand extends Command implements TabCompleter {
 
     public OnPlayerSender onPlayerSender = null;
@@ -26,7 +34,7 @@ public class ApiCommand extends Command implements TabCompleter {
     /* We check this when registering a command, if the command name is set like this, then the end user did not use setCommandName() on and empty constructor */
     private static final String DO_NOT_REGISTER = "BurchAPIPlaceholderDoNoteRegister36";
 
-    public ApiCommand() {
+    private ApiCommand() {
         super(DO_NOT_REGISTER);
     }
 
@@ -47,21 +55,48 @@ public class ApiCommand extends Command implements TabCompleter {
         return false;
     }
 
+    /**
+     * Sets the function to run when a {@link Player} sends a command
+     * @param sender A {@link OnPlayerSender} lambda interface
+     * @return instance of this {@link ApiCommand}
+     * @since 2.1.5
+     */
     public ApiCommand onPlayerSender(OnPlayerSender sender) {
         this.onPlayerSender = sender;
         return this;
     }
 
+    /**
+     * Sets the function to run when a {@link ConsoleCommandSender} sends a command
+     * @param sender A {@link OnConsoleSender} lambda interface
+     * @return instance of this {@link ApiCommand}
+     * @since 2.1.5
+     */
     public ApiCommand onConsoleSender(OnConsoleSender sender) {
         this.onConsoleSender = sender;
         return this;
     }
 
+    /**
+     * Executes a TabCompleter for this command, only usage if you set a {@link OnPlayerSender} interface using {@link ApiCommand#onPlayerSender}
+     * @param onComplete A {@link OnTabComplete} functional interface lambda
+     * @return instance of this {@link ApiCommand}
+     * @since 2.1.5
+     */
     public ApiCommand onTabComplete(OnTabComplete onComplete) {
         this.onTabComplete = onComplete;
         return this;
     }
 
+    /**
+     * Sets the command name when executing
+     *
+     * eg /<newNameVariable>
+     *
+     * @param newName A {@link String} without spaces
+     * @return instance of this {@link ApiCommand}
+     * @since 2.1.5
+     */
     public ApiCommand setCommandName(String newName) {
         if (!this.setName(newName)) {
             throw new RuntimeException("Attempting to change an already registered command name!");
@@ -69,16 +104,34 @@ public class ApiCommand extends Command implements TabCompleter {
         return this;
     }
 
+    /**
+     * Sets the description of this command
+     * @param newDesc Any {@link String}
+     * @return instance of this ApiCommand
+     * @since 2.1.5
+     */
     public ApiCommand setCommandDescription(String newDesc) {
         this.setDescription(newDesc);
         return this;
     }
 
+    /**
+     * Sets the Command usage message for this command
+     * @param usage {@link String} to set usage message to
+     * @return instance of this {@link ApiCommand}
+     * @since 2.1.5
+     */
     public ApiCommand setCommandUsage(String usage) {
         this.setUsage(usage);
         return this;
     }
 
+    /**
+     * Sets the aliases of this command
+     * @param aliases Varargs of {@link String}'s, no strings with spaces
+     * @return instance of this {@link ApiCommand}
+     * @since 2.1.5
+     */
     public ApiCommand setCommandAliases(String... aliases) {
         this.setAliases(Arrays.asList(aliases));
         return this;

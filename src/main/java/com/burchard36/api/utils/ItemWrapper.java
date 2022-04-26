@@ -142,8 +142,8 @@ public class ItemWrapper {
 
     /**
      * Adds a {@link java.util.Map} of {@link Enchantment} and {@link Integer} to the linked {@link ItemStack}'s Enchantment list
-     * @param enchantments
-     * @return
+     * @param enchantments a {@link java.util.Map} or {@link Enchantment} enums and {@link Integer} as level-values
+     * @return instance of this {@link ItemWrapper}
      */
     public final ItemWrapper addEnchantments(final HashMap<Enchantment, Integer> enchantments) {
         this.itemStack.addEnchantments(enchantments);

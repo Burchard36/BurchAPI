@@ -12,7 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Users of this API are expcted to extend this class, rather than JavaPlugin, BurchAPI will provide methods for JavaPlugin
+ * Users of this API are expected to extend this class, rather than JavaPlugin,
+ * BurchAPI will provide methods for JavaPlugin
+ *
+ * @author Dalton Burchard
+ * @since 2.1.5
  */
 public abstract class BurchAPI extends JavaPlugin implements Api {
 
@@ -31,7 +35,7 @@ public abstract class BurchAPI extends JavaPlugin implements Api {
         if (this.getApiSettings().isUseInventoryModule())
             this.inventoryListener = new GlobalInventoryListener(this);
 
-        /** Run the Annotation checks and register commands */
+        // Run the Annotation checks and register commands
         CommandInjector.injectCommands();
 
         this.onPluginEnable();
@@ -45,16 +49,10 @@ public abstract class BurchAPI extends JavaPlugin implements Api {
     /**
      * Plugins can override this and change certain aspects of the API functionality before
      * api initialization
+     *
+     * @since 2.1.5
      */
     public abstract void onPreApiEnable();
-
-    /**
-     * Initializes the API to a plugin
-     */
-    public BurchAPI initializeApi(final JavaPlugin plugin) {
-
-        return this;
-    }
 
     /**
      * Checks if a JavaPlugin implements the Api class, and if it does pull the Api
@@ -67,10 +65,24 @@ public abstract class BurchAPI extends JavaPlugin implements Api {
         } else return null;
     }
 
+    /**
+     * Returns whether the Api is in debug state, this is generally used for the {@link com.burchard36.api.utils.Logger}
+     *
+     * If you are extending this class, you can Override this method.
+     *
+     * @return A {@link Boolean} true if debugging is active
+     */
     public boolean isDebug() {
         return false;
     }
 
+    /**
+     * Returns the logger prefix for {@link com.burchard36.api.utils.Logger}
+     *
+     * If your class is extending this class, you can Override this method to change the output.
+     *
+     * @return Any {@link String}
+     */
     public String loggerPrefix() {
         return "BurchAPI";
     }
@@ -82,17 +94,19 @@ public abstract class BurchAPI extends JavaPlugin implements Api {
 
     /**
      * Converts a normal string to a formatted one
-     * @param message String to convert
+     * @param message Any {@link String} to convert
      * @return Converted String
+     * @since 2.1.5
      */
     public static String convert(final String message) {
         return ChatColor.translateAlternateColorCodes('&', message);
     }
 
     /**
-     * Converts a varargs string to colored List of strings
-     * @param message String to convert to colored
-     * @return List of colored String (using ampersand color codes)
+     * Converts a varargs {@link String} to colored {@link List} of {@link String}'s
+     * @param message Varargs of any {@link String} to convert to colored format using ampersand color codes
+     * @return A {@link List} of colored {@link String}'s (using ampersand color codes)
+     * @since 2.1.5
      */
     public static List<String> convert(final String... message) {
         final List<String> list = new ArrayList<>();
