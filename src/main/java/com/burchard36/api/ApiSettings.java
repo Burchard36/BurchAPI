@@ -17,6 +17,11 @@ import java.util.List;
 @Getter
 public class ApiSettings {
 
+    // Just a random code change
+    /**
+     * This {@link String} does something
+     */
+    public String someChange;
     private boolean useCommandModule;
     private boolean useInventoryModule;
     private final List<Class<? extends ApiCommand>> commandAutoRegisterBlacklist;
