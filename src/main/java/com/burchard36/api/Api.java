@@ -5,9 +5,8 @@ import com.burchard36.api.inventory.GlobalInventoryListener;
 public interface Api {
 
     /**
-     * If the debug mode is true, when debug is called on the
-     * Logger#debug method a message gets logged, this also may effect other things
-     * however thats all it is originally meant for
+     * Returns whether the {@link Api} is running in Debug mode
+     * @return A {@link Boolean}, true if Debug mode is active false if else
      */
     boolean isDebug();
 
@@ -17,9 +16,20 @@ public interface Api {
      */
     String loggerPrefix();
 
+    /**
+     * The global inventory listener for the Command API
+     * @return An instance of {@link GlobalInventoryListener}
+     */
     GlobalInventoryListener getGlobalInventoryListener();
 
+    /**
+     * Calls after the API enables itself
+     */
     void onPluginEnable();
+
+    /**
+     * Calls after the API disables itself
+     */
     void onPluginDisable();
 
 }

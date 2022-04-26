@@ -8,8 +8,16 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * A Json writer, uses class serialization to write/read from files from {@link Gson}
+ */
 public record PluginJsonWriter(Gson gson) {
 
+    /**
+     * Asynchronously/Synchronously creates a {@link JsonDataFile}
+     * @param dataFile A {@link JsonDataFile} to create
+     * @return {@link CompletableFuture<File>}
+     */
     public CompletableFuture<File> createFile(final JsonDataFile dataFile) {
         final File file = dataFile.getFile();
         if (!file.exists()) {
@@ -62,6 +70,12 @@ public record PluginJsonWriter(Gson gson) {
         return CompletableFuture.completedFuture(true);
     }
 
+    /**
+     * Gets a data from a file
+     * @param file {@link File} A file
+     * @param clazz {@link Class}  The Class file of the data you are trying to get
+     * @return instance of your class extending {@link JsonDataFile}
+     */
     public JsonDataFile getDataFromFile(final File file, Class<? extends JsonDataFile> clazz) {
         if (!file.exists()) return null;
         try {

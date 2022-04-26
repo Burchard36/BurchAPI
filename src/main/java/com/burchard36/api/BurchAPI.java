@@ -95,7 +95,7 @@ public abstract class BurchAPI extends JavaPlugin implements Api {
     /**
      * Converts a varargs string to colored List of strings
      * @param message String to convert to colored
-     * @return List of colored String (using '&' color codes)
+     * @return List of colored String (using ampersand color codes)
      */
     public static List<String> convert(final String... message) {
         final List<String> list = new ArrayList<>();

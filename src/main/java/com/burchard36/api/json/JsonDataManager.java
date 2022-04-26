@@ -9,13 +9,18 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.UUID;
 
-/* End users should extend this class */
+/**
+ *  End users should extend this class
+ *  */
 public abstract class JsonDataManager {
 
     private final Gson gson;
     private final PluginJsonWriter writer;
     private final HashMap<String, JsonDataFile> dataMapByStrings;
 
+    /**
+     * A generalized DataManager, used for loading, caching and saving of {@link JsonDataFile}'s
+     */
     public JsonDataManager() {
         this.gson = new GsonBuilder().setPrettyPrinting().create();
         this.writer = new PluginJsonWriter(this.gson);

@@ -18,24 +18,39 @@ import java.util.UUID;
 
 import static com.burchard36.api.BurchAPI.convert;
 
-
+/**
+ * The API class to create the APIs PluginInventorys
+ */
 public class PluginInventory {
 
     private int inventorySlots;
     private String inventoryName;
+    /**
+     * The {@link InventoryHolder} of this inventory
+     */
     public final InventoryHolder inventoryHolder;
     private Inventory inventory;
-
+    /**
+     * The {@link GuiCloseAction} for this inventory
+     */
     public GuiCloseAction closeAction;
+    /**
+     * The {@link GuiOpenAction} for this inventory
+     */
     public GuiOpenAction openAction;
+    /**
+     * The {@link GuiClickAction} for this inventory
+     */
     public GuiClickAction clickAction;
-
+    /**
+     * The HashMap containing all the {@link ClickableItem} items of this {@link PluginInventory}, ordered by zero-based slot counts
+     */
     public HashMap<Integer, ClickableItem> clickableItems = new HashMap<>();
 
     /**
      * Created a PluginInventory class
      * @param slots amount of slots for the inventory to have, multiples of 9, no higher than 54
-     * @param name name for inventory to have, supports '&' color codes
+     * @param name name for inventory to have, supports ampersand color codes
      */
     public PluginInventory(final int slots, final String name) {
         this.inventorySlots = slots;
@@ -47,7 +62,7 @@ public class PluginInventory {
 
     /**
      * Sets the inventory display name
-     * @param displayName Display name to re-name the inventory, supports '&' color codes
+     * @param displayName Display name to re-name the inventory, supports ampersand color codes
      * @return instance of this class
      */
     public PluginInventory setDisplayName(final String displayName) {
@@ -118,6 +133,11 @@ public class PluginInventory {
         return this;
     }
 
+    /**
+     * Ads a {@link List} of {@link ClickableItem}'s to this {@link PluginInventory}
+     * @param items A {@link List} of {@link ClickableItem}'s
+     * @return instance of this {@link PluginInventory}
+     */
     public PluginInventory addClickableItems(final List<ClickableItem> items) {
         int x = 0;
         for (final ClickableItem item : items) {
@@ -141,6 +161,12 @@ public class PluginInventory {
         return this;
     }
 
+    /**
+     * File this {@link PluginInventory} with a {@link List} of {@link ClickableItem}'s
+     * @param items A {@link List} of {@link ClickableItem}'s
+     * @param overwrite A {@link Boolean}, if true all previously set {@link ClickableItem}'s will be overwritten
+     * @return instance of this {@link PluginInventory}
+     */
     public PluginInventory fillWith(final List<ClickableItem> items, final boolean overwrite) {
         for (int x = 0; x <= (this.inventory.getSize() - 1); x++) {
             if (!overwrite) if (this.inventory.getItem(x) != null) continue;
@@ -166,17 +192,33 @@ public class PluginInventory {
         player.openInventory(this.inventory);
     }
 
+    /**
+     * The {@link InventoryHolder} that {@link PluginInventory}'s have
+     */
     public static class PluginHolder implements InventoryHolder {
 
+        /**
+         * The Identifier of this {@link InventoryHolder}
+         */
         public final UUID uuid;
         private Inventory inventory;
 
+        /**
+         *
+         * @param uuid {@link UUID} uuid identifier of this holder
+         * @param inventory {@link Inventory} The Bukkit Inventory
+         */
         public PluginHolder(final UUID uuid,
                             Inventory inventory) {
             this.uuid = uuid;
             this.inventory = inventory;
         }
 
+        /**
+         * Sets the inventory
+         * @param inventory {@link Inventory}
+         * @return Instance of this {@link PluginHolder} class
+         */
         public PluginHolder setInventory(Inventory inventory) {
             this.inventory = inventory;
             return this;
