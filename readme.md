@@ -5,6 +5,8 @@
 
 **Please** [View Our Wiki](https://github.com/Burchard36/BurchAPI/wiki) **for information on how this API works, and how to use it!**
 
+We also have [Javadocs](https://burchard36.github.io/BurchAPI/index.html) provided for all of our classes and methods
+
 Features:
 
 1. A FunctionalIntferface Command API that automatically registers commands via an Annotation
