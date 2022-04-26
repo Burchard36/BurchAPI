@@ -20,6 +20,7 @@ import java.util.List;
 /**
  * The Listener for all {@link PluginInventory}'s
  */
+@SuppressWarnings("ALL")
 public class GlobalInventoryListener implements Listener {
 
     private final List<PluginInventory> inventoriesQueued;
@@ -112,8 +113,7 @@ public class GlobalInventoryListener implements Listener {
         if (clickedHolder instanceof PluginInventory.PluginHolder pluginHolder) {
             final PluginInventory.PluginHolder inventoryHolder =
                     (PluginInventory.PluginHolder) checkingInventory.inventoryHolder;
-            if (!pluginHolder.uuid.equals(inventoryHolder.uuid)) return false;
+            return pluginHolder.uuid.equals(inventoryHolder.uuid);
         } else return false;
-        return true;
     }
 }

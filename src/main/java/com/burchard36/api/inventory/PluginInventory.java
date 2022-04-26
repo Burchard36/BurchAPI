@@ -45,7 +45,7 @@ public class PluginInventory {
     /**
      * The HashMap containing all the {@link ClickableItem} items of this {@link PluginInventory}, ordered by zero-based slot counts
      */
-    public HashMap<Integer, ClickableItem> clickableItems = new HashMap<>();
+    public final HashMap<Integer, ClickableItem> clickableItems = new HashMap<>();
 
     /**
      * Created a PluginInventory class

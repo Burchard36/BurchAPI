@@ -18,7 +18,6 @@ public abstract class BurchAPI extends JavaPlugin implements Api {
 
     public static BurchAPI INSTANCE;
     private GlobalInventoryListener inventoryListener;
-    private PluginJsonWriter jsonWriter;
 
     @Getter
     private final ApiSettings apiSettings = new ApiSettings();
@@ -27,7 +26,7 @@ public abstract class BurchAPI extends JavaPlugin implements Api {
     public void onEnable() {
         INSTANCE = this;
         this.onPreApiEnable();
-        this.jsonWriter = new PluginJsonWriter(new GsonBuilder().setPrettyPrinting().create());
+        PluginJsonWriter jsonWriter = new PluginJsonWriter(new GsonBuilder().setPrettyPrinting().create());
 
         if (this.getApiSettings().isUseInventoryModule())
             this.inventoryListener = new GlobalInventoryListener(this);
@@ -47,9 +46,7 @@ public abstract class BurchAPI extends JavaPlugin implements Api {
      * Plugins can override this and change certain aspects of the API functionality before
      * api initialization
      */
-    public void onPreApiEnable() {
-
-    }
+    public abstract void onPreApiEnable();
 
     /**
      * Initializes the API to a plugin

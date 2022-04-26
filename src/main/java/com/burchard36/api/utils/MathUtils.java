@@ -37,6 +37,7 @@ public class MathUtils {
      * @return The result {@link Integer} of {@param n1} + {@param n2}
      */
     public static int add(int n1, int n2) {
+        //noinspection UnnecessaryLocalVariable
         int x = n1, y = n2;
         int xor, and, temp;
         and = x & y;
