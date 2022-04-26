@@ -27,15 +27,12 @@ import java.util.List;
  */
 public class ApiCommand extends Command implements TabCompleter {
 
-    public OnPlayerSender onPlayerSender = null;
-    public OnConsoleSender onConsoleSender = null;
-    public OnTabComplete onTabComplete = null;
-
-    /* We check this when registering a command, if the command name is set like this, then the end user did not use setCommandName() on and empty constructor */
-    private static final String DO_NOT_REGISTER = "BurchAPIPlaceholderDoNoteRegister36";
+    protected OnPlayerSender onPlayerSender = null;
+    protected OnConsoleSender onConsoleSender = null;
+    protected OnTabComplete onTabComplete = null;
 
     public ApiCommand() {
-        super(DO_NOT_REGISTER);
+        super("");
     }
 
     @Override

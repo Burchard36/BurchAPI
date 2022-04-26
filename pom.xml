@@ -52,6 +52,7 @@
                 <configuration>
                     <source>16</source>
                     <outputDirectory>${project.basedir}/docs</outputDirectory>
+                    <excludePackageNames>com.burchard36.api.command.exceptions</excludePackageNames>
                 </configuration>
                 <executions>
                     <execution>

@@ -23,11 +23,9 @@ public class ApiSettings {
 
     /**
      * Creates a new instance of this class
-     *
-     * You should not be initializing this, the API does this already
      * @since 2.1.5
      */
-    public ApiSettings() {
+    protected ApiSettings() {
         this.useCommandModule = true;
         this.useInventoryModule = true;
         this.commandAutoRegisterBlacklist = new ArrayList<>();

@@ -1,10 +1,9 @@
 package com.burchard36.api.command;
 
 import com.burchard36.api.BurchAPI;
+import com.burchard36.api.command.exceptions.CommandExceptionFactory;
 import com.burchard36.api.utils.Logger;
 import com.burchard36.api.command.annotation.*;
-import com.burchard36.api.command.exceptions.CommandConstructorNotFoundException;
-import com.burchard36.api.command.exceptions.InvalidCommandAnnotationException;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
@@ -20,7 +19,7 @@ import java.util.Set;
 /**
  * Injects ApiCommands into Bukkits command map
  */
-public class CommandInjector {
+public class CommandInjector extends CommandExceptionFactory {
 
     /**
      * Injects all commands into the BukkitCommand map
@@ -54,7 +53,7 @@ public class CommandInjector {
             }
 
             if (constructor == null)
-                throw new CommandConstructorNotFoundException("No default, or constructor with JavaPlugin found for class" +
+                throw newConstructorNotFoundException("No default, or constructor with JavaPlugin found for class" +
                         clazz.getName() + " please review your API usage to make sure you class has a valid constructor!");
 
             ApiCommand command;
@@ -92,7 +91,7 @@ public class CommandInjector {
                 if (commandName != null && !commandName.name().equalsIgnoreCase("")) {
                     command.setCommandName(commandName.name());
                 } else
-                    throw new InvalidCommandAnnotationException("The class: " + command.getClass().getName() + " did not have a valid command name set!");
+                    throw newInvalidCommandAnnotationException("The class: " + command.getClass().getName() + " did not have a valid command name set!");
             }
 
 
