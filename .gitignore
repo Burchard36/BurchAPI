@@ -6,7 +6,7 @@
 *.iws
 
 target/**/*
-target/site/*
+!target/site/**
 
 # IntelliJ
 out/
