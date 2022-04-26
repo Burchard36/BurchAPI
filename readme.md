@@ -7,6 +7,8 @@
 
 We also have [Javadocs](https://burchard36.github.io/BurchAPI/index.html) provided for all of our classes and methods
 
+Want to contribute to the project? Look [here](https://github.com/Burchard36/BurchAPI/blob/main/CONTRIBUTING.md)
+
 Features:
 
 1. A FunctionalIntferface Command API that automatically registers commands via an Annotation
