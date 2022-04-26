@@ -5,10 +5,8 @@
 *.ipr
 *.iws
 
-!target/
-
-target/*
-!target/site/*
+target/**/*
+target/site/
 
 # IntelliJ
 out/
