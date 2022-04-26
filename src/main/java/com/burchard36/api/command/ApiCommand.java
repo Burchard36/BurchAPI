@@ -34,7 +34,7 @@ public class ApiCommand extends Command implements TabCompleter {
     /* We check this when registering a command, if the command name is set like this, then the end user did not use setCommandName() on and empty constructor */
     private static final String DO_NOT_REGISTER = "BurchAPIPlaceholderDoNoteRegister36";
 
-    private ApiCommand() {
+    public ApiCommand() {
         super(DO_NOT_REGISTER);
     }
 
