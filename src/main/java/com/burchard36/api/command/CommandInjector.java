@@ -49,19 +49,12 @@ public class CommandInjector extends CommandExceptionFactory {
                 switch (result.getValue()) {
                     case ERR_INVALID_CONSTRUCTOR -> throw newConstructorNotFoundException("Could not locate a valid constructor for the class: " + clazz.getName() +
                             " when loading it as an ApiCommand! Please ensure the Constructor has public access!");
-                    case ERR_INVOKATION -> throw newCommandInvocationException("Could not invoke the ApiCommand class: " + clazz.getName());
+                    case ERR_INVOCATION -> throw newCommandInvocationException("Could not invoke the ApiCommand class: " + clazz.getName());
                 }
                 continue;
             }
 
-            ApiCommand command;
-            try {
-                command = (ApiCommand) result.getKey();
-            } catch (ClassCastException ignored) {
-                throw newClassNotTypeOfApiCommand("An odd exception occurred, a Object was returned from a PackageScanner.InvocationResult" +
-                        ". But the resulting instance wasn't a type of ApiCommand! (Did you properly extend the class?) Class name i'm attempting" +
-                        " to inject: " + result.getKey().getClass().getName());
-            }
+            ApiCommand command = result.getKey();
 
             final RegisterCommand commandAnnotation = command.getClass().getAnnotation(RegisterCommand.class);
             final CommandName commandName = command.getClass().getAnnotation(CommandName.class);
@@ -126,7 +119,7 @@ public class CommandInjector extends CommandExceptionFactory {
      * Injects ApiCommand into Bukkits CommandMap
      * @param command Class extending BukkitCommand to inject into CommandMap
      */
-    private static void register(final Command command) {
+    protected static void register(final Command command) {
         try {
             final Field commandMapField = Bukkit.getServer().getClass().getDeclaredField("commandMap");
             commandMapField.setAccessible(true);

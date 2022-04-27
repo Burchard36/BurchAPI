@@ -82,7 +82,7 @@ public class PackageScanner<T> {
                 object = constructor.newInstance();
             }
         } catch (IllegalAccessException | InstantiationException | InvocationTargetException ex) {
-            return new InvocationResult<>(null, InvocationErrorStatus.ERR_INVOKATION);
+            return new InvocationResult<>(null, InvocationErrorStatus.ERR_INVOCATION);
         }
 
         return new InvocationResult<>(object, InvocationErrorStatus.NULL);
@@ -207,18 +207,26 @@ public class PackageScanner<T> {
     }
 
     /**
-     * Returned as a Entry value when using {@link PackageScanner#invokeClass}
+     * Returned as an Entry value when using {@link PackageScanner#invokeClass}
      */
     public enum InvocationErrorStatus {
         NULL,
         ERR_INVALID_CONSTRUCTOR,
-        ERR_INVOKATION
+        ERR_INVOCATION
     }
 
     public static class InvocationResult<T, InvocationErrorStatus> extends AbstractMap.SimpleEntry<Object, InvocationErrorStatus> {
 
+        private final T key;
+
         protected InvocationResult(T key, InvocationErrorStatus value) {
             super(key, value);
+            this.key = key;
+        }
+
+        @Override
+        public T getKey() {
+            return key;
         }
 
         /**
