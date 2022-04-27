@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Injects ApiCommands into Bukkits command map
+ * Injects ApiCommands into Bukkit's command map
  */
 public class CommandInjector extends CommandExceptionFactory {
 
@@ -47,9 +47,9 @@ public class CommandInjector extends CommandExceptionFactory {
 
             if (!result.wasSuccessfullyInvoked()) {
                 switch (result.getValue()) {
-                    case ERR_INVALID_CONSTRUCTOR -> throw newConstructorNotFoundException("Could not locate a valid constructor for the class: " + result.getKey().getClass().getName() +
+                    case ERR_INVALID_CONSTRUCTOR -> throw newConstructorNotFoundException("Could not locate a valid constructor for the class: " + clazz.getName() +
                             " when loading it as an ApiCommand! Please ensure the Constructor has public access!");
-                    case ERR_INVOKATION -> throw new
+                    case ERR_INVOKATION -> throw newCommandInvocationException("Could not invoke the ApiCommand class: " + clazz.getName());
                 }
                 continue;
             }
@@ -58,7 +58,7 @@ public class CommandInjector extends CommandExceptionFactory {
             try {
                 command = (ApiCommand) result.getKey();
             } catch (ClassCastException ignored) {
-                throw newClassNotTypeOfApiCommand("An odd exception occured, a Object was returned from a PackageScanner.InvocationResult" +
+                throw newClassNotTypeOfApiCommand("An odd exception occurred, a Object was returned from a PackageScanner.InvocationResult" +
                         ". But the resulting instance wasn't a type of ApiCommand! (Did you properly extend the class?) Class name i'm attempting" +
                         " to inject: " + result.getKey().getClass().getName());
             }

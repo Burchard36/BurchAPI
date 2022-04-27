@@ -11,7 +11,11 @@ public class CommandExceptionFactory {
         return new InvalidCommandAnnotationException(msg);
     }
 
-    protected static ClassNotTypeOfApiCommand newClassNotTypeOfApiCommand(String msg) {
-        return new ClassNotTypeOfApiCommand(msg);
+    protected static ClassNotTypeOfApiCommandException newClassNotTypeOfApiCommand(String msg) {
+        return new ClassNotTypeOfApiCommandException(msg);
+    }
+
+    protected static CommandInvocationException newCommandInvocationException(String msg) {
+        return new CommandInvocationException(msg);
     }
 }

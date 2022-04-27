@@ -25,7 +25,7 @@ import java.util.stream.Stream;
 public class PackageScanner<T> {
 
     protected Package packageToSearch;
-    protected Class<?> currentClassToSearch;
+    protected Class<? extends T> currentClassToSearch;
     protected List<Class<?>> classesForPackage;
     protected List<Class<? extends T>> result;
 
@@ -111,12 +111,12 @@ public class PackageScanner<T> {
      * @return Instance of this class
      * @since 2.1.8
      */
-    public final PackageScanner<T> subclassSearchQuery(@Nonnull Package aPackage, @Nonnull Class<?> aClass) {
+    public final PackageScanner<T> subclassSearchQuery(@Nonnull Package aPackage, @Nonnull Class<? extends T> aClass) {
         this.packageToSearch = aPackage;
         this.currentClassToSearch = aClass;
 
         try {
-            this.classesForPackage = this.getClassesForPackage(this.packageToSearch.getName());
+            this.getClassesForPackage(this.packageToSearch.getName());
         } catch (IOException | URISyntaxException ignored) {
             throw new PackageScannerException("When using package: " + this.packageToSearch.getName() + " a malformed class" +
                     " file was detected please review your code");
@@ -145,7 +145,7 @@ public class PackageScanner<T> {
 
 
     /* https://stackoverflow.com/questions/1810614/getting-all-classes-from-a-package */
-    protected final List<Class<? extends T>> getClassesExtendingThis(Package thePackage, Class<?> that)
+    protected final List<Class<? extends T>> getClassesExtendingThis(Package thePackage, Class<? extends T> that)
             throws IOException, ClassNotFoundException, URISyntaxException {
         Logger.debug("Going to attempt to search for classes extending: " + that.getName() + ". Amount of classes grabbed: " + this.classesForPackage.size());
         List<Class<? extends T>> returnValues = new ArrayList<>();
@@ -154,19 +154,19 @@ public class PackageScanner<T> {
             if (that.isAssignableFrom(clazz)) {
                 Logger.debug("Found a class that matched! Class found: " + clazz.getName() + ". Class needed");
                 try {
-                    Class<? extends T> input = (Class<? extends T>) clazz.asSubclass(that);
+                    Class<? extends T> input = clazz.asSubclass(that);
                     returnValues.add(input);
                 } catch (ClassCastException ignored) {
                     Logger.error("Un-expected class when parsing: " + clazz.getName());
                     Logger.error("This is likely an issue with the way you are implementing/extending a class from our API! Please review your code and documentation.");
+                    Logger.error("No exception can be caught for this, this is your own fault and you need to fix it");
                 }
             }
         }
-        this.classesForPackage.clear();
         return returnValues;
     }
 
-    protected final List<Class<?>> getClassesForPackage(String pkgName) throws IOException, URISyntaxException {
+    protected final void getClassesForPackage(String pkgName) throws IOException, URISyntaxException {
         final String pkgPath = pkgName.replace('.', '/');
         final URI pkg = Objects.requireNonNull(BurchAPI.INSTANCE.getClass().getClassLoader().getResource(pkgPath)).toURI();
         final ArrayList<Class<?>> allClasses = new ArrayList<>();
@@ -182,6 +182,7 @@ public class PackageScanner<T> {
             root = Paths.get(pkg);
         }
 
+        this.classesForPackage.clear();
         final String extension = ".class";
         try (final Stream<Path> allPaths = Files.walk(root)) {
             allPaths.filter(Files::isRegularFile).forEach(file -> {
@@ -194,7 +195,7 @@ public class PackageScanner<T> {
                 }
             });
         }
-        return allClasses;
+        this.classesForPackage.addAll(allClasses);
     }
 
     /**
@@ -217,13 +218,14 @@ public class PackageScanner<T> {
 
     public static class InvocationResult<T, InvocationErrorStatus> extends AbstractMap.SimpleEntry<Object, InvocationErrorStatus> {
 
-        public InvocationResult(T key, InvocationErrorStatus value) {
+        protected InvocationResult(T key, InvocationErrorStatus value) {
             super(key, value);
         }
 
         /**
          * Checks if the Invocation of a class was successfully
-         * @return A {@link Boolean} true if invocation was successfull
+         * @return A {@link Boolean} true if invocation was successfully
+         * @since 2.1.8
          */
         public final boolean wasSuccessfullyInvoked() {
             return this.getValue() != PackageScanner.InvocationErrorStatus.NULL;
