@@ -1,7 +1,5 @@
 package com.burchard36.api.data.json;
 
-import com.burchard36.api.data.annotations.PlayerDataFile;
-import com.burchard36.api.data.json.enums.FileType;
 import lombok.Getter;
 import lombok.Setter;
 

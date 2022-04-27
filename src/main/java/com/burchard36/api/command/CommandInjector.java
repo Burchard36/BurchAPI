@@ -4,14 +4,15 @@ import com.burchard36.api.BurchAPI;
 import com.burchard36.api.command.exceptions.CommandExceptionFactory;
 import com.burchard36.api.utils.Logger;
 import com.burchard36.api.command.annotation.*;
+import com.burchard36.api.utils.reflections.PackageScanner;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
 
-import java.lang.reflect.Constructor;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -26,49 +27,40 @@ public class CommandInjector extends CommandExceptionFactory {
      * {@link CommandName} or {@link RegisterCommand} Annotation(s)
      */
     public static void injectCommands() {
-        List<Class<?>> classes = BurchAPI.INSTANCE.getPackageScanner()
-                .subclassSearchQuery(BurchAPI.INSTANCE.getClass().getPackage(), ApiCommand.class)
+        final PackageScanner<ApiCommand> scanner = BurchAPI.INSTANCE.getPackageScanner();
+        scanner.subclassSearchQuery(BurchAPI.INSTANCE.getClass().getPackage(), ApiCommand.class)
                 .execute();
+        HashMap<Class<? extends Annotation>, Class<? extends ApiCommand>> classes =
+                scanner.findWithClassConstructorAnnotations(RegisterCommand.class, CommandName.class);
+
 
         Logger.debug("Attempting to inject: " + classes.size() + " ApiCommand's");
-        for (final Class<?> clazz : classes) {
+        for (final Class<? extends ApiCommand> clazz : classes.values()) {
 
             if (BurchAPI.INSTANCE.getApiSettings().getCommandAutoRegisterBlacklist().contains(clazz)) {
                 Logger.debug("Not loading: " + clazz.getName() + " because it was on the Command registration black-list");
                 continue;
             }
 
-            Constructor<?>[] constructors = clazz.getDeclaredConstructors();
-            Constructor<?> constructor = null;
-            Object toProvide = null;
-            try {
-                for (Constructor<?> aConstructor : constructors) {
-                    if (aConstructor.getParameterTypes().length == 0 && constructor == null)
-                        constructor = clazz.getDeclaredConstructor();
+            PackageScanner.InvocationResult<ApiCommand, PackageScanner.InvocationErrorStatus> result =
+                    scanner.invokeClass(clazz);
 
-                    if (aConstructor.getParameterTypes().length == 1 && aConstructor.getParameterTypes()[0] == BurchAPI.INSTANCE.getClass()) {
-                        toProvide = BurchAPI.INSTANCE;
-                        constructor = clazz.getDeclaredConstructor(BurchAPI.INSTANCE.getClass());
-                    }
+            if (!result.wasSuccessfullyInvoked()) {
+                switch (result.getValue()) {
+                    case ERR_INVALID_CONSTRUCTOR -> throw newConstructorNotFoundException("Could not locate a valid constructor for the class: " + result.getKey().getClass().getName() +
+                            " when loading it as an ApiCommand! Please ensure the Constructor has public access!");
+                    case ERR_INVOKATION -> throw new
                 }
-            } catch (NoSuchMethodException ex) {
-                ex.printStackTrace();
+                continue;
             }
-
-            if (constructor == null)
-                throw newConstructorNotFoundException("No default, or constructor with JavaPlugin found for class" +
-                        clazz.getName() + " please review your API usage to make sure you class has a valid constructor!");
 
             ApiCommand command;
             try {
-                try {
-                    command = (ApiCommand) constructor.newInstance(toProvide);
-                } catch (NullPointerException ignored) {
-                    command = (ApiCommand) constructor.newInstance();
-                }
-            } catch (IllegalAccessException | InstantiationException | InvocationTargetException ex) {
-                ex.printStackTrace();
-                continue;
+                command = (ApiCommand) result.getKey();
+            } catch (ClassCastException ignored) {
+                throw newClassNotTypeOfApiCommand("An odd exception occured, a Object was returned from a PackageScanner.InvocationResult" +
+                        ". But the resulting instance wasn't a type of ApiCommand! (Did you properly extend the class?) Class name i'm attempting" +
+                        " to inject: " + result.getKey().getClass().getName());
             }
 
             final RegisterCommand commandAnnotation = command.getClass().getAnnotation(RegisterCommand.class);

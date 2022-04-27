@@ -10,4 +10,8 @@ public class CommandExceptionFactory {
     protected static InvalidCommandAnnotationException newInvalidCommandAnnotationException(String msg) {
         return new InvalidCommandAnnotationException(msg);
     }
+
+    protected static ClassNotTypeOfApiCommand newClassNotTypeOfApiCommand(String msg) {
+        return new ClassNotTypeOfApiCommand(msg);
+    }
 }

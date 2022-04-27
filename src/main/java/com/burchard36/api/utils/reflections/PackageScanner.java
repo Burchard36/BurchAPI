@@ -1,11 +1,14 @@
 package com.burchard36.api.utils.reflections;
 
 import com.burchard36.api.BurchAPI;
+import com.burchard36.api.data.annotations.PlayerDataFile;
 import com.burchard36.api.utils.Logger;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.*;
@@ -49,12 +52,50 @@ public class PackageScanner<T> {
         return this;
     }
 
-    public List<Class<? extends T>> findWithClassAnnotations(Annotation... annotations) {
-        final List<Class<? extends T>> results = new ArrayList<>();
-        if (this.result == null) throw new PackageScannerException("Attempting to call findWithClassAnnotations without executing a query!");
-        for (Annotation annotation : annotations) {
-            results.forEach((clazz) -> {
+    public final InvocationResult<T, InvocationErrorStatus> invokeClass(Class<? extends T> clazz) {
+        Constructor<?>[] constructors = clazz.getDeclaredConstructors();
+        Constructor<? extends T> constructor = null;
+        Object toProvide = null;
+        try {
+            for (Constructor<?> aConstructor : constructors) {
+                if (aConstructor.getParameterTypes().length == 0 && constructor == null)
+                    constructor = clazz.getDeclaredConstructor();
 
+                if (aConstructor.getParameterTypes().length == 1 && aConstructor.getParameterTypes()[0] == BurchAPI.INSTANCE.getClass()) {
+                    toProvide = BurchAPI.INSTANCE;
+                    constructor = clazz.getDeclaredConstructor(BurchAPI.INSTANCE.getClass());
+                }
+            }
+        } catch (NoSuchMethodException ex) {
+            return new InvocationResult<>(null, InvocationErrorStatus.ERR_INVALID_CONSTRUCTOR);
+        }
+
+        if (constructor == null)
+            return new InvocationResult<>(null, InvocationErrorStatus.ERR_INVALID_CONSTRUCTOR);
+
+        T object;
+        try {
+            try {
+                object = constructor.newInstance(toProvide);
+            } catch (NullPointerException ignored) {
+                object = constructor.newInstance();
+            }
+        } catch (IllegalAccessException | InstantiationException | InvocationTargetException ex) {
+            return new InvocationResult<>(null, InvocationErrorStatus.ERR_INVOKATION);
+        }
+
+        return new InvocationResult<>(object, InvocationErrorStatus.NULL);
+    }
+
+    @SafeVarargs
+    public final HashMap<Class<? extends Annotation>, Class<? extends T>> findWithClassConstructorAnnotations(Class<? extends Annotation>... annotations) {
+        final HashMap<Class<? extends Annotation>, Class<? extends T>> results = new HashMap<>();
+        if (this.result == null) throw new PackageScannerException("Attempting to call findWithClassAnnotations without executing a query!");
+        for (Class<? extends Annotation> annotation : annotations) {
+            this.result.forEach((clazz) -> {
+                if (clazz.getAnnotation(PlayerDataFile.class) != null) {
+                    results.putIfAbsent(annotation, clazz);
+                }
             });
         }
         return results;
@@ -104,7 +145,7 @@ public class PackageScanner<T> {
 
 
     /* https://stackoverflow.com/questions/1810614/getting-all-classes-from-a-package */
-    protected List<Class<? extends T>> getClassesExtendingThis(Package thePackage, Class<?> that)
+    protected final List<Class<? extends T>> getClassesExtendingThis(Package thePackage, Class<?> that)
             throws IOException, ClassNotFoundException, URISyntaxException {
         Logger.debug("Going to attempt to search for classes extending: " + that.getName() + ". Amount of classes grabbed: " + this.classesForPackage.size());
         List<Class<? extends T>> returnValues = new ArrayList<>();
@@ -125,7 +166,7 @@ public class PackageScanner<T> {
         return returnValues;
     }
 
-    protected List<Class<?>> getClassesForPackage(String pkgName) throws IOException, URISyntaxException {
+    protected final List<Class<?>> getClassesForPackage(String pkgName) throws IOException, URISyntaxException {
         final String pkgPath = pkgName.replace('.', '/');
         final URI pkg = Objects.requireNonNull(BurchAPI.INSTANCE.getClass().getClassLoader().getResource(pkgPath)).toURI();
         final ArrayList<Class<?>> allClasses = new ArrayList<>();
@@ -162,6 +203,30 @@ public class PackageScanner<T> {
     public static class PackageScannerException extends RuntimeException {
         protected PackageScannerException(String msg) {
             super(msg);
+        }
+    }
+
+    /**
+     * Returned as a Entry value when using {@link PackageScanner#invokeClass}
+     */
+    public enum InvocationErrorStatus {
+        NULL,
+        ERR_INVALID_CONSTRUCTOR,
+        ERR_INVOKATION
+    }
+
+    public static class InvocationResult<T, InvocationErrorStatus> extends AbstractMap.SimpleEntry<Object, InvocationErrorStatus> {
+
+        public InvocationResult(T key, InvocationErrorStatus value) {
+            super(key, value);
+        }
+
+        /**
+         * Checks if the Invocation of a class was successfully
+         * @return A {@link Boolean} true if invocation was successfull
+         */
+        public final boolean wasSuccessfullyInvoked() {
+            return this.getValue() != PackageScanner.InvocationErrorStatus.NULL;
         }
     }
 }

@@ -2,9 +2,16 @@ package com.burchard36.api.data.annotations;
 
 import com.burchard36.api.data.json.enums.FileType;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 /**
  * For testing, not fully implemented yet
  */
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
 public @interface PlayerDataFile {
     /**
      * The filetype to save this PlayerDataFile as

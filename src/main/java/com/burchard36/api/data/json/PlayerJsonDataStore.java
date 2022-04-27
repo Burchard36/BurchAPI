@@ -4,7 +4,9 @@ import com.burchard36.api.BurchAPI;
 import com.burchard36.api.PluginJsonWriter;
 import com.burchard36.api.data.FileDataStore;
 import com.burchard36.api.data.annotations.DataStoreID;
+import com.burchard36.api.data.annotations.PlayerDataFile;
 import com.burchard36.api.utils.Logger;
+import com.burchard36.api.utils.reflections.PackageScanner;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -12,10 +14,14 @@ import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * The default data store for PlayerData provided by BurchAPI
+ */
 @DataStoreID(id = "internal_playerJsonDataStore")
 public class PlayerJsonDataStore implements FileDataStore, Listener {
 
@@ -34,10 +40,26 @@ public class PlayerJsonDataStore implements FileDataStore, Listener {
     @Override
     public void onEnable() {
         Logger.log("Initializing PlayerJsonDataStore!");
-        final List<Class<?>> possibleClasses =
-                this.api.getPackageScanner()
-                        .subclassSearchQuery(this.api.getClass().getPackage(), JsonPlayerDataFile.class)
-                        .execute();
+
+        /* Search for classes extending JsonPlayerDataFile */
+        final PackageScanner<JsonPlayerDataFile> scanner = this.api.getPackageScanner();
+        this.api.getPackageScanner()
+                .subclassSearchQuery(this.api.getClass().getPackage(), JsonPlayerDataFile.class)
+                .execute();
+
+        /* Find classes with the annotation PlayerDataFile */
+        final HashMap<Class<? extends Annotation>, Class<? extends JsonPlayerDataFile>>
+                annotatedClasses = scanner.findWithClassConstructorAnnotations(PlayerDataFile.class);
+
+        if (annotatedClasses.size() > 1) {
+            Logger.error("Found multiple classes extending JsonPlayerDataFile with a @PlayerDataFile marked Annotation!" +
+                    "Please review our documentation, you are only allowed to have one class annotated with @PlayerDataFile");
+        }
+
+        annotatedClasses.forEach((keyAnnotation, keyClass) -> {
+
+        });
+
 
     }
 
