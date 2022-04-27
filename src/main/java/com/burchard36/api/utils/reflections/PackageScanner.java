@@ -94,7 +94,7 @@ public class PackageScanner<T> {
         if (this.result.isEmpty()) throw new PackageScannerException("Attempting to call findWithClassAnnotations without executing a query!");
         for (Class<? extends Annotation> annotation : annotations) {
             this.result.forEach((clazz) -> {
-                if (clazz.getAnnotation(PlayerDataFile.class) != null) {
+                if (clazz.getAnnotation(annotation) != null) {
                     results.putIfAbsent(annotation, clazz);
                 }
             });
