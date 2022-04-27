@@ -98,13 +98,6 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.reflections/reflections -->
-        <dependency>
-            <groupId>org.reflections</groupId>
-            <artifactId>reflections</artifactId>
-            <version>0.10.2</version>
-        </dependency>
-
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -115,6 +108,7 @@
             <groupId>com.github.Burchard36</groupId>
             <artifactId>Item-NBT-API</artifactId>
             <version>3.0.3</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>

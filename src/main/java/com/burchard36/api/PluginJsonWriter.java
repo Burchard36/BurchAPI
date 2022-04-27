@@ -1,5 +1,6 @@
-package com.burchard36.api.json;
+package com.burchard36.api;
 
+import com.burchard36.api.data.json.JsonDataFile;
 import com.burchard36.api.utils.Logger;
 import com.google.gson.Gson;
 
@@ -11,7 +12,13 @@ import java.util.concurrent.CompletableFuture;
 /**
  * A Json writer, uses class serialization to write/read from files from {@link Gson}
  */
-public record PluginJsonWriter(Gson gson) {
+public class PluginJsonWriter {
+
+    protected final Gson gson;
+
+    protected PluginJsonWriter(Gson gson) {
+        this.gson = gson;
+    }
 
     /**
      * Asynchronously/Synchronously creates a {@link JsonDataFile}
@@ -24,15 +31,15 @@ public record PluginJsonWriter(Gson gson) {
             try {
                 if (!file.getParentFile().exists())
                     if (file.getParentFile().mkdirs()){
-                        Logger.log("&aAPI :: Successfully created directories");
+                        Logger.log(":: &aSuccessfully created directories");
                     }
                 if (file.createNewFile()) {
-                    Logger.log("&aAPI :: Successfully created a DataFile!");
+                    Logger.log(":: &aSuccessfully created a DataFile!");
                     String jsonString = this.gson.toJson(dataFile);
                     Writer writer = new FileWriter(file);
                     writer.append(jsonString);
                     writer.close();
-                    Logger.log("&aAPI :: Successfully wrote default data for DataFile");
+                    Logger.log(":: &aSuccessfully wrote default data for DataFile");
                 }
             } catch (IOException ex) {
                 ex.printStackTrace();
@@ -76,13 +83,19 @@ public record PluginJsonWriter(Gson gson) {
      * @param clazz {@link Class}  The Class file of the data you are trying to get
      * @return instance of your class extending {@link JsonDataFile}
      */
-    public JsonDataFile getDataFromFile(final File file, Class<? extends JsonDataFile> clazz) {
-        if (!file.exists()) return null;
+    public CompletableFuture<JsonDataFile> getDataFromFile(final File file, Class<? extends JsonDataFile> clazz) {
+        if (!file.exists()) return CompletableFuture.completedFuture(null);
         try {
-            return this.gson.fromJson(Files.newBufferedReader(Paths.get(file.toURI())), clazz);
+            return CompletableFuture.completedFuture(this.gson.fromJson(Files.newBufferedReader(Paths.get(file.toURI())), clazz));
         } catch (IOException ex) {
             ex.printStackTrace();
-            return null;
+            return CompletableFuture.completedFuture(null);
         }
+    }
+
+    public final CompletableFuture<Boolean> deleteDataFile(final JsonDataFile dataFile) {
+        if (!dataFile.getFile().exists()) return CompletableFuture.completedFuture(false);
+        if (dataFile.getFile().delete()) return CompletableFuture.completedFuture(true);
+        else return CompletableFuture.completedFuture(false);
     }
 }

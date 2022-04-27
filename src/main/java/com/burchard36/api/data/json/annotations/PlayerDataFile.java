@@ -1,6 +1,6 @@
-package com.burchard36.api.json.annotations;
+package com.burchard36.api.data.json.annotations;
 
-import com.burchard36.api.json.enums.FileType;
+import com.burchard36.api.data.json.enums.FileType;
 
 /**
  * For testing, not fully implemented yet

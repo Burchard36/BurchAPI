@@ -1,4 +1,4 @@
-package com.burchard36.api.json;
+package com.burchard36.api.data.json;
 
 import com.burchard36.api.BurchAPI;
 import org.bukkit.entity.Player;

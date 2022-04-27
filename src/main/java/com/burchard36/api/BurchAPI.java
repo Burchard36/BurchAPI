@@ -1,8 +1,10 @@
 package com.burchard36.api;
 
+import com.burchard36.api.command.ApiCommand;
 import com.burchard36.api.command.CommandInjector;
 import com.burchard36.api.inventory.GlobalInventoryListener;
-import com.burchard36.api.json.PluginJsonWriter;
+import com.burchard36.api.utils.Logger;
+import com.burchard36.api.utils.PackageScanner;
 import com.google.gson.GsonBuilder;
 import lombok.Getter;
 import org.bukkit.ChatColor;
@@ -21,16 +23,19 @@ import java.util.List;
 public abstract class BurchAPI extends JavaPlugin implements Api {
 
     public static BurchAPI INSTANCE;
-    private GlobalInventoryListener inventoryListener;
+    protected GlobalInventoryListener inventoryListener;
+    protected PluginJsonWriter jsonWriter;
+    protected PackageScanner packageScanner;
 
     @Getter
-    private final ApiSettings apiSettings = new ApiSettings();
+    protected final ApiSettings apiSettings = new ApiSettings();
 
     @Override
     public void onEnable() {
         INSTANCE = this;
         this.onPreApiEnable();
-        PluginJsonWriter jsonWriter = new PluginJsonWriter(new GsonBuilder().setPrettyPrinting().create());
+        this.packageScanner = new PackageScanner();
+        this.jsonWriter = new PluginJsonWriter(new GsonBuilder().setPrettyPrinting().create());
 
         if (this.getApiSettings().isUseInventoryModule())
             this.inventoryListener = new GlobalInventoryListener(this);
@@ -55,14 +60,11 @@ public abstract class BurchAPI extends JavaPlugin implements Api {
     public abstract void onPreApiEnable();
 
     /**
-     * Checks if a JavaPlugin implements the Api class, and if it does pull the Api
-     * @param plugin class extending JavaPlugin and
-     * @return Returns Api instance if JavaPlugin implements Api class, returns null if it doesnt
+     * Gets the {@link PluginJsonWriter} instance of this class
+     * @return the instance of {@link PluginJsonWriter}
      */
-    public static Api getLib(final JavaPlugin plugin) {
-        if (plugin instanceof Api) {
-            return (Api) plugin;
-        } else return null;
+    public final PluginJsonWriter getJsonWriter() {
+        return this.jsonWriter;
     }
 
     /**
@@ -73,7 +75,7 @@ public abstract class BurchAPI extends JavaPlugin implements Api {
      * @return A {@link Boolean} true if debugging is active
      */
     public boolean isDebug() {
-        return false;
+        return true;
     }
 
     /**
@@ -88,8 +90,16 @@ public abstract class BurchAPI extends JavaPlugin implements Api {
     }
 
     @Override
-    public GlobalInventoryListener getGlobalInventoryListener() {
+    public final GlobalInventoryListener getGlobalInventoryListener() {
         return this.inventoryListener;
+    }
+
+    /**
+     * Gets the {@link PackageScanner} instance of this class
+     * @return
+     */
+    public final PackageScanner getPackageScanner() {
+        return this.packageScanner;
     }
 
     /**

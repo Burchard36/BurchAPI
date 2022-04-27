@@ -1,4 +1,4 @@
-package com.burchard36.api.json;
+package com.burchard36.api.data.json;
 
 /**
  * Not implemented

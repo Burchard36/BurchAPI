@@ -1,4 +1,4 @@
-package com.burchard36.api.json.enums;
+package com.burchard36.api.data.json.enums;
 
 /**
  * FileType types for when working with the file data library

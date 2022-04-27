@@ -7,14 +7,12 @@ import com.burchard36.api.command.annotation.*;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
-import org.reflections.Reflections;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Injects ApiCommands into Bukkits command map
@@ -28,12 +26,21 @@ public class CommandInjector extends CommandExceptionFactory {
      * {@link CommandName} or {@link RegisterCommand} Annotation(s)
      */
     public static void injectCommands() {
-        Reflections reflections = new Reflections(BurchAPI.INSTANCE.getClass().getPackage().getName());
-
-        Set<Class<? extends ApiCommand>> classes = reflections.getSubTypesOf(ApiCommand.class);
+        List<Class<? extends ApiCommand>> classes = BurchAPI.INSTANCE.getPackageScanner()
+                .setQuery(BurchAPI.INSTANCE.getClass().getPackage(), ApiCommand.class)
+                .execute();
+        if (classes == null) {
+            Logger.warn("When trying to receive classes extending ApiCommand, non were found! If you are not using " +
+                    "the Command API for BurchAPI, then set the loading of commands to false with the ApiSettings!");
+            return;
+        }
+        Logger.debug("Attempting to inject: " + classes.size() + " ApiCommand's");
         for (final Class<? extends ApiCommand> clazz : classes) {
 
-            if (BurchAPI.INSTANCE.getApiSettings().getCommandAutoRegisterBlacklist().contains(clazz)) continue;
+            if (BurchAPI.INSTANCE.getApiSettings().getCommandAutoRegisterBlacklist().contains(clazz)) {
+                Logger.debug("Not loading: " + clazz.getName() + " because it was on the Command registration black-list");
+                continue;
+            }
 
             Constructor<?>[] constructors = clazz.getDeclaredConstructors();
             Constructor<?> constructor = null;
