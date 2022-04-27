@@ -37,6 +37,7 @@ public class PackageScanner<T> {
      */
     public PackageScanner() {
         this.classesForPackage = new ArrayList<>();
+        this.result = new ArrayList<>();
     }
 
     /**
@@ -90,7 +91,7 @@ public class PackageScanner<T> {
     @SafeVarargs
     public final HashMap<Class<? extends Annotation>, Class<? extends T>> findWithClassConstructorAnnotations(Class<? extends Annotation>... annotations) {
         final HashMap<Class<? extends Annotation>, Class<? extends T>> results = new HashMap<>();
-        if (this.result == null) throw new PackageScannerException("Attempting to call findWithClassAnnotations without executing a query!");
+        if (this.result.isEmpty()) throw new PackageScannerException("Attempting to call findWithClassAnnotations without executing a query!");
         for (Class<? extends Annotation> annotation : annotations) {
             this.result.forEach((clazz) -> {
                 if (clazz.getAnnotation(PlayerDataFile.class) != null) {
@@ -144,7 +145,6 @@ public class PackageScanner<T> {
     }
 
 
-    /* https://stackoverflow.com/questions/1810614/getting-all-classes-from-a-package */
     protected final List<Class<? extends T>> getClassesExtendingThis(Package thePackage, Class<? extends T> that)
             throws IOException, ClassNotFoundException, URISyntaxException {
         Logger.debug("Going to attempt to search for classes extending: " + that.getName() + ". Amount of classes grabbed: " + this.classesForPackage.size());
@@ -166,6 +166,7 @@ public class PackageScanner<T> {
         return returnValues;
     }
 
+    /* https://stackoverflow.com/questions/1810614/getting-all-classes-from-a-package */
     protected final void getClassesForPackage(String pkgName) throws IOException, URISyntaxException {
         final String pkgPath = pkgName.replace('.', '/');
         final URI pkg = Objects.requireNonNull(BurchAPI.INSTANCE.getClass().getClassLoader().getResource(pkgPath)).toURI();
@@ -178,9 +179,7 @@ public class PackageScanner<T> {
             } catch (final FileSystemNotFoundException e) {
                 root = FileSystems.newFileSystem(pkg, Collections.emptyMap()).getPath(pkgPath);
             }
-        } else {
-            root = Paths.get(pkg);
-        }
+        } else root = Paths.get(pkg);
 
         this.classesForPackage.clear();
         final String extension = ".class";
