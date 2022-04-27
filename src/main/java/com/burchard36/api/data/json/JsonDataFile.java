@@ -1,25 +1,15 @@
 package com.burchard36.api.data.json;
 
-import lombok.Getter;
-
 import java.io.File;
 
 /**
  * Class to extend classes you want to be specified as Json data classes
  */
-@Getter
-public class JsonDataFile {
+public interface JsonDataFile {
 
     /**
-     * To be changed
+     * The {@link File} to save this json data to
+     * @return The {@link File} to save this data class to
      */
-    protected transient File file;
-
-    /**
-     * Returns this file
-     * @return {@link File}
-     */
-    public final File getFile() {
-        return this.file;
-    }
+    File getFile();
 }

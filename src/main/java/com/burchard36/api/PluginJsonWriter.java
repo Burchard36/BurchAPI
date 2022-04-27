@@ -22,10 +22,14 @@ public class PluginJsonWriter {
 
     /**
      * Asynchronously/Synchronously creates a {@link JsonDataFile}
+     * <br>
+     *
+     * This will ONLY create a new file if one doesn't exist,
+     *
      * @param dataFile A {@link JsonDataFile} to create
-     * @return {@link CompletableFuture<File>}
+     * @return {@link CompletableFuture<Boolean>} true if new file was created, false if not.
      */
-    public CompletableFuture<File> createFile(final JsonDataFile dataFile) {
+    public CompletableFuture<Boolean> createFile(final JsonDataFile dataFile) {
         final File file = dataFile.getFile();
         if (!file.exists()) {
             try {
@@ -40,13 +44,14 @@ public class PluginJsonWriter {
                     writer.append(jsonString);
                     writer.close();
                     Logger.log(":: &aSuccessfully wrote default data for DataFile");
+                    return CompletableFuture.completedFuture(true);
                 }
             } catch (IOException ex) {
                 ex.printStackTrace();
-                return CompletableFuture.completedFuture(file);
+                return CompletableFuture.completedFuture(false);
             }
         }
-        return CompletableFuture.completedFuture(file);
+        return CompletableFuture.completedFuture(false);
     }
 
     /**

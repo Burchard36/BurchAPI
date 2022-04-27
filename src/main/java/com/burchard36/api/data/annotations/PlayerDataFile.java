@@ -1,4 +1,4 @@
-package com.burchard36.api.data.json.annotations;
+package com.burchard36.api.data.annotations;
 
 import com.burchard36.api.data.json.enums.FileType;
 
@@ -17,7 +17,7 @@ public @interface PlayerDataFile {
      *
      * this value is defaulted to true
      *
-     * @return A {@link Boolean}
+     * @return A {@link Boolean}, true if you want to run async saving (default true), false if not
      */
     boolean runAsync() default true;
 }

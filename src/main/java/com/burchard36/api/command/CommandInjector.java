@@ -26,16 +26,12 @@ public class CommandInjector extends CommandExceptionFactory {
      * {@link CommandName} or {@link RegisterCommand} Annotation(s)
      */
     public static void injectCommands() {
-        List<Class<? extends ApiCommand>> classes = BurchAPI.INSTANCE.getPackageScanner()
-                .setQuery(BurchAPI.INSTANCE.getClass().getPackage(), ApiCommand.class)
+        List<Class<?>> classes = BurchAPI.INSTANCE.getPackageScanner()
+                .subclassSearchQuery(BurchAPI.INSTANCE.getClass().getPackage(), ApiCommand.class)
                 .execute();
-        if (classes == null) {
-            Logger.warn("When trying to receive classes extending ApiCommand, non were found! If you are not using " +
-                    "the Command API for BurchAPI, then set the loading of commands to false with the ApiSettings!");
-            return;
-        }
+
         Logger.debug("Attempting to inject: " + classes.size() + " ApiCommand's");
-        for (final Class<? extends ApiCommand> clazz : classes) {
+        for (final Class<?> clazz : classes) {
 
             if (BurchAPI.INSTANCE.getApiSettings().getCommandAutoRegisterBlacklist().contains(clazz)) {
                 Logger.debug("Not loading: " + clazz.getName() + " because it was on the Command registration black-list");

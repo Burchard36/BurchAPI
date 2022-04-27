@@ -2,7 +2,7 @@ package com.burchard36.api;
 
 import com.burchard36.api.command.CommandInjector;
 import com.burchard36.api.inventory.GlobalInventoryListener;
-import com.burchard36.api.utils.PackageScanner;
+import com.burchard36.api.utils.reflections.PackageScanner;
 import com.google.gson.GsonBuilder;
 import lombok.Getter;
 import org.bukkit.ChatColor;
@@ -96,7 +96,7 @@ public abstract class BurchAPI extends JavaPlugin implements Api {
      * Gets the {@link PackageScanner} instance of this class
      * @return
      */
-    public final PackageScanner getPackageScanner() {
+    public final <T> PackageScanner<T> getPackageScanner() {
         return this.packageScanner;
     }
 

@@ -18,11 +18,11 @@ public class DataStores {
      * TODO: Find a way to optimize this, it can be rather taxing on larger projects, or not im not entirely sure
      */
     protected void injectDataStores() {
-        final List<Class<? extends DataStore>> internalClasses = BurchAPI.INSTANCE.getPackageScanner()
-                .setQuery(DataStores.class.getPackage(), DataStore.class)
+        final List<Class<?>> internalClasses = BurchAPI.INSTANCE.getPackageScanner()
+                .subclassSearchQuery(DataStores.class.getPackage(), DataStore.class)
                 .execute();
-        final List<Class<? extends DataStore>> externalClasses = BurchAPI.INSTANCE.getPackageScanner()
-                .setQuery(BurchAPI.INSTANCE.getClass().getPackage(), DataStore.class)
+        final List<Class<?>> externalClasses = BurchAPI.INSTANCE.getPackageScanner()
+                .subclassSearchQuery(BurchAPI.INSTANCE.getClass().getPackage(), DataStore.class)
                 .execute();
 
         if (internalClasses.isEmpty()) {

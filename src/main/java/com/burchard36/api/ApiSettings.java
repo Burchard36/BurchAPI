@@ -23,6 +23,8 @@ public class ApiSettings {
     private final List<Class<? extends ApiCommand>> commandAutoRegisterBlacklist;
     protected final List<Class<? extends DataStore>> dataStoreAutoRegisterBlacklist;
 
+    private final DataStoreSettings dataStoreSettings;
+
     /**
      * Creates a new instance of this class
      * @since 2.1.5
@@ -32,6 +34,7 @@ public class ApiSettings {
         this.useInventoryModule = true;
         this.commandAutoRegisterBlacklist = new ArrayList<>();
         this.dataStoreAutoRegisterBlacklist = new ArrayList<>();
+        this.dataStoreSettings = new DataStoreSettings();
     }
 
     /**

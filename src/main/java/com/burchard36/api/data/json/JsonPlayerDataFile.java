@@ -1,29 +1,26 @@
 package com.burchard36.api.data.json;
 
 import com.burchard36.api.BurchAPI;
-import org.bukkit.entity.Player;
+import lombok.Getter;
 
 import java.io.File;
 import java.util.UUID;
 
 /**
- * JsonData classes should extend this class
+ * End users should extend this class to allow more data to be saved
  */
-public abstract class JsonPlayerDataFile extends JsonDataFile {
+public class JsonPlayerDataFile implements JsonDataFile {
 
-    /**
-     * The player to use for this File
-     * @param player Player object to load/save data against
-     */
-    public JsonPlayerDataFile(Player player) {
-        super();
-        this.file = new File(BurchAPI.INSTANCE.getDataFolder(),
-                this.directoryPath() +
-                this.playerUUID().toString() + ".json");
+    @Getter
+    protected transient UUID uuid;
+
+    protected void provideUUID(UUID uuid) {
+        this.uuid = uuid;
     }
 
-
-
-    abstract UUID playerUUID();
-    abstract String directoryPath();
+    @Override
+    public File getFile() {
+        return new File(BurchAPI.INSTANCE.getDataFolder(),
+                String.format("/player-data/%s.json", this.uuid.toString()));
+    }
 }

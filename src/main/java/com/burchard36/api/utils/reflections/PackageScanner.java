@@ -1,9 +1,11 @@
-package com.burchard36.api.utils;
+package com.burchard36.api.utils.reflections;
 
 import com.burchard36.api.BurchAPI;
+import com.burchard36.api.utils.Logger;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.*;
@@ -17,11 +19,12 @@ import java.util.stream.Stream;
  * @author Dalton Burchard
  * @since 2.1.8
  */
-public class PackageScanner {
+public class PackageScanner<T> {
 
     protected Package packageToSearch;
     protected Class<?> currentClassToSearch;
     protected List<Class<?>> classesForPackage;
+    protected List<Class<? extends T>> result;
 
 
     /**
@@ -34,17 +37,27 @@ public class PackageScanner {
     }
 
     /**
-     * Use this when you are still using the same package previous set by using {@link PackageScanner#setQuery}
+     * Use this when you are still using the same package previous set by using {@link PackageScanner#subclassSearchQuery}
      * <br>
-     * If you want to use a different Package, then use {@link PackageScanner#setQuery}
+     * If you want to use a different Package, then use {@link PackageScanner#subclassSearchQuery}
      * @param clazz Target class you want to check, typically a YourClass.class argument.
-     * @param <T> A generic class that must be extended by the superseding class
      * @return instance of this class
      * @since 2.1.8
      */
-    public <T> PackageScanner updateTargetClass(Class<? extends T> clazz) {
+    public PackageScanner<T> updateTargetClass(Class<? extends T> clazz) {
         this.currentClassToSearch = clazz;
         return this;
+    }
+
+    public List<Class<? extends T>> findWithClassAnnotations(Annotation... annotations) {
+        final List<Class<? extends T>> results = new ArrayList<>();
+        if (this.result == null) throw new PackageScannerException("Attempting to call findWithClassAnnotations without executing a query!");
+        for (Annotation annotation : annotations) {
+            results.forEach((clazz) -> {
+
+            });
+        }
+        return results;
     }
 
     /**
@@ -57,7 +70,7 @@ public class PackageScanner {
      * @return Instance of this class
      * @since 2.1.8
      */
-    public final PackageScanner setQuery(@Nonnull Package aPackage, @Nonnull Class<?> aClass) {
+    public final PackageScanner<T> subclassSearchQuery(@Nonnull Package aPackage, @Nonnull Class<?> aClass) {
         this.packageToSearch = aPackage;
         this.currentClassToSearch = aClass;
 
@@ -71,18 +84,18 @@ public class PackageScanner {
     }
 
     /**
-     * Executes the query you set. Make sure you call {@link PackageScanner#setQuery} first or this will generate {@link PackageScannerException}
-     * @param <T> A {@link List} of {@link Class>, where ? class extends the class you specified in {@link PackageScanner#setQuery}
-     * @return {@link List} of {@link Class}'s that extend a class you specified in {@link PackageScanner#setQuery}
+     * Executes the query you set. Make sure you call {@link PackageScanner#subclassSearchQuery} first or this will generate {@link PackageScannerException}
+     * @return {@link List} of {@link Class}'s that extend a class you specified in {@link PackageScanner#subclassSearchQuery }
      * @since 2.1.8
      */
-    public final @Nonnull <T> List<Class<? extends T>> execute() {
+    public final @Nonnull List<Class<? extends T>> execute() {
         if (this.packageToSearch == null || this.currentClassToSearch == null)
             throw new PackageScannerException("Package to search, or current class to search was invalid! This is an error with your plugin integration, contact a developer");
-        else if (this.classesForPackage.isEmpty()) throw new PackageScannerException("You did not call PackageScanner#setQuery! Are you okay? Did you read the documentation, or using this class for your own purposes? " +
+        else if (this.classesForPackage.isEmpty()) throw new PackageScannerException("You did not call PackageScanner#subclassSearchQuery! Are you okay? Did you read the documentation, or using this class for your own purposes? " +
                 "if you are not initializing this class yourself, please open an issue on our GitHub");
         try {
-            return this.getClassesExtendingThis(this.packageToSearch, this.currentClassToSearch);
+            this.result = this.getClassesExtendingThis(this.packageToSearch, this.currentClassToSearch);
+            return this.result;
         } catch (IOException | ClassNotFoundException | URISyntaxException ex) {
             throw new PackageScannerException(("When executing a PackageScanner query, a exception occured, this is likely an issue with your jar file. Please recompile your project, " +
                     "and if this doesnt work open an issue on our GitHub (BurchAPI)"));
@@ -91,7 +104,7 @@ public class PackageScanner {
 
 
     /* https://stackoverflow.com/questions/1810614/getting-all-classes-from-a-package */
-    protected <T> List<Class<? extends T>> getClassesExtendingThis(Package thePackage, Class<?> that)
+    protected List<Class<? extends T>> getClassesExtendingThis(Package thePackage, Class<?> that)
             throws IOException, ClassNotFoundException, URISyntaxException {
         Logger.debug("Going to attempt to search for classes extending: " + that.getName() + ". Amount of classes grabbed: " + this.classesForPackage.size());
         List<Class<? extends T>> returnValues = new ArrayList<>();
