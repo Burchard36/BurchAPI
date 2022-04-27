@@ -1,6 +1,7 @@
 package com.burchard36.api;
 
 import com.burchard36.api.command.ApiCommand;
+import com.burchard36.api.data.DataStore;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ public class ApiSettings {
     private boolean useCommandModule;
     private boolean useInventoryModule;
     private final List<Class<? extends ApiCommand>> commandAutoRegisterBlacklist;
+    protected final List<Class<? extends DataStore>> dataStoreAutoRegisterBlacklist;
 
     /**
      * Creates a new instance of this class
@@ -29,6 +31,19 @@ public class ApiSettings {
         this.useCommandModule = true;
         this.useInventoryModule = true;
         this.commandAutoRegisterBlacklist = new ArrayList<>();
+        this.dataStoreAutoRegisterBlacklist = new ArrayList<>();
+    }
+
+    /**
+     * Blocks a DataStore storage handler not load on STARTUP
+     * @param clazz A class that extends {@link DataStore} typically in YourClass.class format
+     * @return instance of this class
+     * @since 2.1.8
+     */
+    public final ApiSettings blockDataStoreFromLoading(Class<? extends DataStore> clazz) {
+        if (this.dataStoreAutoRegisterBlacklist.contains(clazz)) return this;
+        this.dataStoreAutoRegisterBlacklist.add(clazz);
+        return this;
     }
 
     /**
@@ -38,6 +53,7 @@ public class ApiSettings {
      * @since 2.1.5
      */
     public ApiSettings blockCommandFromLoading(Class<? extends ApiCommand> clazz) {
+        if (this.commandAutoRegisterBlacklist.contains(clazz)) return this;
         this.commandAutoRegisterBlacklist.add(clazz);
         return this;
     }

@@ -1,9 +1,7 @@
 package com.burchard36.api;
 
-import com.burchard36.api.command.ApiCommand;
 import com.burchard36.api.command.CommandInjector;
 import com.burchard36.api.inventory.GlobalInventoryListener;
-import com.burchard36.api.utils.Logger;
 import com.burchard36.api.utils.PackageScanner;
 import com.google.gson.GsonBuilder;
 import lombok.Getter;
