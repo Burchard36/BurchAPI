@@ -1,7 +1,6 @@
 package com.burchard36.api.utils.reflections;
 
 import com.burchard36.api.BurchAPI;
-import com.burchard36.api.data.annotations.PlayerDataFile;
 import com.burchard36.api.utils.Logger;
 
 import javax.annotation.Nonnull;
@@ -24,6 +23,7 @@ import java.util.stream.Stream;
  */
 public class PackageScanner<T> {
 
+    /* Dev note, im really proud of this class */
     protected Package packageToSearch;
     protected Class<? extends T> currentClassToSearch;
     protected List<Class<?>> classesForPackage;

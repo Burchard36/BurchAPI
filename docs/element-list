@@ -3,11 +3,13 @@ com.burchard36.api.command
 com.burchard36.api.command.actions
 com.burchard36.api.command.annotation
 com.burchard36.api.command.interfaces
+com.burchard36.api.data
+com.burchard36.api.data.annotations
+com.burchard36.api.data.json
+com.burchard36.api.data.json.enums
+com.burchard36.api.data.json.exceptions
 com.burchard36.api.inventory
 com.burchard36.api.inventory.actions
 com.burchard36.api.inventory.interfaces
-com.burchard36.api.json
-com.burchard36.api.json.annotations
-com.burchard36.api.json.enums
-com.burchard36.api.json.exceptions
 com.burchard36.api.utils
+com.burchard36.api.utils.reflections
