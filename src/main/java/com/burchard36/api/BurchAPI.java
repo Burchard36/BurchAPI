@@ -23,7 +23,6 @@ public abstract class BurchAPI extends JavaPlugin implements Api {
     public static BurchAPI INSTANCE;
     protected GlobalInventoryListener inventoryListener;
     protected PluginJsonWriter jsonWriter;
-    protected PackageScanner packageScanner;
 
     @Getter
     protected final ApiSettings apiSettings = new ApiSettings();
@@ -32,14 +31,18 @@ public abstract class BurchAPI extends JavaPlugin implements Api {
     public void onEnable() {
         INSTANCE = this;
         this.onPreApiEnable();
-        this.packageScanner = new PackageScanner();
         this.jsonWriter = new PluginJsonWriter(new GsonBuilder().setPrettyPrinting().create());
 
         if (this.getApiSettings().isUseInventoryModule())
             this.inventoryListener = new GlobalInventoryListener(this);
 
         // Run the Annotation checks and register commands
-        CommandInjector.injectCommands();
+        // try catch for developmental reasons
+        try {
+            CommandInjector.injectCommands();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
         this.onPluginEnable();
     }
@@ -93,11 +96,11 @@ public abstract class BurchAPI extends JavaPlugin implements Api {
     }
 
     /**
-     * Gets the {@link PackageScanner} instance of this class
-     * @return
+     * Gets a new {@link PackageScanner} instance
+     * @return A new generic {@link PackageScanner}
      */
     public final <T> PackageScanner<T> getPackageScanner() {
-        return this.packageScanner;
+        return new PackageScanner<>();
     }
 
     /**

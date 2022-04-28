@@ -46,6 +46,7 @@ public class CommandInjector extends CommandExceptionFactory {
                     scanner.invokeClass(clazz);
 
             if (!result.wasSuccessfullyInvoked()) {
+                Logger.warn("Could not invoke resulted class when Auto-Registering class: " + clazz.getName());
                 switch (result.getValue()) {
                     case ERR_INVALID_CONSTRUCTOR -> throw newConstructorNotFoundException("Could not locate a valid constructor for the class: " + clazz.getName() +
                             " when loading it as an ApiCommand! Please ensure the Constructor has public access!");
@@ -54,6 +55,7 @@ public class CommandInjector extends CommandExceptionFactory {
                 continue;
             }
 
+            Logger.debug("Successfully invoked: " + clazz.getName());
             ApiCommand command = result.getKey();
 
             final RegisterCommand commandAnnotation = command.getClass().getAnnotation(RegisterCommand.class);
@@ -63,6 +65,7 @@ public class CommandInjector extends CommandExceptionFactory {
             final CommandAliases commandAliases = command.getClass().getAnnotation(CommandAliases.class);
 
             if (commandAnnotation != null) {
+                Logger.debug("@RegisterCommand annotation detected! performing checks...");
 
                 if (!commandAnnotation.name().equalsIgnoreCase(""))
                     command.setCommandName(commandAnnotation.name());
@@ -76,6 +79,7 @@ public class CommandInjector extends CommandExceptionFactory {
                 if (commandAnnotation.aliases().length != 0)
                     command.setAliases(Arrays.asList(commandAnnotation.aliases()));
             } else {
+                Logger.debug("@CommandName annotation detected, running checks...");
                 if (commandName != null && !commandName.name().equalsIgnoreCase("")) {
                     command.setCommandName(commandName.name());
                 } else

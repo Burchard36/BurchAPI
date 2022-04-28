@@ -95,6 +95,7 @@ public class PackageScanner<T> {
         for (Class<? extends Annotation> annotation : annotations) {
             this.result.forEach((clazz) -> {
                 if (clazz.getAnnotation(annotation) != null) {
+                    Logger.debug("Found an annotated class!");
                     results.putIfAbsent(annotation, clazz);
                 }
             });
@@ -139,8 +140,8 @@ public class PackageScanner<T> {
             this.result = this.getClassesExtendingThis(this.packageToSearch, this.currentClassToSearch);
             return this.result;
         } catch (IOException | ClassNotFoundException | URISyntaxException ex) {
-            throw new PackageScannerException(("When executing a PackageScanner query, a exception occured, this is likely an issue with your jar file. Please recompile your project, " +
-                    "and if this doesnt work open an issue on our GitHub (BurchAPI)"));
+            throw new PackageScannerException(("When executing a PackageScanner query, a exception occurred, this is likely an issue with your jar file. Please recompile your project, " +
+                    "and if this doesn't work open an issue on our GitHub (BurchAPI)"));
         }
     }
 
@@ -163,6 +164,7 @@ public class PackageScanner<T> {
                 }
             }
         }
+        Logger.debug("Found: " + returnValues.size() + " that extended searching class: " + this.currentClassToSearch.getName());
         return returnValues;
     }
 
@@ -218,15 +220,22 @@ public class PackageScanner<T> {
     public static class InvocationResult<T, InvocationErrorStatus> extends AbstractMap.SimpleEntry<Object, InvocationErrorStatus> {
 
         private final T key;
+        private final InvocationErrorStatus value;
 
         protected InvocationResult(T key, InvocationErrorStatus value) {
             super(key, value);
             this.key = key;
+            this.value = value;
         }
 
         @Override
         public T getKey() {
-            return key;
+            return this.key;
+        }
+
+        @Override
+        public InvocationErrorStatus getValue() {
+            return this.value;
         }
 
         /**
@@ -235,7 +244,7 @@ public class PackageScanner<T> {
          * @since 2.1.8
          */
         public final boolean wasSuccessfullyInvoked() {
-            return this.getValue() != PackageScanner.InvocationErrorStatus.NULL;
+            return this.getValue() == PackageScanner.InvocationErrorStatus.NULL;
         }
     }
 }
