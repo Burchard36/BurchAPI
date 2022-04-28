@@ -30,11 +30,13 @@ public class PlayerJsonDataStore implements FileDataStore, Listener {
     protected BukkitTask autoSaveTask;
     protected final HashMap<UUID, JsonPlayerDataFile> cache;
     protected Class<? extends JsonPlayerDataFile> dataClass;
+    protected PackageScanner<JsonPlayerDataFile> scanner;
 
     public PlayerJsonDataStore(BurchAPI api) {
         this.api = api;
         this.writer = this.api.getJsonWriter();
         this.cache = new HashMap<>();
+        this.scanner = this.api.newPackageScanner();
     }
 
     @Override
@@ -42,14 +44,14 @@ public class PlayerJsonDataStore implements FileDataStore, Listener {
         Logger.log("Initializing PlayerJsonDataStore!");
 
         /* Search for classes extending JsonPlayerDataFile */
-        final PackageScanner<JsonPlayerDataFile> scanner = this.api.getPackageScanner();
-        this.api.getPackageScanner()
+        /* If you are looking at this as an example, skip everything im doing for now until i tell you not to */
+        this.scanner
                 .subclassSearchQuery(this.api.getClass().getPackage(), JsonPlayerDataFile.class)
                 .execute();
 
         /* Find classes with the annotation PlayerDataFile */
         final HashMap<Class<? extends Annotation>, Class<? extends JsonPlayerDataFile>>
-                annotatedClasses = scanner.findWithClassConstructorAnnotations(PlayerDataFile.class);
+                annotatedClasses = this.scanner.findWithClassConstructorAnnotations(PlayerDataFile.class);
 
         if (annotatedClasses.size() > 1) {
             Logger.error("Found multiple classes extending JsonPlayerDataFile with a @PlayerDataFile marked Annotation!" +
@@ -57,7 +59,26 @@ public class PlayerJsonDataStore implements FileDataStore, Listener {
         }
 
         annotatedClasses.forEach((keyAnnotation, keyClass) -> {
-
+            if (keyAnnotation == PlayerDataFile.class) {
+                /* Try to invoke the Annotated class constructor using your invocation methods */
+                final PackageScanner.InvocationResult<JsonPlayerDataFile, PackageScanner.InvocationErrorStatus>
+                        invocationResult = scanner.invokeClass(keyClass);
+                if (!invocationResult.wasSuccessfullyInvoked()) {
+                    switch (invocationResult.getValue()) {
+                        case ERR_INVOCATION -> {
+                            // lets ignore the error for now and just debug log it
+                            Logger.warn("ERR_INVOCATION result from auto-loading " + keyClass.getName() + " class!");
+                        }
+                        case ERR_INVALID_CONSTRUCTOR -> {
+                            // same thing as previous error
+                            Logger.warn("ERR_INVALID_CONSTRUCTOR result from auto-loading" + keyClass.getName() + " class!");
+                        }
+                    }
+                } else {
+                    final JsonPlayerDataFile dataFile = invocationResult.getKey();
+                    this.dataClass = dataFile.getClass();
+                }
+            }
         });
 
 
@@ -92,5 +113,14 @@ public class PlayerJsonDataStore implements FileDataStore, Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void asyncPreLogin(AsyncPlayerPreLoginEvent event) {
         final UUID playerUUID = event.getUniqueId();
+    }
+
+    private JsonPlayerDataFile invokeNewDataFile() {
+        final PackageScanner.InvocationResult<JsonPlayerDataFile, PackageScanner.InvocationErrorStatus>
+            invocationResult = this.scanner.invokeClass(this.dataClass);
+
+        if (!invocationResult.wasSuccessfullyInvoked()) {
+            return null;
+        } else return invocationResult.getKey();
     }
 }

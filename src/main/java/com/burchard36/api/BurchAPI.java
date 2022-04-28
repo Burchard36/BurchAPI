@@ -99,7 +99,7 @@ public abstract class BurchAPI extends JavaPlugin implements Api {
      * Gets a new {@link PackageScanner} instance
      * @return A new generic {@link PackageScanner}
      */
-    public final <T> PackageScanner<T> getPackageScanner() {
+    public final <T> PackageScanner<T> newPackageScanner() {
         return new PackageScanner<>();
     }
 

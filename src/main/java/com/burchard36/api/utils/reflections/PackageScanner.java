@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 
 /**
  * A generic package scanner, that will scan a specific {@link Package} for a {@link Class} that
- * extends another {@link Class}. Not really intended for users of this API to use, but feel free to.
+ * extends another {@link Class}.
  *
  * @author Dalton Burchard
  * @since 2.1.8
@@ -31,9 +31,11 @@ public class PackageScanner<T> {
 
 
     /**
-     * While <bold>not recommended</bold>n creating another instance of this class, you still can
-     * <br>
-     * You can get a running instance of this class after the API gets enabled, see {@link BurchAPI#getPackageScanner()}
+     * Initializes the class, make sure to specify the generic class you are looking to use for this class
+     *<br>
+     *
+     * EG: {@code PackScanner<MyInterfaceImLookingFor> scanner = new PackageScanner<>();}
+     * Where MyInterfaceImLookingFor is the subclass you want to use when searching through your Packages
      */
     public PackageScanner() {
         this.classesForPackage = new ArrayList<>();
@@ -53,6 +55,12 @@ public class PackageScanner<T> {
         return this;
     }
 
+    /**
+     * Tries to invoke a {@link Class} extending another {@link Class}, and providing dependency
+     * injection for your main class {@link BurchAPI}
+     * @param clazz The {@link Class} to invoke
+     * @return A {@link InvocationResult},
+     */
     public final InvocationResult<T, InvocationErrorStatus> invokeClass(Class<? extends T> clazz) {
         Constructor<?>[] constructors = clazz.getDeclaredConstructors();
         Constructor<? extends T> constructor = null;
@@ -74,20 +82,26 @@ public class PackageScanner<T> {
         if (constructor == null)
             return new InvocationResult<>(null, InvocationErrorStatus.ERR_INVALID_CONSTRUCTOR);
 
-        T object;
+        T generic;
         try {
             try {
-                object = constructor.newInstance(toProvide);
+                generic = constructor.newInstance(toProvide);
             } catch (NullPointerException ignored) {
-                object = constructor.newInstance();
+                generic = constructor.newInstance();
             }
         } catch (IllegalAccessException | InstantiationException | InvocationTargetException ex) {
             return new InvocationResult<>(null, InvocationErrorStatus.ERR_INVOCATION);
         }
 
-        return new InvocationResult<>(object, InvocationErrorStatus.NULL);
+        return new InvocationResult<>(generic, InvocationErrorStatus.NULL);
     }
 
+    /**
+     * Finds all classes that have a class annotated
+     * with a specific {@link Annotation} in the results set from {@link PackageScanner#execute} (Must call execute() before calling this method)
+     * @param annotations A varargs of {@link Annotation} you want to search for, do note these are not METHOD annot
+     * @return An {@link HashMap} of {@link Annotation} classes as values, and classes extending your generic provided.
+     */
     @SafeVarargs
     public final HashMap<Class<? extends Annotation>, Class<? extends T>> findWithClassConstructorAnnotations(Class<? extends Annotation>... annotations) {
         final HashMap<Class<? extends Annotation>, Class<? extends T>> results = new HashMap<>();
@@ -209,18 +223,32 @@ public class PackageScanner<T> {
     }
 
     /**
-     * Returned as an Entry value when using {@link PackageScanner#invokeClass}
+     * Used to return err status code in {@link PackageScanner#invokeClass}
      */
     public enum InvocationErrorStatus {
+        /**
+         * Used when there is no error.
+         */
         NULL,
+        /**
+         * Used when a default class constructor could not be found
+         */
         ERR_INVALID_CONSTRUCTOR,
+        /**
+         * Used when an exception is generated while invoking {@link Constructor#newInstance}
+         */
         ERR_INVOCATION
     }
 
+    /**
+     * Used as a Results set when calling {@link PackageScanner#invokeClass}
+     * @param <T>
+     * @param <InvocationErrorStatus>
+     */
     public static class InvocationResult<T, InvocationErrorStatus> extends AbstractMap.SimpleEntry<Object, InvocationErrorStatus> {
 
-        private final T key;
-        private final InvocationErrorStatus value;
+        protected final T key;
+        protected final InvocationErrorStatus value;
 
         protected InvocationResult(T key, InvocationErrorStatus value) {
             super(key, value);
@@ -228,11 +256,19 @@ public class PackageScanner<T> {
             this.value = value;
         }
 
+        /**
+         * Gets the generic value of this class
+         * @return T is provided by you when initializing the generic
+         */
         @Override
         public T getKey() {
             return this.key;
         }
 
+        /**
+         * A {@link InvocationErrorStatus} returned from this result
+         * @return An enum of {@link InvocationErrorStatus}, typically {@link InvocationErrorStatus} of NULL (enum value) when successfully executed
+         */
         @Override
         public InvocationErrorStatus getValue() {
             return this.value;

@@ -27,7 +27,7 @@ public class CommandInjector extends CommandExceptionFactory {
      * {@link CommandName} or {@link RegisterCommand} Annotation(s)
      */
     public static void injectCommands() {
-        final PackageScanner<ApiCommand> scanner = BurchAPI.INSTANCE.getPackageScanner();
+        final PackageScanner<ApiCommand> scanner = BurchAPI.INSTANCE.newPackageScanner();
         scanner.subclassSearchQuery(BurchAPI.INSTANCE.getClass().getPackage(), ApiCommand.class)
                 .execute();
         HashMap<Class<? extends Annotation>, Class<? extends ApiCommand>> classes =
