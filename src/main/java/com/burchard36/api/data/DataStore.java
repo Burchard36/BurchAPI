@@ -8,11 +8,6 @@ public interface DataStore {
     void onEnable();
 
     /**
-     * When a reload call is called on the data store
-     */
-    void onReload();
-
-    /**
      *
      */
     void onDisable();

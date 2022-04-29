@@ -1,6 +1,7 @@
 package com.burchard36.api;
 
 import com.burchard36.api.command.CommandInjector;
+import com.burchard36.api.data.json.writer.PluginJsonWriter;
 import com.burchard36.api.inventory.GlobalInventoryListener;
 import com.burchard36.api.utils.reflections.PackageScanner;
 import com.google.gson.GsonBuilder;

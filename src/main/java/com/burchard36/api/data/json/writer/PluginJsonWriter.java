@@ -1,35 +1,41 @@
-package com.burchard36.api;
+package com.burchard36.api.data.json.writer;
 
 import com.burchard36.api.data.json.JsonDataFile;
+import com.burchard36.api.data.json.writer.exceptions.JsonWriterExceptionFactory;
 import com.burchard36.api.utils.Logger;
 import com.google.gson.Gson;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 /**
  * A Json writer, uses class serialization to write/read from files from {@link Gson}
  */
-public class PluginJsonWriter {
+public class PluginJsonWriter extends JsonWriterExceptionFactory {
 
     protected final Gson gson;
 
-    protected PluginJsonWriter(Gson gson) {
+    public PluginJsonWriter(Gson gson) {
         this.gson = gson;
+    }
+
+    public final CompletableFuture<Optional<JsonDataFile>> createIfNotExistGetIfNot(final JsonDataFile file) {
+        final File jsonFile = file.getFile();
+        return this.createFile(file);
     }
 
     /**
      * Asynchronously/Synchronously creates a {@link JsonDataFile}
      * <br>
-     *
      * This will ONLY create a new file if one doesn't exist,
      *
      * @param dataFile A {@link JsonDataFile} to create
      * @return {@link CompletableFuture<Boolean>} true if new file was created, false if not.
      */
-    public CompletableFuture<Boolean> createFile(final JsonDataFile dataFile) {
+    public CompletableFuture<Optional<JsonDataFile>> createFile(final JsonDataFile dataFile) {
         final File file = dataFile.getFile();
         if (!file.exists()) {
             try {
@@ -44,14 +50,14 @@ public class PluginJsonWriter {
                     writer.append(jsonString);
                     writer.close();
                     Logger.log(":: &aSuccessfully wrote default data for DataFile");
-                    return CompletableFuture.completedFuture(true);
+                    return this.getDataFromFile(dataFile.getFile(), dataFile.getClass());
                 }
             } catch (IOException ex) {
                 ex.printStackTrace();
-                return CompletableFuture.completedFuture(false);
+                return CompletableFuture.completedFuture(Optional.empty());
             }
         }
-        return CompletableFuture.completedFuture(false);
+        return this.getDataFromFile(file, dataFile.getClass());
     }
 
     /**
@@ -88,13 +94,13 @@ public class PluginJsonWriter {
      * @param clazz {@link Class}  The Class file of the data you are trying to get
      * @return instance of your class extending {@link JsonDataFile}
      */
-    public CompletableFuture<JsonDataFile> getDataFromFile(final File file, Class<? extends JsonDataFile> clazz) {
+    public CompletableFuture<Optional<JsonDataFile>> getDataFromFile(final File file, Class<? extends JsonDataFile> clazz) {
         if (!file.exists()) return CompletableFuture.completedFuture(null);
         try {
-            return CompletableFuture.completedFuture(this.gson.fromJson(Files.newBufferedReader(Paths.get(file.toURI())), clazz));
+            return CompletableFuture.completedFuture(Optional.of(this.gson.fromJson(Files.newBufferedReader(Paths.get(file.toURI())), clazz)));
         } catch (IOException ex) {
             ex.printStackTrace();
-            return CompletableFuture.completedFuture(null);
+            return CompletableFuture.completedFuture(Optional.empty());
         }
     }
 

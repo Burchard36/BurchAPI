@@ -1,7 +1,7 @@
 package com.burchard36.api.data.json;
 
 import com.burchard36.api.BurchAPI;
-import com.burchard36.api.PluginJsonWriter;
+import com.burchard36.api.data.json.writer.PluginJsonWriter;
 import com.burchard36.api.data.FileDataStore;
 import com.burchard36.api.data.annotations.DataStoreID;
 import com.burchard36.api.data.annotations.PlayerDataFile;
@@ -28,7 +28,7 @@ public class PlayerJsonDataStore implements FileDataStore, Listener {
     protected final BurchAPI api;
     protected final PluginJsonWriter writer;
     protected BukkitTask autoSaveTask;
-    protected final HashMap<UUID, JsonPlayerDataFile> cache;
+    protected final HashMap<UUID, JsonDataFile> cache;
     protected Class<? extends JsonPlayerDataFile> dataClass;
     protected PackageScanner<JsonPlayerDataFile> scanner;
 
@@ -74,29 +74,20 @@ public class PlayerJsonDataStore implements FileDataStore, Listener {
                             Logger.warn("ERR_INVALID_CONSTRUCTOR result from auto-loading" + keyClass.getName() + " class!");
                         }
                     }
-                } else {
+                } else if (this.dataClass == null){
                     final JsonPlayerDataFile dataFile = invocationResult.getKey();
                     this.dataClass = dataFile.getClass();
-                }
+                } else Logger.error("Another class with @PlayerDataFile annotation existed! It will not be loaded! Class name: " + keyClass.getName());
             }
         });
 
 
-    }
-
-    @Override
-    public void onReload() {
-        Logger.log("Reloading PlayerJsonDataStore");
+        Logger.log("Finished initializing PlayerJsonDataStore!");
     }
 
     @Override
     public void onDisable() {
 
-    }
-
-    @Override
-    public List<Class<? extends JsonDataFile>> dataFiles() {
-        return List.of();
     }
 
     @Override
@@ -113,14 +104,29 @@ public class PlayerJsonDataStore implements FileDataStore, Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void asyncPreLogin(AsyncPlayerPreLoginEvent event) {
         final UUID playerUUID = event.getUniqueId();
+        final JsonPlayerDataFile newFile = this.invokeNewDataFile();
+        newFile.provideUUID(playerUUID);
+        this.writer.createFile(newFile).thenAccept((optionalDataFile) ->
+                optionalDataFile.ifPresent(jsonDataFile ->
+                        PlayerJsonDataStore.this.cache.putIfAbsent(playerUUID, jsonDataFile)));
     }
 
-    private JsonPlayerDataFile invokeNewDataFile() {
+    /* If you are looking at this file as an example Datatore, ignore this method */
+    protected final JsonPlayerDataFile invokeNewDataFile() {
         final PackageScanner.InvocationResult<JsonPlayerDataFile, PackageScanner.InvocationErrorStatus>
             invocationResult = this.scanner.invokeClass(this.dataClass);
 
         if (!invocationResult.wasSuccessfullyInvoked()) {
-            return null;
+            throw new PlayerJsonInvocationException("Error invoking JsonPlayerDataFile! If you believe this to be an error please open an issue on our github.");
         } else return invocationResult.getKey();
+    }
+
+    /**
+     * Thrown when the result of invoking a new file fails.
+     */
+    public static class PlayerJsonInvocationException extends RuntimeException {
+        protected PlayerJsonInvocationException(String msg) {
+            super(msg);
+        }
     }
 }

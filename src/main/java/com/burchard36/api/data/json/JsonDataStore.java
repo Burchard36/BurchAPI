@@ -1,7 +1,7 @@
 package com.burchard36.api.data.json;
 
 import com.burchard36.api.BurchAPI;
-import com.burchard36.api.PluginJsonWriter;
+import com.burchard36.api.data.json.writer.PluginJsonWriter;
 import com.burchard36.api.data.FileDataStore;
 import com.burchard36.api.data.annotations.DataStoreID;
 import org.bukkit.event.Listener;
@@ -25,11 +25,6 @@ public class JsonDataStore implements FileDataStore, Listener {
     @Override
     public void onEnable() {
         this.dataFiles = new HashMap<>();
-    }
-
-    @Override
-    public void onReload() {
-
     }
 
     @Override
