@@ -108,8 +108,10 @@ public class PlayerJsonDataStore implements FileDataStore, Listener {
         final JsonPlayerDataFile newFile = this.invokeNewDataFile();
         newFile.provideUUID(playerUUID);
         this.writer.createFile(newFile).thenAccept((optionalDataFile) ->
-                optionalDataFile.ifPresent(jsonDataFile ->
-                        PlayerJsonDataStore.this.cache.putIfAbsent(playerUUID, jsonDataFile)));
+                optionalDataFile.ifPresent(jsonDataFile -> {
+                    ((JsonPlayerDataFile) jsonDataFile).provideUUID(playerUUID);
+                    PlayerJsonDataStore.this.cache.putIfAbsent(playerUUID, jsonDataFile);
+                }));
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
