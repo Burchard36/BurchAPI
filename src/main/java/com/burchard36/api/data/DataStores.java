@@ -4,11 +4,11 @@ import com.burchard36.api.BurchAPI;
 import com.burchard36.api.data.annotations.DataStoreID;
 import com.burchard36.api.utils.Logger;
 import com.burchard36.api.utils.reflections.PackageScanner;
+import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.lang.annotation.Annotation;
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.*;
 
 public class DataStores {
 
@@ -16,22 +16,29 @@ public class DataStores {
     protected final HashMap<String, DataStore> dataStores;
     protected final HashMap<FileDataStore, BukkitTask> fileDataStoreAutoSaveTasks;
 
-    protected DataStores() {
+    public DataStores() {
         this.scanner = BurchAPI.INSTANCE.newPackageScanner();
         this.dataStores = new HashMap<>();
         this.fileDataStoreAutoSaveTasks = new HashMap<>();
+        this.injectDataStores();
     }
 
     public void disableAllDataStores() {
+        this.dataStores.values().forEach(DataStore::onDisable);
+        this.fileDataStoreAutoSaveTasks.values().forEach(BukkitTask::cancel);
 
+        this.dataStores.clear();
+        this.fileDataStoreAutoSaveTasks.clear();
     }
 
     /*
      * TODO: Find a way to optimize this, it can be rather taxing on larger projects, or not im not entirely sure
      */
     protected void injectDataStores() {
+        this.scanner.subclassSearchQuery(DataStores.class.getPackage(), DataStore.class).execute();
         final HashMap<Class<? extends Annotation>, Class<? extends DataStore>> internalAnnotatedClasses =
                 this.scanner.findWithClassConstructorAnnotations(DataStoreID.class);
+        this.scanner.subclassSearchQuery(BurchAPI.INSTANCE.getClass().getPackage(), DataStore.class);
         final HashMap<Class<? extends Annotation>, Class<? extends DataStore>> externalAnnotatedClasses =
                 this.scanner.findWithClassConstructorAnnotations(DataStoreID.class);
 
@@ -39,7 +46,8 @@ public class DataStores {
 
         if (externalAnnotatedClasses.isEmpty()) Logger.debug("Not loading any external DataStore's. I assume you didn't create any yet, that's fine!");
 
-        Collection<Class<? extends DataStore>> classes = internalAnnotatedClasses.values();
+        List<Class<? extends DataStore>> classes = new ArrayList<>();
+        classes.addAll(internalAnnotatedClasses.values());
         classes.addAll(externalAnnotatedClasses.values());
 
         if (classes.isEmpty()) {
@@ -52,10 +60,14 @@ public class DataStores {
                     this.scanner.invokeClass(clazz);
 
             if (!result.wasSuccessfullyInvoked()) {
+                Logger.warn("Exception when invoking DataStore: " + clazz.getName() + " err: " + result.getValue().name());
                 switch (result.getValue()) {
                     // TODO: Implement error handling
                 }
-            } else this.registerDataStore(result.getKey());
+            } else {
+                Logger.log("Attempting to Register DataStore: " + result.getKey().getClass().getName());
+                this.registerDataStore(result.getKey());
+            }
         });
     }
 
@@ -67,6 +79,12 @@ public class DataStores {
     public void registerDataStore(DataStore store) {
         final DataStoreID storeID = store.getClass().getAnnotation(DataStoreID.class);
 
+        if (Listener.class.isAssignableFrom(store.getClass())) {
+            Logger.debug("DataStore was assignable from Listener, initializing Listener automatically");
+            BurchAPI.INSTANCE.getServer().getPluginManager().registerEvents((Listener) store, BurchAPI.INSTANCE);
+        }
+
+        Logger.log("Initializing datastore with ID: " + storeID.id());
         store.onEnable(); // Enable the DataStore
 
         this.dataStores.putIfAbsent(storeID.id(), store);

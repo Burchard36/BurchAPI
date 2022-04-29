@@ -27,7 +27,7 @@ public class Logger {
      */
     public static void log(final String message) {
         BurchAPI.INSTANCE.getLogger().info(convert(BurchAPI.INSTANCE.loggerPrefix()
-                + " &b:: &3INFO &b:: &b" + message));
+                + " &b:: &3INFO &b::" + message));
     }
 
     /**

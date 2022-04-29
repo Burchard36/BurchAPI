@@ -70,12 +70,21 @@ public class PackageScanner<T> {
                 if (aConstructor.getParameterTypes().length == 0 && constructor == null)
                     constructor = clazz.getDeclaredConstructor();
 
-                if (aConstructor.getParameterTypes().length == 1 && aConstructor.getParameterTypes()[0] == BurchAPI.INSTANCE.getClass()) {
+
+                if (aConstructor.getParameterTypes().length == 1 &&
+                        aConstructor.getParameterTypes()[0] == BurchAPI.class) {
+                    toProvide = BurchAPI.INSTANCE;
+                    constructor = clazz.getDeclaredConstructor(BurchAPI.class);
+                }
+
+                if (aConstructor.getParameterTypes().length == 1 &&
+                    aConstructor.getParameterTypes()[0] == BurchAPI.INSTANCE.getClass()) {
                     toProvide = BurchAPI.INSTANCE;
                     constructor = clazz.getDeclaredConstructor(BurchAPI.INSTANCE.getClass());
                 }
             }
         } catch (NoSuchMethodException ex) {
+            ex.printStackTrace();
             return new InvocationResult<>(null, InvocationErrorStatus.ERR_INVALID_CONSTRUCTOR);
         }
 
@@ -105,11 +114,9 @@ public class PackageScanner<T> {
     @SafeVarargs
     public final HashMap<Class<? extends Annotation>, Class<? extends T>> findWithClassConstructorAnnotations(Class<? extends Annotation>... annotations) {
         final HashMap<Class<? extends Annotation>, Class<? extends T>> results = new HashMap<>();
-        if (this.result.isEmpty()) throw new PackageScannerException("Attempting to call findWithClassAnnotations without executing a query!");
         for (Class<? extends Annotation> annotation : annotations) {
             this.result.forEach((clazz) -> {
                 if (clazz.getAnnotation(annotation) != null) {
-                    Logger.debug("Found an annotated class!");
                     results.putIfAbsent(annotation, clazz);
                 }
             });

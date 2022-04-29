@@ -16,7 +16,6 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -29,14 +28,14 @@ public class PlayerJsonDataStore implements FileDataStore, Listener {
     protected final PluginJsonWriter writer;
     protected BukkitTask autoSaveTask;
     protected final HashMap<UUID, JsonDataFile> cache;
-    protected Class<? extends JsonPlayerDataFile> dataClass;
+    protected Class<? extends JsonPlayerDataFile> dataClass = null;
     protected PackageScanner<JsonPlayerDataFile> scanner;
 
     public PlayerJsonDataStore(BurchAPI api) {
         this.api = api;
         this.writer = this.api.getJsonWriter();
         this.cache = new HashMap<>();
-        this.scanner = this.api.newPackageScanner();
+        this.scanner = new PackageScanner<>();
     }
 
     @Override
@@ -45,8 +44,7 @@ public class PlayerJsonDataStore implements FileDataStore, Listener {
 
         /* Search for classes extending JsonPlayerDataFile */
         /* If you are looking at this as an example, skip everything im doing for now until i tell you not to */
-        this.scanner
-                .subclassSearchQuery(this.api.getClass().getPackage(), JsonPlayerDataFile.class)
+        this.scanner.subclassSearchQuery(this.api.getClass().getPackage(), JsonPlayerDataFile.class)
                 .execute();
 
         /* Find classes with the annotation PlayerDataFile */
@@ -76,12 +74,14 @@ public class PlayerJsonDataStore implements FileDataStore, Listener {
                     }
                 } else if (this.dataClass == null){
                     final JsonPlayerDataFile dataFile = invocationResult.getKey();
+                    Logger.log("Successfully found a needed data class! Invoked class: " + dataFile.getClass().getName());
                     this.dataClass = dataFile.getClass();
                 } else Logger.error("Another class with @PlayerDataFile annotation existed! It will not be loaded! Class name: " + keyClass.getName());
             }
         });
 
 
+        //this.api.getServer().getPluginManager().registerEvents(this, this.api);
         Logger.log("Finished initializing PlayerJsonDataStore!");
     }
 
@@ -95,7 +95,7 @@ public class PlayerJsonDataStore implements FileDataStore, Listener {
         return new BukkitRunnable() {
             @Override
             public void run() {
-
+                Logger.log("Attempting to auto-save data for PlayerJsonDataStore...");
             }
         }.runTaskTimerAsynchronously(this.api, 0, (20 * 60)
                 * this.api.getApiSettings().getDataStoreSettings().getPlayerDataAutoSave());

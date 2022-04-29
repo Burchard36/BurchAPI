@@ -1,6 +1,7 @@
 package com.burchard36.api;
 
 import com.burchard36.api.command.CommandInjector;
+import com.burchard36.api.data.DataStores;
 import com.burchard36.api.data.json.writer.PluginJsonWriter;
 import com.burchard36.api.inventory.GlobalInventoryListener;
 import com.burchard36.api.utils.reflections.PackageScanner;
@@ -24,6 +25,7 @@ public abstract class BurchAPI extends JavaPlugin implements Api {
     public static BurchAPI INSTANCE;
     protected GlobalInventoryListener inventoryListener;
     protected PluginJsonWriter jsonWriter;
+    protected DataStores dataStores;
 
     @Getter
     protected final ApiSettings apiSettings = new ApiSettings();
@@ -33,6 +35,7 @@ public abstract class BurchAPI extends JavaPlugin implements Api {
         INSTANCE = this;
         this.onPreApiEnable();
         this.jsonWriter = new PluginJsonWriter(new GsonBuilder().setPrettyPrinting().create());
+        this.dataStores = new DataStores();
 
         if (this.getApiSettings().isUseInventoryModule())
             this.inventoryListener = new GlobalInventoryListener(this);
@@ -62,8 +65,18 @@ public abstract class BurchAPI extends JavaPlugin implements Api {
     public abstract void onPreApiEnable();
 
     /**
+     * Returns an instance of all the DataStores of the API, can be used to get a specific {@link com.burchard36.api.data.DataStore}, or to register one
+     * @return An instance of {@link DataStores}
+     * @since 2.1.8
+     */
+    public final DataStores getDataStores() {
+        return this.dataStores;
+    }
+
+    /**
      * Gets the {@link PluginJsonWriter} instance of this class
      * @return the instance of {@link PluginJsonWriter}
+     * @since 2.1.5
      */
     public final PluginJsonWriter getJsonWriter() {
         return this.jsonWriter;
@@ -75,6 +88,7 @@ public abstract class BurchAPI extends JavaPlugin implements Api {
      * If you are extending this class, you can Override this method.
      *
      * @return A {@link Boolean} true if debugging is active
+     * @since 2.1.5
      */
     public boolean isDebug() {
         return true;
@@ -86,6 +100,7 @@ public abstract class BurchAPI extends JavaPlugin implements Api {
      * If your class is extending this class, you can Override this method to change the output.
      *
      * @return Any {@link String}
+     * @since 2.1.5
      */
     public String loggerPrefix() {
         return "BurchAPI";
@@ -99,6 +114,7 @@ public abstract class BurchAPI extends JavaPlugin implements Api {
     /**
      * Gets a new {@link PackageScanner} instance
      * @return A new generic {@link PackageScanner}
+     * @since 2.1.8
      */
     public final <T> PackageScanner<T> newPackageScanner() {
         return new PackageScanner<>();

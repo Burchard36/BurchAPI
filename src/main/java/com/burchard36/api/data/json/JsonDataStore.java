@@ -8,7 +8,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.UUID;
 
 @DataStoreID(id = "internal_jsonDataStore")
@@ -34,11 +33,6 @@ public class JsonDataStore implements FileDataStore, Listener {
 
     protected String asFile(UUID uuid) {
         return uuid.toString() + ".json";
-    }
-
-    @Override
-    public List<Class<? extends JsonDataFile>> dataFiles() {
-        return List.of(JsonPlayerDataFile.class);
     }
 
     @Override
