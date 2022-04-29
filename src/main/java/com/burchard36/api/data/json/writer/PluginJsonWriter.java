@@ -22,6 +22,11 @@ public class PluginJsonWriter extends JsonWriterExceptionFactory {
         this.gson = gson;
     }
 
+    /**
+     * Creates a file if it doesnt exist, gets it if not
+     * @param file The {@link JsonDataFile} you are wanting to load
+     * @return An {@link Optional<JsonDataFile>} will be provided if no errors occur when creating/getting the file
+     */
     public final CompletableFuture<Optional<JsonDataFile>> createIfNotExistGetIfNot(final JsonDataFile file) {
         final File jsonFile = file.getFile();
         return this.createFile(file);
@@ -44,12 +49,10 @@ public class PluginJsonWriter extends JsonWriterExceptionFactory {
                         Logger.log(":: &aSuccessfully created directories");
                     }
                 if (file.createNewFile()) {
-                    Logger.log(":: &aSuccessfully created a DataFile!");
                     String jsonString = this.gson.toJson(dataFile);
                     Writer writer = new FileWriter(file);
                     writer.append(jsonString);
                     writer.close();
-                    Logger.log(":: &aSuccessfully wrote default data for DataFile");
                     return this.getDataFromFile(dataFile.getFile(), dataFile.getClass());
                 }
             } catch (IOException ex) {
@@ -68,9 +71,7 @@ public class PluginJsonWriter extends JsonWriterExceptionFactory {
     public CompletableFuture<Boolean> writeDataToFile(final JsonDataFile config) {
         File file = config.getFile();
         if (!file.exists()) {
-            this.createFile(config).thenAcceptAsync((createdFile) -> {
-                Logger.debug("Created file async");
-            });
+            this.createFile(config).thenAcceptAsync((createdFile) -> Logger.debug("Created file async"));
             return CompletableFuture.completedFuture(true);
         } else {
             try {
@@ -84,7 +85,6 @@ public class PluginJsonWriter extends JsonWriterExceptionFactory {
             }
         }
 
-        Logger.debug("Successfully saved a data file");
         return CompletableFuture.completedFuture(true);
     }
 

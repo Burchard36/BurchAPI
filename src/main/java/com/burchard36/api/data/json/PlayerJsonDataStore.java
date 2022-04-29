@@ -11,6 +11,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -109,6 +110,16 @@ public class PlayerJsonDataStore implements FileDataStore, Listener {
         this.writer.createFile(newFile).thenAccept((optionalDataFile) ->
                 optionalDataFile.ifPresent(jsonDataFile ->
                         PlayerJsonDataStore.this.cache.putIfAbsent(playerUUID, jsonDataFile)));
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onDisconnect(PlayerQuitEvent event) {
+        final UUID playerUUID = event.getPlayer().getUniqueId();
+        if (this.cache.containsKey(playerUUID)) {
+            this.writer.writeDataToFile(this.cache.get(playerUUID)).thenAcceptAsync((playerData) -> {
+                Logger.log("Successfully saved data for player: " + playerUUID);
+            });
+        }
     }
 
     /* If you are looking at this file as an example Datatore, ignore this method */
