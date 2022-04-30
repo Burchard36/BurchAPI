@@ -63,6 +63,10 @@ public class ApiCommand extends Command implements TabCompleter {
         return this;
     }
 
+    public ApiCommand subArgument(String args) {
+        return this;
+    }
+
     /**
      * Sets the function to run when a {@link ConsoleCommandSender} sends a command
      * @param sender A {@link OnConsoleSender} lambda interface

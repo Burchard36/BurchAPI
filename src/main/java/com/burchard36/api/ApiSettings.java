@@ -19,6 +19,7 @@ import java.util.List;
 public class ApiSettings {
 
     protected boolean papiSupport;
+    protected boolean vaultPermissionSupport;
     protected boolean useCommandModule;
     protected boolean useInventoryModule;
     protected final List<Class<? extends ApiCommand>> commandAutoRegisterBlacklist;
@@ -28,6 +29,7 @@ public class ApiSettings {
 
     protected ApiSettings() {
         this.papiSupport = true;
+        this.vaultPermissionSupport = true;
         this.useCommandModule = true;
         this.useInventoryModule = true;
         this.commandAutoRegisterBlacklist = new ArrayList<>();
@@ -36,7 +38,21 @@ public class ApiSettings {
     }
 
     /**
-     * Sets whether you want PlaceholderAPI support (true) or want none {false)}
+     * Sets whether you want Vault Permission checking support
+     * <br>
+     * When enabled, the plugin will attempt to check permissions with vault,
+     *
+     * @param value {@link Boolean} true if you want support for this (defaults to true) false if not
+     * @return Instance of this class for chaining
+     * @since 2.1.8
+     */
+    public final ApiSettings setVaultPermissionSupport(boolean value) {
+        this.vaultPermissionSupport = value;
+        return this;
+    }
+
+    /**
+     * Sets whether you want PlaceholderAPI support (true) or want none (false)
      * @param value A {@link Boolean}
      * @return Instance of this class for chaining
      * @since 2.1.8

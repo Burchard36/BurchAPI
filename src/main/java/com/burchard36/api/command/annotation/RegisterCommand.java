@@ -52,4 +52,15 @@ public @interface RegisterCommand {
      * @return Nonnull {@link java.util.List} of {@link String}'s that have no spaces in them
      */
     @Nonnull String[] aliases() default {};
+
+    /**
+     * Sets the required permission that a {@link org.bukkit.entity.Player} must have before executing
+     * said command
+     *
+     * This annotation may also be used on both {@link com.burchard36.api.command.ApiCommand} AND {@link com.burchard36.api.command.ApiCommandArgument}
+     *
+     * This field is optional, however if a {@link RequiredPermission} Annotation is set, that annotation will override this value
+     * @return Nonnull {@link String}, this is the permission, eg "my.permission.do.this"
+     */
+    @Nonnull String requiredPermission() default "";
 }

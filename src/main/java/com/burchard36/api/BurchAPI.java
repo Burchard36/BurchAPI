@@ -4,10 +4,13 @@ import com.burchard36.api.command.CommandInjector;
 import com.burchard36.api.data.DataStores;
 import com.burchard36.api.data.json.writer.PluginJsonWriter;
 import com.burchard36.api.inventory.GlobalInventoryListener;
+import com.burchard36.api.utils.Logger;
 import com.burchard36.api.utils.reflections.PackageScanner;
 import com.google.gson.GsonBuilder;
 import lombok.Getter;
+import net.milkbowl.vault.permission.Permission;
 import org.bukkit.ChatColor;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
@@ -26,6 +29,7 @@ public abstract class BurchAPI extends JavaPlugin implements Api {
     protected GlobalInventoryListener inventoryListener;
     protected PluginJsonWriter jsonWriter;
     protected DataStores dataStores;
+    protected Permission vaultPermission;
 
     @Getter
     protected final ApiSettings apiSettings = new ApiSettings();
@@ -36,6 +40,15 @@ public abstract class BurchAPI extends JavaPlugin implements Api {
         this.onPreApiEnable();
         this.jsonWriter = new PluginJsonWriter(new GsonBuilder().setPrettyPrinting().create());
         this.dataStores = new DataStores();
+
+        if (this.getApiSettings().isVaultPermissionSupport()) {
+            RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
+            if (rsp == null) {
+                Logger.error("When grabbing the Permission service provider for vault, it was null when found! Is Vault installed on your server?");
+                return;
+            }
+            this.vaultPermission = rsp.getProvider();
+        }
 
         if (this.getApiSettings().isUseInventoryModule())
             this.inventoryListener = new GlobalInventoryListener(this);
@@ -63,6 +76,15 @@ public abstract class BurchAPI extends JavaPlugin implements Api {
      * @since 2.1.5
      */
     public abstract void onPreApiEnable();
+
+    /**
+     * Gets the VaultAPI Permission provider, typically used for adding, setting or checking permissions
+     * @return The provider of {@link Permission}
+     * @since 2.1.8
+     */
+    public Permission getVaultPermissions() {
+        return this.vaultPermission;
+    }
 
     /**
      * Returns an instance of all the DataStores of the API, can be used to get a specific {@link com.burchard36.api.data.DataStore}, or to register one
