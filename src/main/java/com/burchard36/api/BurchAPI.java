@@ -33,8 +33,6 @@ public abstract class BurchAPI extends JavaPlugin implements Api {
 
     @Getter
     protected final ApiSettings apiSettings = new ApiSettings();
-    @Getter
-    protected final CommandSettings commandSettings = new CommandSettings();
 
     @Override
     public void onEnable() {

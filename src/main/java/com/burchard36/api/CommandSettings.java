@@ -6,9 +6,11 @@ import lombok.Getter;
 public class CommandSettings {
 
     private boolean useStrictSubArgumentChecking;
+    private final ApiSettings settings;
 
-    protected CommandSettings() {
+    protected CommandSettings(final ApiSettings settings) {
         this.useStrictSubArgumentChecking = true;
+        this.settings = settings;
     }
 
     /**
@@ -22,6 +24,15 @@ public class CommandSettings {
     public CommandSettings setStrictSubArgumentChecking(boolean value) {
         this.useStrictSubArgumentChecking = value;
         return this;
+    }
+
+    /**
+     * Joins back to {@link ApiSettings} for easier chaining.
+     * @return Instance of {@link ApiSettings} for chaining
+     * @since 2.1.8
+     */
+    public ApiSettings join() {
+        return this.settings;
     }
 
 }

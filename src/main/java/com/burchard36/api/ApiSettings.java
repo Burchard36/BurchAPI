@@ -26,6 +26,7 @@ public class ApiSettings {
     protected final List<Class<? extends DataStore>> dataStoreAutoRegisterBlacklist;
 
     private final DataStoreSettings dataStoreSettings;
+    private final CommandSettings commandSettings;
 
     protected ApiSettings() {
         this.papiSupport = true;
@@ -34,7 +35,8 @@ public class ApiSettings {
         this.useInventoryModule = true;
         this.commandAutoRegisterBlacklist = new ArrayList<>();
         this.dataStoreAutoRegisterBlacklist = new ArrayList<>();
-        this.dataStoreSettings = new DataStoreSettings();
+        this.dataStoreSettings = new DataStoreSettings(this);
+        this.commandSettings = new CommandSettings(this);
     }
 
     /**
