@@ -1,12 +1,13 @@
 package com.burchard36.api;
 
-import com.burchard36.api.command.ApiCommandArgument;
-import org.bukkit.entity.Player;
+import com.burchard36.api.command.ApiCommand;
 
-public class TestArgument extends ApiCommandArgument {
+public class TestArgument extends ApiCommand {
 
-    @Override
-    public void handle() {
+   public TestArgument() {
+       this.subArgument("test", (subArgument) -> {
+            if (!subArgument.senderIsPlayer()) return;
 
-    }
+       });
+   }
 }
