@@ -134,7 +134,8 @@ public class PackageScanner<T> {
      * @return Instance of this class
      * @since 2.1.8
      */
-    public final PackageScanner<T> subclassSearchQuery(@Nonnull Package aPackage, @Nonnull Class<? extends T> aClass) {
+    public final PackageScanner<T> subclassSearchQuery(@Nonnull Package aPackage,
+                                                       @Nonnull Class<? extends T> aClass) {
         this.packageToSearch = aPackage;
         this.currentClassToSearch = aClass;
 

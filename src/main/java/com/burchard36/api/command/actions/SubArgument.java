@@ -1,13 +1,42 @@
 package com.burchard36.api.command.actions;
 
 import com.burchard36.api.utils.Logger;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public record SubArgument(CommandSender commandSender) {
+import java.util.List;
+import java.util.Optional;
+
+public record SubArgument(CommandSender commandSender, List<String> args) {
 
     public boolean senderIsPlayer() {
         return commandSender instanceof Player;
+    }
+
+    public Optional<OfflinePlayer> playerPresentAt(int index) {
+        if (Bukkit.getOnlinePlayers().stream().anyMatch(p -> p.getName().equals(args.get(index))))
+            return Optional.of(Bukkit.getOfflinePlayer(Bukkit.getPlayer(args.get(index)).getUniqueId()));
+        if (!Bukkit.getOfflinePlayer(args.get(index)).hasPlayedBefore()) return Optional.empty();
+        return Optional.of(Bukkit.getOfflinePlayer(args.get(index)));
+    }
+
+    public Optional<Material> materialPresentAt(int index) {
+        final Material mat = Material.getMaterial(args.get(index));
+        if (mat == null) return Optional.empty();
+        return Optional.of(mat);
+    }
+
+    public Optional<Integer> integerPresentAt(int index) {
+        final int integer;
+        try {
+            integer = Integer.parseInt(args.get(index));
+            return Optional.of(integer);
+        } catch (NumberFormatException ignored) {
+            return Optional.empty();
+        }
     }
 
     /**

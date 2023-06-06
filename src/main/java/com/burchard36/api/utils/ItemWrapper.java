@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -12,6 +13,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,19 +26,19 @@ import static com.burchard36.api.BurchAPI.convert;
  */
 public class ItemWrapper {
 
-    private final ItemStack itemStack;
-    private ItemMeta itemMeta;
-    private String displayName = null;
-    private List<String> lore = new ArrayList<>();
+    protected final ItemStack itemStack;
+    protected ItemMeta itemMeta;
+    protected String displayName = null;
+    protected List<String> lore = new ArrayList<>();
+    protected @Nullable Player owningPlayer = null;
 
     /**
      * Specifies directly what {@link ItemStack} you want to wrap around
      * @param stack A {@link ItemStack}
      */
-    public ItemWrapper(final ItemStack stack) {
-        if (stack == null) throw new IllegalArgumentException("ItemStack in ItemWrapper cannot be null!");
+    public ItemWrapper(@Nonnull final ItemStack stack) {
         this.itemStack = stack;
-        if (this.itemStack.getType() != Material.AIR) this.itemMeta = this.itemStack.getItemMeta();
+        this.itemMeta = this.itemStack.getItemMeta();
     }
 
     /**
@@ -45,7 +47,7 @@ public class ItemWrapper {
      */
     public ItemWrapper(@Nonnull final Material material) {
         this.itemStack = new ItemStack(material, 1);
-        if (this.itemStack.getType() != Material.AIR) this.itemMeta = this.itemStack.getItemMeta();
+        this.itemMeta = this.itemStack.getItemMeta();
     }
 
     /**
@@ -56,6 +58,49 @@ public class ItemWrapper {
     public ItemWrapper(@Nonnull final Material material, final int amount) {
         this.itemStack = new ItemStack(material, amount);
         if (this.itemStack.getType() != Material.AIR) this.itemMeta = this.itemStack.getItemMeta();
+    }
+
+    /**
+     * Specifies directly what {@link ItemStack} you want to wrap around
+     * <br>
+     * The {@link Player} argument is for if you want certain support for things like PlaceholderAPI to parse
+     * placeholders on this item for a specific player
+     * @param stack An {@link ItemStack} cant be null
+     * @param player A {@link Player} is nullable
+     */
+    public ItemWrapper(final @Nonnull ItemStack stack, @Nullable Player player) {
+        this.itemStack = stack;
+        this.itemMeta = this.itemStack.getItemMeta();
+        this.owningPlayer = player;
+    }
+
+    /**
+     * Creates a {@link ItemStack} with a {@link Integer} of 1 as the amount
+     * <br>
+     * This also allows you to put a {@link Player} as the second argument, to allow PlaceholderAPI parsing.
+     * @param material A {@link Material} enum
+     * @param player A nullable {@link Player}
+     */
+    public ItemWrapper(@Nonnull final Material material, @Nullable final Player player) {
+        this.itemStack = new ItemStack(material, 1);
+        this.itemMeta = this.itemStack.getItemMeta();
+        this.owningPlayer = player;
+    }
+
+    /**
+     * Creates a {@link ItemStack} with a specific {@link Material} and {@link Integer} amount
+     * <br>
+     * This also allows you to specify a {@link Player} for PlaceholderAPI parsing.
+     * @param material A {@link Material} enum
+     * @param amount A {@link Integer} amount, value cant be <= 0
+     * @param player A nullable {@link Player}
+     */
+    public ItemWrapper (@Nonnull final Material material,
+                        final int amount,
+                        @Nullable final Player player) {
+        this.itemStack = new ItemStack(material, amount);
+        this.itemMeta = this.itemStack.getItemMeta();
+        this.owningPlayer = player;
     }
 
     /**
@@ -82,7 +127,7 @@ public class ItemWrapper {
     public final ItemWrapper setDisplayName(final String displayName) {
         if (this.itemMeta == null) return this;
         this.displayName = displayName;
-        this.itemMeta.setDisplayName(convert(this.displayName));
+        this.itemMeta.setDisplayName(convert(this.displayName, null));
         this.itemStack.setItemMeta(this.itemMeta);
         return this;
     }
@@ -94,7 +139,7 @@ public class ItemWrapper {
      */
     public final ItemWrapper addItemLore(final String... lore) {
         for (int i = 0; i <= lore.length; i++) {
-            this.lore.add(convert(lore[i]));
+            this.lore.add(convert(lore[i], null));
         }
         this.setItemLore(this.lore);
         return this;
@@ -110,7 +155,7 @@ public class ItemWrapper {
         this.lore = itemLore;
         final List<String> colored = new ArrayList<>();
         itemLore.forEach((loreItem) -> {
-            colored.add(convert(loreItem));
+            colored.add(convert(loreItem, null));
         });
         this.itemMeta.setLore(colored);
         this.itemStack.setItemMeta(this.itemMeta);

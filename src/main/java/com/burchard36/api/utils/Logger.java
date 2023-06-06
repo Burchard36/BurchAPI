@@ -17,7 +17,7 @@ public class Logger {
     public static void debug(final String message) {
         if (BurchAPI.INSTANCE.isDebug()) {
             BurchAPI.INSTANCE.getLogger().info(convert(BurchAPI.INSTANCE.loggerPrefix()
-                    + " &b:: &2DEBUG &b:: &a" + message));
+                    + " &b:: &2DEBUG &b:: &a" + message, null));
         }
     }
 
@@ -27,7 +27,7 @@ public class Logger {
      */
     public static void log(final String message) {
         BurchAPI.INSTANCE.getLogger().info(convert(BurchAPI.INSTANCE.loggerPrefix()
-                + " &b:: &3INFO &b::" + message));
+                + " &b:: &3INFO &b::" + message, null));
     }
 
     /**
@@ -36,7 +36,7 @@ public class Logger {
      */
     public static void warn(final String message) {
         Bukkit.getLogger().info(convert(BurchAPI.INSTANCE.loggerPrefix()
-                + " &4:: &eWARN &4:: &c" + message));
+                + " &4:: &eWARN &4:: &c" + message, null));
     }
 
     /**
@@ -45,6 +45,6 @@ public class Logger {
      */
     public static void error(final String message) {
         Bukkit.getLogger().info(convert(BurchAPI.INSTANCE.loggerPrefix()
-                + " &4:: &cERROR &4:: &c" + message));
+                + " &4:: &cERROR &4:: &c" + message, null));
     }
 }

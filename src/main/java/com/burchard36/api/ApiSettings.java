@@ -3,6 +3,7 @@ package com.burchard36.api;
 import com.burchard36.api.command.ApiCommand;
 import com.burchard36.api.data.DataStore;
 import lombok.Getter;
+import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,7 @@ public class ApiSettings {
     private final CommandSettings commandSettings;
 
     protected ApiSettings() {
-        this.papiSupport = true;
+        this.papiSupport = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null;
         this.vaultPermissionSupport = true;
         this.useCommandModule = true;
         this.useInventoryModule = true;
@@ -55,12 +56,15 @@ public class ApiSettings {
 
     /**
      * Sets whether you want PlaceholderAPI support (true) or want none (false)
+     * <br>
+     * This value is defaulted to true if PlaceholderAPI is already running on the server, do note
+     * your plugin still needs to depend or soft-depend in the plugin.yml for PlaceholderAPI
      * @param value A {@link Boolean}
      * @return Instance of this class for chaining
      * @since 2.1.8
      */
     public final ApiSettings setPlaceholderAPISupport(boolean value) {
-        this.papiSupport = value;
+        this.papiSupport = value && Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null;
         return this;
     }
 

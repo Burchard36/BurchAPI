@@ -27,7 +27,7 @@ public class EntityWrapper {
      */
     public final void setHologram(final String message) {
         this.entity.setCustomNameVisible(true);
-        this.entity.setCustomName(BurchAPI.convert(message));
+        this.entity.setCustomName(BurchAPI.convert(message, null));
     }
 
     /**

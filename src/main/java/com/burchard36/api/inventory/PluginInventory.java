@@ -54,10 +54,10 @@ public class PluginInventory {
      */
     public PluginInventory(final int slots, final String name) {
         this.inventorySlots = slots;
-        this.inventoryName = convert(name);
+        this.inventoryName = convert(name, null);
         UUID inventoryUuid = UUID.randomUUID();
         this.inventoryHolder = new PluginHolder(inventoryUuid, null);
-        this.inventory = Bukkit.createInventory(this.inventoryHolder, slots, convert(name));
+        this.inventory = Bukkit.createInventory(this.inventoryHolder, slots, convert(name, null));
     }
 
     /**
@@ -66,7 +66,7 @@ public class PluginInventory {
      * @return instance of this class
      */
     public PluginInventory setDisplayName(final String displayName) {
-        this.inventoryName = convert(displayName);
+        this.inventoryName = convert(displayName, null);
         this.inventory = Bukkit.createInventory(this.inventoryHolder, this.inventorySlots, this.inventoryName);
         return this;
     }
@@ -184,6 +184,10 @@ public class PluginInventory {
      * @param player Player to open inventory to
      */
     public void open(final Player player) {
+        this.inventory = /* Parse placeholders in the Inventory Title for provided player */
+                Bukkit.createInventory(this.inventoryHolder,
+                this.inventorySlots,
+                convert(this.inventoryName, player));
         this.clickableItems.keySet().forEach((slotNum) -> {
             this.inventory.setItem(slotNum, this.clickableItems.get(slotNum).build());
         });

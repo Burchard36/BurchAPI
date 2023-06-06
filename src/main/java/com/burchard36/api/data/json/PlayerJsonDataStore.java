@@ -72,6 +72,8 @@ public class PlayerJsonDataStore implements FileDataStore, Listener {
                             // same thing as previous error
                             Logger.warn("ERR_INVALID_CONSTRUCTOR result from auto-loading" + keyClass.getName() + " class!");
                         }
+
+
                     }
                 } else if (this.dataClass == null){
                     final JsonPlayerDataFile dataFile = invocationResult.getKey();
